@@ -1,5 +1,5 @@
 
-IFDEF CFG_RAM_PASSWORD
+	IFDEF CFG_RAM_PASSWORD
 ; -----------------------------------------------------------------------------
 ; Variables for: Password encoding/decoding routines
 
@@ -11,9 +11,9 @@ password:
 password_value:
 	rb	CFG_PASSWORD_DATA_SIZE
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
-IFDEF CFG_RAM_MENU
+	IFDEF CFG_RAM_MENU
 ; -----------------------------------------------------------------------------
 ; Variables for: Menu control routines
 
@@ -31,6 +31,6 @@ options_menu:
 .current_position:
 	rb	1
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
 ; EOF

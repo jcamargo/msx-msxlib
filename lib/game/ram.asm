@@ -1,5 +1,5 @@
 
-IFDEF CFG_RAM_PLAYER
+	IFDEF CFG_RAM_PLAYER
 ; -----------------------------------------------------------------------------
 ; Variables for: Player related routines (generic)
 player:
@@ -19,9 +19,9 @@ player:
 	.dy_index:
 	rb	1
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
-IFDEF CFG_RAM_ENEMY
+	IFDEF CFG_RAM_ENEMY
 ; -----------------------------------------------------------------------------
 ; Variables for: Enemies related routines (generic)
 enemies:
@@ -70,9 +70,9 @@ enemy:
 	
 	enemies.SIZE:	equ $ - enemies
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 	
-IFDEF CFG_RAM_BULLET
+	IFDEF CFG_RAM_BULLET
 ; -----------------------------------------------------------------------------
 ; Variables for: Bullet related routines (generic)
 bullets:
@@ -100,6 +100,6 @@ bullet:
 	
 	bullets.SIZE:	equ $ - bullets
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
 ; EOF

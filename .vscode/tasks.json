@@ -14,18 +14,21 @@
 		"$errmatcher-tniasm",
 		"$errmatcher-tniasm-preprocessor"
 	],
-	"tasks": [{
-		"label": "make clean build",
-		"type": "shell",
-		"command": "mingw32-make clean compile",
-		"group": "build"
-	}, {
-		"label": "make (default)",
-		"type": "shell",
-		"command": "mingw32-make",
-		"group": {
-			"kind": "build",
-			"isDefault": true
+	"tasks": [
+		{
+			"label": "make clean build",
+			"type": "shell",
+			"command": "make",
+			"group": "build"
+		},
+		{
+			"label": "make (default)",
+			"type": "shell",
+			"command": "make",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
-	}]
+	]
 }

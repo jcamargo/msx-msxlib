@@ -1,5 +1,5 @@
 
-IFDEF CFG_RAM_ATTRACT_PRINT
+	IFDEF CFG_RAM_ATTRACT_PRINT
 ; -----------------------------------------------------------------------------
 ; Variables for: Attract-mode text-printing routines
 attract_print:
@@ -13,10 +13,10 @@ attract_print:
 .framecounter:
 	rb	1 ; frame counter for slow printing
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
 
-IFDEF CFG_RAM_VPOKES
+	IFDEF CFG_RAM_VPOKES
 ; -----------------------------------------------------------------------------
 ; Variables for: "vpoke" routines (deferred WRTVRMs routines)
 vpokes:
@@ -25,10 +25,10 @@ vpokes:
 .array:
 	rb	CFG_VPOKES * VPOKE.SIZE
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
 
-IFDEF CFG_RAM_SPRITEABLES
+	IFDEF CFG_RAM_SPRITEABLES
 ; -----------------------------------------------------------------------------
 ; Variables for: Spriteables routines (2x2 chars that eventually become a sprite)
 spriteables:
@@ -62,6 +62,6 @@ spriteables:
 	rb	(CFG_SPRITEABLES -1) * ($ - spriteables.array)
 	spriteables.SIZE:	equ $ - spriteables.array
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
 ; EOF

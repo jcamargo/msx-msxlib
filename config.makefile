@@ -2,7 +2,6 @@
 #
 # commands
 #
-
 COPY=cmd /c copy
 MKDIR=cmd /c mkdir
 MOVE=cmd /c move
@@ -12,8 +11,9 @@ RENAME=cmd /c ren
 #
 # tools
 #
-
-ASM=tniasm.exe
+# ASM=tniasm.exe
+ASM=sjasmplus.exe
+ASM_FLAGS=--fullpath
 EMULATOR=cmd /c start
 DEBUGGER=cmd /c start \MSX\bin\blueMSX_2.8.2\blueMSX.exe
 PCX2MSX=pcx2msx+.exe
