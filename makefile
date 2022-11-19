@@ -15,6 +15,9 @@ ROM=\
 SYM=\
 	games\examples\00minimal\minimal.sym \
 
+LST=\
+	games\examples\00minimal\minimal.lst \
+
 
 SHARED_DATAS=\
 	games\examples\shared\charset.pcx.chr.$(PACK_EXTENSION) \
@@ -32,7 +35,7 @@ SHARED_DATAS_INTERMEDIATE=\
 # targets
 #
 games\examples\00minimal\minimal.rom: games\examples\00minimal\minimal.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT)
-	$(ASM) $(ASM_FLAGS) $< $@
+	$(ASM) $(ASM_FLAGS) $< 
 
 # default targets
 include msxlib.makefile

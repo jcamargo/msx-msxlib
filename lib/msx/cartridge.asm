@@ -109,7 +109,7 @@ CARTRIDGE_INIT:
 	ENDIF ; IFDEF CFG_INIT_ROM_SIZE
 
 ; Splash screens before further initialization
-	IFEXIST SPLASH_SCREENS_PACKED_TABLE
+	IF EXIST SPLASH_SCREENS_PACKED_TABLE
 ; Reads the number of splash screens to show
 	ld	hl, SPLASH_SCREENS_PACKED_TABLE
 	ld	b, [hl]
@@ -174,7 +174,7 @@ CARTRIDGE_INIT:
 	ld	hl, RG1SAV
 	set	1, [hl] ; (first call to ENASCR will actually apply to the VDP)
 
-	IFEXIST SET_PALETTE
+	IF EXIST SET_PALETTE
 ; MSX2 VDP: Custom palette
 	ld	a, [MSXID3]
 	or	a
@@ -190,7 +190,7 @@ CARTRIDGE_INIT:
 	rra	; carry = bit 2
 	jr	nc, .SET_PALETTE ; Yes (2 key): Default MSX2 palette
 ; no: sets custom palette
-	IFEXIST CFG_CUSTOM_PALETTE
+	IF EXIST CFG_CUSTOM_PALETTE
 	ld	hl, CFG_CUSTOM_PALETTE
 	ELSE
 	ld	hl, DEFAULT_PALETTE.COOL_COLORS
@@ -211,21 +211,22 @@ CARTRIDGE_INIT:
 	call	GICINI
 
 ; Initializes the replayer
-	IFEXIST REPLAYER.RESET
+	IF EXIST REPLAYER.RESET
 	call	REPLAYER.RESET
 	ENDIF
 
-; Frame rate related variables
-	ld	a, [MSXID1]
-	bit	7, a ; 0=60Hz, 1=50Hz
-	ld	hl, 5 << 8 + 50 ; frame rate and frames per tenth for 50Hz
-	jr	nz, .HL_OK
-	ld	hl, 6 << 8 + 60 ; frame rate and frames per tenth for 60Hz
-.HL_OK:
-	ld	[frame_rate], hl
+; ; Frame rate related variables
+; 	ld	a, [MSXID1]
+; 	bit	7, a ; 0=60Hz, 1=50Hz
+; 	ld	hl, (5<<8) + 50 
+; 	; frame rate and frames per tenth for 50Hz
+; 	jr	nz, .HL_OK
+; 	ld	hl, (6<<8) + 60 ; frame rate and frames per tenth for 60Hz
+; .HL_OK:
+; 	ld	[frame_rate], hl
 
 ; Installs the H.TIMI hook in the interruption
-	IFEXIST HOOK
+	IF EXIST HOOK
 	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 ; Preserves the existing hook
 	ld	hl, HTIMI

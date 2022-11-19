@@ -7,51 +7,48 @@
 namtbl_buffer:
 	rb	NAMTBL_SIZE
 
-; SPRATR buffer in RAM ; (aligned to $xx00)
+	; SPRATR buffer in RAM ; (aligned to $xx00)
 spratr_buffer:
 	rb	SPRATR_SIZE
 .end:
 	rb	1 ; to store one SPAT_END when the buffer is full
-
 	IFDEF CFG_SPRITES_FLICKER
-
-; (extra space for the flickering routine)
+	; (extra space for the flickering routine)
 	rb	SPRATR_SIZE -CFG_SPRITES_NO_FLICKER *4 -16
 
 ; Offset used by the flickering routine
 .flicker_offset:
 	rb	1
-
 	ENDIF ; IFDEF CFG_SPRITES_FLICKER
 ; -----------------------------------------------------------------------------
 	ENDIF ; IFDEF CFG_RAM_VRAM
-
-
 
 	IFDEF CFG_RAM_CARTRIDGE
 ; -----------------------------------------------------------------------------
 ; Variables for: MSX cartridge (ROM) header, entry point and initialization
 
 ; Refresh rate in Hertzs (50Hz/60Hz) and related convenience vars
+
 frame_rate:
-	rb	1
+ 	rb	1
 frames_per_tenth:
 	rb	1
-; -----------------------------------------------------------------------------
+
+	; -----------------------------------------------------------------------------
 	ENDIF ; IFDEF CFG_RAM_CARTRIDGE
 
 
 	IFDEF CFG_RAM_HOOK
-; -----------------------------------------------------------------------------
-; Variables for: Interrupt routine (H.TIMI hook)
+	; -----------------------------------------------------------------------------
+	; Variables for: Interrupt routine (H.TIMI hook)
 
 	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
-; Backup of the H.TIMI hook previous to the installation of the replayer hook
+	; Backup of the H.TIMI hook previous to the installation of the replayer hook
 old_htimi_hook:
 	rb	HOOK_SIZE
 	ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 
-	IFEXIST REPLAYER.FRAME
+	IF EXIST REPLAYER.FRAME
 
 ; 60Hz replayer synchronization
 replayer.frameskip:
@@ -60,7 +57,6 @@ replayer.frameskip:
 	ENDIF ; IFEXIST REPLAYER.FRAME
 	; -----------------------------------------------------------------------------
 	ENDIF ; IFDEF CFG_RAM_HOOK
-
 
 	IFDEF CFG_RAM_INPUT
 ; -----------------------------------------------------------------------------
@@ -83,7 +79,7 @@ input:
 ; PT3 variables
 	include	"libext/pt3/PT3-RAM.tniasm.ASM"
 
-	IFEXIST ayFX_SETUP
+	IF EXIST ayFX_SETUP
 
 ; ayFX REPLAYER v1.31 variables
 	include	"libext/ayFX-replayer/ayFX-RAM.tniasm.asm"
@@ -101,6 +97,5 @@ input:
 	include	"libext/wyzplayer/WYZPROPLAY47c_RAM.tniasm.ASM"
 ; -----------------------------------------------------------------------------
 	ENDIF ; IFDEF CFG_RAM_REPLAYER_WYZ
-
 
 ; EOF

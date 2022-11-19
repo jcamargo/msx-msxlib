@@ -1,0 +1,1228 @@
+# file opened: games\examples\00minimal\minimal.asm
+  1   0000
+  2   0000              ;
+  3   0000              ; =============================================================================
+  4   0000              ;	MSXlib minimal example
+  5   0000              ; =============================================================================
+  6   0000              ;
+  7   0000              	include	"lib/preamble.asm"
+# file opened: ./lib/preamble.asm
+  1+  0000              rb      MACRO count?
+  2+  0000 ~                        ds count?
+  3+  0000 ~                        ; in tniASM the `rb/rw` does not emit bytes to output, so rewind the output
+  4+  0000 ~                        FPOS -(count?)
+  5+  0000                      ENDM
+  6+  0000
+  7+  0000              rw      MACRO count?
+  8+  0000 ~                        ds 2 * count?
+  9+  0000 ~                        ; in tniASM the `rb/rw` does not emit bytes to output, so rewind the output
+ 10+  0000 ~                        FPOS -(2 * count?)
+ 11+  0000                      ENDM
+ 12+  0000
+ 13+  0000              fname   MACRO name?
+ 14+  0000 ~                        DEFINE __CURRENT_OUTPUT_NAME__ name?
+ 15+  0000 ~                        OUTPUT name?,t      ; truncate the file first
+ 16+  0000 ~                        OUTPUT name?,r      ; reopen it to allow also position seeks (for rb/rw macros)
+ 17+  0000                      ENDM
+ 18+  0000
+ 19+  0000              ; switch multiarg delimiter to ",," (to produce correct opcode for `sub a,7` ("a" option)
+ 20+  0000              ; treat "wholesome" round parentheses as memory access ("b" option)
+ 21+  0000              ; warn about any fake instruction ("f")
+ 22+  0000                      OPT --syntax=abf
+ 23+  0000
+ 24+  0000              ; command line to build migrated sources with sjasmplus (inside the "engine" folder):
+ 25+  0000              ; sjasmplus --sym=theproject.sym --dirbol --fullpath --longptr ../sjasm_preamble.asm Main.asm
+# file closed: ./lib/preamble.asm
+  8   0000              ; -----------------------------------------------------------------------------
+  9   0000              ; MSX symbolic constants
+ 10   0000              	include	"lib/msx/symbols.asm"
+# file opened: ./lib/msx/symbols.asm
+  1+  0000
+  2+  0000              ; =============================================================================
+  3+  0000              ;	MSX symbolic constants
+  4+  0000              ; =============================================================================
+  5+  0000
+  6+  0000              ; -----------------------------------------------------------------------------
+  7+  0000              ; MSX BIOS entry points and constants
+  8+  0000
+  9+  0000              ; MSX BIOS
+ 10+  0000              CHKRAM:	equ $0000 ; Power-up, check RAM
+ 11+  0000              CGTABL:	equ $0004 ; Two bytes, address of ROM character set
+ 12+  0000              VDP_DR:	equ $0006 ; One byte, VDP Data Port number (read)
+ 13+  0000              VDP_DW:	equ $0007 ; One byte, VDP Data Port number (write)
+ 14+  0000              SYNCHR:	equ $0008 ; Check BASIC program character
+ 15+  0000              RDSLT:	equ $000c ; Read RAM in any slot
+ 16+  0000              CHRGTR:	equ $0010 ; Get next BASIC program character
+ 17+  0000              WRSLT:	equ $0014 ; Write to RAM in any slot
+ 18+  0000              OUTDO:	equ $0018 ; Output to current device
+ 19+  0000              CALSLT:	equ $001c ; Call routine in any slot
+ 20+  0000              DCOMPR:	equ $0020 ; Compare register pairs HL and DE
+ 21+  0000              ENASLT:	equ $0024 ; Enable any slot permanently
+ 22+  0000              GETYPR:	equ $0028 ; Get BASIC operand type
+ 23+  0000              MSXID1:	equ $002b ; Frecuency (1b), date format (3b) and charset (4b)
+ 24+  0000              	; Default interrupt frequency: 0 = 60Hz, 1 = 50Hz
+ 25+  0000              	; Date format: 0 = Y-M-D, 1 = M-D-Y, 2 = D-M-Y
+ 26+  0000              	; Character set: 0 = Japanese, 1 = International, 2=Korean
+ 27+  0000              MSXID2:	equ $002c ; Basic version (4b) and Keybaord type (4b)
+ 28+  0000              	; Basic version: 0 = Japanese, 1 = International
+ 29+  0000              	; Keyboard type: 0 = Japanese, 1 = International, 2 = French (AZERTY), 3 = UK, 4 = German (DIN)
+ 30+  0000              MSXID3:	equ $002d ; MSX version number
+ 31+  0000              	; 0 = MSX 1
+ 32+  0000              	; 1 = MSX 2
+ 33+  0000              	; 2 = MSX 2+
+ 34+  0000              	; 3 = MSX turbo R
+ 35+  0000              MSXID4:	equ $002e ; Bit 0: if 1 then MSX-MIDI is present internally (MSX turbo R only)
+ 36+  0000              MSXID5:	equ $002f ; Reserved
+ 37+  0000              CALLF:	equ $0030 ; Call routine in any slot
+ 38+  0000              KEYINT:	equ $0038 ; Interrupt handler, keyboard scan
+ 39+  0000              INITIO:	equ $003b ; Initialize I/O devices
+ 40+  0000              INIFNK:	equ $003e ; Initialize function key strings
+ 41+  0000              DISSCR:	equ $0041 ; Disable screen
+ 42+  0000              ENASCR:	equ $0044 ; Enable screen
+ 43+  0000              WRTVDP:	equ $0047 ; Write to any VDP register
+ 44+  0000              RDVRM:	equ $004a ; Read byte from VRAM
+ 45+  0000              WRTVRM:	equ $004d ; Write byte to VRAM
+ 46+  0000              SETRD:	equ $0050 ; Set up VDP for read
+ 47+  0000              SETWRT:	equ $0053 ; Set up VDP for write
+ 48+  0000              FILVRM:	equ $0056 ; Fill block of VRAM with data byte
+ 49+  0000              LDIRMV:	equ $0059 ; Copy block to memory from VRAM
+ 50+  0000              LDIRVM:	equ $005c ; Copy block to VRAM, from memory
+ 51+  0000              CHGMOD:	equ $005f ; Change VDP mode
+ 52+  0000              CHGCLR:	equ $0062 ; Change VDP colours
+ 53+  0000              NMI:	equ $0066 ; Non Maskable Interrupt handler
+ 54+  0000              CLRSPR:	equ $0069 ; Clear all sprites
+ 55+  0000              INITXT:	equ $006c ; Initialize VDP to 40x24 Text Mode
+ 56+  0000              INIT32:	equ $006f ; Initialize VDP to 32x24 Text Mode
+ 57+  0000              INIGRP:	equ $0072 ; Initialize VDP to Graphics Mode
+ 58+  0000              INIMLT:	equ $0075 ; Initialize VDP to Multicolour Mode
+ 59+  0000              SETTXT:	equ $0078 ; Set VDP to 40x24 Text Mode
+ 60+  0000              SETT32:	equ $007b ; Set VDP to 32x24 Text Mode
+ 61+  0000              SETGRP:	equ $007e ; Set VDP to Graphics Mode
+ 62+  0000              SETMLT:	equ $0081 ; Set VDP to Multicolour Mode
+ 63+  0000              CALPAT:	equ $0084 ; Calculate address of sprite pattern
+ 64+  0000              CALATR:	equ $0087 ; Calculate address of sprite attribute
+ 65+  0000              GSPSIZ:	equ $008a ; Get sprite size
+ 66+  0000              GRPPRT:	equ $008d ; Print character on graphic screen
+ 67+  0000              GICINI:	equ $0090 ; Initialize PSG (GI Chip)
+ 68+  0000              WRTPSG:	equ $0093 ; Write to any PSG register
+ 69+  0000              RDPSG:	equ $0096 ; Read from any PSG register
+ 70+  0000              STRTMS:	equ $0099 ; Start music dequeueing
+ 71+  0000              CHSNS:	equ $009c ; Sense keyboard buffer for character
+ 72+  0000              CHGET:	equ $009f ; Get character from keyboard buffer (wait)
+ 73+  0000              CHPUT:	equ $00a2 ; Screen character output
+ 74+  0000              LPTOUT:	equ $00a5 ; Line printer character output
+ 75+  0000              LPTSTT:	equ $00a8 ; Line printer status test
+ 76+  0000              CNVCHR:	equ $00ab ; Convert character with graphic header
+ 77+  0000              PINLIN:	equ $00ae ; Get line from console (editor)
+ 78+  0000              INLIN:	equ $00b1 ; Get line from console (editor)
+ 79+  0000              QINLIN:	equ $00b4 ; Display "?", get line from console (editor)
+ 80+  0000              BREAKX:	equ $00b7 ; Check CTRL-STOP key directly
+ 81+  0000              ISCNTC:	equ $00ba ; Check CRTL-STOP key
+ 82+  0000              CKCNTC:	equ $00bd ; Check CTRL-STOP key
+ 83+  0000              BEEP:	equ $00c0 ; Go beep
+ 84+  0000              CLS:	equ $00c3 ; Clear screen
+ 85+  0000              POSIT:	equ $00c6 ; Set cursor position
+ 86+  0000              FNKSB:	equ $00c9 ; Check if function key display on
+ 87+  0000              ERAFNK:	equ $00cc ; Erase function key display
+ 88+  0000              DSPFNK:	equ $00cf ; Display function keys
+ 89+  0000              TOTEXT:	equ $00d2 ; Return VDP to text mode
+ 90+  0000              GTSTCK:	equ $00d5 ; Get joystick status
+ 91+  0000              GTTRIG:	equ $00d8 ; Get trigger status
+ 92+  0000              GTPAD:	equ $00db ; Get touch pad status
+ 93+  0000              GTPDL:	equ $00de ; Get paddle status
+ 94+  0000              TAPION:	equ $00e1 ; Tape input ON
+ 95+  0000              TAPIN:	equ $00e4 ; Tape input
+ 96+  0000              TAPIOF:	equ $00e7 ; Tape input OFF
+ 97+  0000              TAPOON:	equ $00ea ; Tape output ON
+ 98+  0000              TAPOUT:	equ $00ed ; Tape output
+ 99+  0000              TAPOOF:	equ $00f0 ; Tape output OFF
+100+  0000              STMOTR:	equ $00f3 ; Turn motor ON/OFF
+101+  0000              LFTQ:	equ $00f6 ; Space left in music queue
+102+  0000              PUTQ:	equ $00f9 ; Put byte in music queue
+103+  0000              RIGHTC:	equ $00fc ; Move current pixel physical address right
+104+  0000              LEFTC:	equ $00ff ; Move current pixel physical address left
+105+  0000              UPC:	equ $0102 ; Move current pixel physical address up
+106+  0000              TUPC:	equ $0105 ; Test then UPC if legal
+107+  0000              DOWNC:	equ $0108 ; Move current pixel physical address down
+108+  0000              TDOWNC:	equ $010b ; Test then DOWNC if legal
+109+  0000              SCALXY:	equ $010e ; Scale graphics coordinates
+110+  0000              MAPXYC:	equ $0111 ; Map graphic coordinates to physical address
+111+  0000              FETCHC:	equ $0114 ; Fetch current pixel physical address
+112+  0000              STOREC:	equ $0117 ; Store current pixel physical address
+113+  0000              SETATR:	equ $011a ; Set attribute byte
+114+  0000              READC:	equ $011d ; Read attribute of current pixel
+115+  0000              SETC:	equ $0120 ; Set attribute of current pixel
+116+  0000              NSETCX:	equ $0123 ; Set attribute of number of pixels
+117+  0000              GTASPC:	equ $0126 ; Get aspect ratio
+118+  0000              PNTINI:	equ $0129 ; Paint initialize
+119+  0000              SCANR:	equ $012c ; Scan pixels to right
+120+  0000              SCANL:	equ $012f ; Scan pixels to left
+121+  0000              CHGCAP:	equ $0132 ; Change Caps Lock LED
+122+  0000              CHGSND:	equ $0135 ; Change Key Click sound output
+123+  0000              RSLREG:	equ $0138 ; Read Primary Slot Register
+124+  0000              WSLREG:	equ $013b ; Write to Primary Slot Register
+125+  0000              RDVDP:	equ $013e ; Read VDP Status Register
+126+  0000              SNSMAT:	equ $0141 ; Read row of keyboard matrix
+127+  0000              	; a = $00 ; 7 6 5 4 3 2 1 0
+128+  0000              	; a = $01 ; ; ] [ \ = - 9 8
+129+  0000              	; a = $02 ; B A pound / . , ` '
+130+  0000              	; a = $03 ; J I H G F E D C
+131+  0000              	; a = $04 ; R Q P O N M L K
+132+  0000              	; a = $05 ; Z Y X W V U T S
+133+  0000              	; a = $06 ; F3 F2 F1 CODE CAP GRAPH CTRL SHIFT
+134+  0000              	; a = $07 ; CR SEL BS STOP TAB ESC F5 F4
+135+  0000              	; a = $08 ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
+136+  0000              	; a = $09 ; 4 3 2 1 0 none none none
+137+  0000              	; a = $0a ; . , - 9 8 7 6 5
+138+  0000              PHYDIO:	equ $0144 ; Disk, no action
+139+  0000              FORMAT:	equ $0147 ; Disk, no action
+140+  0000              ISFLIO:	equ $014a ; Check for file I/O
+141+  0000              OUTDLP:	equ $014d ; Formatted output to line printer
+142+  0000              GETVCP:	equ $0150 ; Get music voice pointer
+143+  0000              GETVC2:	equ $0153 ; Get music voice pointer
+144+  0000              KILBUF:	equ $0156 ; Clear keyboard buffer
+145+  0000              CALBAS:	equ $0159 ; Call to BASIC from any slot
+146+  0000
+147+  0000              ; MSX 2 BIOS
+148+  0000              SUBROM:	equ $015c ; Calls a routine in SUB-ROM
+149+  0000              EXTROM:	equ $015f ; Calls a routine in SUB-ROM. Most common way
+150+  0000              CHKSLZ:	equ $0162 ; Search slots for SUB-ROM
+151+  0000              CHKNEW:	equ $0165
+152+  0000              EOL:	equ $0168
+153+  0000              BIGFIL:	equ $016b
+154+  0000              NSETRD:	equ $016e
+155+  0000              NSTWRT:	equ $0171
+156+  0000              NRDVRM:	equ $0174
+157+  0000              NWRVRM:	equ $0177
+158+  0000
+159+  0000              ; MSX 2+ BIOS
+160+  0000              RDBTST:	equ $017a
+161+  0000              WRBTST:	equ $017d
+162+  0000
+163+  0000              ; MSX turbo R BIOS
+164+  0000              CHGCPU:	equ $0180 ; Changes CPU mode
+165+  0000              GETCPU:	equ $0183 ; Returns current CPU mode
+166+  0000              PCMPLY:	equ $0186 ; Plays specified memory area through the PCM chip
+167+  0000              PCMREC:	equ $0189 ; Records audio using the PCM chip into the specified memory area
+168+  0000              ; -----------------------------------------------------------------------------
+169+  0000
+170+  0000              ; -----------------------------------------------------------------------------
+171+  0000              ; Stack pointer initialization
+172+  0000              STACK_POINTER_INIT:	equ $f380 ; As suggested by the MSX2 Technical Handbook
+173+  0000
+174+  0000              ; MSX system variables
+175+  0000              RDPRIM:	equ $f380 ; Routine that reads from a primary slot
+176+  0000              WRPRIM:	equ $f385 ; Routine that writes to a primary slot
+177+  0000              LINL40: equ $f3ae ; Width for SCREEN 0 (default 37)
+178+  0000              LINL32: equ $f3af ; Width for SCREEN 1 (default 29)
+179+  0000              LINLEN: equ $f3b0 ; Width for the current text mode
+180+  0000              CLIKSW:	equ $f3db ; Keyboard click sound
+181+  0000              RG0SAV:	equ $f3df ; Content of VDP(0) register (R#0)
+182+  0000              RG1SAV:	equ $f3e0 ; Content of VDP(1) register (R#1)
+183+  0000              RG2SAV:	equ $f3e1 ; Content of VDP(2) register (R#2)
+184+  0000              RG3SAV:	equ $f3e2 ; Content of VDP(3) register (R#3)
+185+  0000              RG4SAV:	equ $f3e3 ; Content of VDP(4) register (R#4)
+186+  0000              RG5SAV:	equ $f3e4 ; Content of VDP(5) register (R#5)
+187+  0000              RG6SAV:	equ $f3e5 ; Content of VDP(6) register (R#6)
+188+  0000              RG7SAV:	equ $f3e6 ; Content of VDP(7) register (R#7)
+189+  0000              STATFL: equ $f3e7 ; Content of VDP status register (S#0)
+190+  0000              TRGFLG:	equ $f3e8 ; State of the four joystick trigger inputs and the space key
+191+  0000              FORCLR:	equ $f3e9 ; Foreground colour
+192+  0000              BAKCLR:	equ $f3ea ; Background colour
+193+  0000              BDRCLR:	equ $f3eb ; Border colour
+194+  0000              SCNCNT: equ $f3f6 ; Key scan timing
+195+  0000              OLDKEY:	equ $fbda ; Previous state of the keyboard matrix (11b)
+196+  0000              NEWKEY:	equ $fbe5 ; Current state of the keyboard matrix (11b)
+197+  0000              	; $fbda, $fbe5 ; 7 6 5 4 3 2 1 0
+198+  0000              	; $fbdb, $fbe6 ; ; ] [ \ = - 9 8
+199+  0000              	; $fbdc, $fbe7 ; B A pound / . , ` '
+200+  0000              	; $fbdd, $fbe8 ; J I H G F E D C
+201+  0000              	; $fbde, $fbe9 ; R Q P O N M L K
+202+  0000              	; $fbdf, $fbea ; Z Y X W V U T S
+203+  0000              	; $fbe0, $fbeb ; F3 F2 F1 CODE CAP GRAPH CTRL SHIFT
+204+  0000              	; $fbe1, $fbec ; CR SEL BS STOP TAB ESC F5 F4
+205+  0000              	; $fbe2, $fbed ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
+206+  0000              	; $fbe3, $fbee ; 4 3 2 1 0 none none none
+207+  0000              	; $fbe4, $fbef ; . , - 9 8 7 6 5
+208+  0000              BOTTOM: equ $fc48 ; Address of the beginning of the available RAM area
+209+  0000              HIMEM:	equ $fc4a ; High free RAM address available (init stack with)
+210+  0000              INTFLG:	equ $fc9b ; STOP flag (0 = none, 3 = CTRL+STOP, 4 = STOP)
+211+  0000              JIFFY:	equ $fc9e ; Software clock; each VDP interrupt gets increased by 1
+212+  0000              INTCNT:	equ $fca2 ; ON INTERVAL counter (counts backwards)
+213+  0000              SCRMOD: equ $fcaf ; Screen mode
+214+  0000              EXPTBL:	equ $fcc1 ; Set to $80 during power-up if Primary Slot is expanded (4b)
+215+  0000              MNROM:	equ $fcc1 ; The first EXPTBL variable is also the Main ROM (BIOS) slot ID
+216+  0000              SLTTBL:	equ $fcc5 ; Mirror of the four possible Secondary Slot Registers (4b)
+217+  0000
+218+  0000              ; MSX system hooks
+219+  0000              HKEYI:	equ $fd9a ; Interrupt handler
+220+  0000              HTIMI:	equ $fd9f ; Interrupt handler
+221+  0000
+222+  0000              HOOK_SIZE:	equ HTIMI - HKEYI
+223+  0000              ; -----------------------------------------------------------------------------
+224+  0000
+225+  0000              ; -----------------------------------------------------------------------------
+226+  0000              ; VDP
+227+  0000
+228+  0000              ; VRAM addresses
+229+  0000              CHRTBL:	equ $0000 ; Pattern table
+230+  0000              NAMTBL:	equ $1800 ; Name table
+231+  0000              CLRTBL:	equ $2000 ; Color table
+232+  0000              SPRATR:	equ $1B00 ; Sprite attributes table
+233+  0000              SPRTBL:	equ $3800 ; Sprite pattern table
+234+  0000
+235+  0000              ; VDP symbolic constants
+236+  0000              CHRTBL_SIZE:	equ 256 * 8
+237+  0000              NAMTBL_SIZE:	equ 32 * 24
+238+  0000              CLRTBL_SIZE:	equ 256 * 8
+239+  0000              SPRATR_SIZE:	equ 32 * 4
+240+  0000              SPRTBL_SIZE:	equ 32 * 64
+241+  0000
+242+  0000              SCR_WIDTH:	equ 32
+243+  0000              SCR_HEIGHT:	equ 24
+244+  0000
+245+  0000              SPRITE_WIDTH:	equ 16
+246+  0000              SPRITE_HEIGHT:	equ 16
+247+  0000
+248+  0000              SPAT_END:	equ $d0 ; Sprite attribute table end marker
+249+  0000              SPAT_OB:	equ $d1 ; Sprite out of bounds marker (not standard)
+250+  0000              SPAT_EC:	equ $80 ; Early clock bit (32 pixels)
+251+  0000              ; -----------------------------------------------------------------------------
+252+  0000
+253+  0000              ; -----------------------------------------------------------------------------
+254+  0000              ; PPI (Programmable Peripheral Interface)
+255+  0000              PPI.A: equ $a8 ; PPI port A: primary slot selection register
+256+  0000              	; 33221100: number of slot to select on page n
+257+  0000              PPI.B: equ $a9 ; PPI port B: read the keyboard matrix row specified via the PPI port C ($AA)
+258+  0000              PPI.C: equ $aa ; PPI port C: control keyboard CAP LED, data recorder signals, and keyboard matrix row
+259+  0000              	; bits 0-3: Row number of specified keyboard matrix to read via port B
+260+  0000              	; bit 4: Data recorder motor (reset to turn on)
+261+  0000              	; bit 5: Set to write on tape
+262+  0000              	; bit 6: Keyboard LED CAPS (reset to turn on)
+263+  0000              	; bit 7: 1, then 0 shortly thereafter to make a clicking sound (used for the keyboard)
+264+  0000              PPI.R: equ $ab ; PPI ports control register (write only)
+265+  0000              	; bit 0 = Bit status to change
+266+  0000              	; bit 1-3 = Number of the bit to change at port C of the PPI
+267+  0000              	; bit 4-6 = Unused
+268+  0000              	; bit 7 = Must be always reset on MSX
+269+  0000              ; -----------------------------------------------------------------------------
+270+  0000
+271+  0000              ; -----------------------------------------------------------------------------
+272+  0000              ; ASCII
+273+  0000              ASCII_NUL:	equ $00 ; NUL (null)
+274+  0000              ASCII_EOT:	equ $04 ; EOT (End of transmission)
+275+  0000              ASCII_BEL:	equ $07 ; BEL (bell)
+276+  0000              ASCII_BS:	equ $08 ; BS (Backspace)
+277+  0000              ASCII_HT:	equ $09 ; HT (Horizontal tab)
+278+  0000              ASCII_LF:	equ $0a ; LF (Line feed)
+279+  0000              ASCII_CR:	equ $0d ; CR (Carriage return)
+280+  0000              ASCII_SYN:	equ $16 ; SYN (Synchronous idle)
+281+  0000              ASCII_SUB:	equ $1a ; SUB (Substitute) (see ASCII_EOF)
+282+  0000              ASCII_EOF:	equ $1a ; EOF (End of file, Control-Z) (see ASCII_SUB)
+283+  0000              ASCII_ESC:	equ $1b ; ESC (Escape)
+284+  0000              ASCII_DEL:	equ $7f ; DEL (Delete)
+285+  0000              ; -----------------------------------------------------------------------------
+286+  0000
+287+  0000              ; EOF
+288+  0000
+# file closed: ./lib/msx/symbols.asm
+ 11   0000
+ 12   0000              ; MSX cartridge (ROM) header, entry point and initialization
+ 13   0000              	include "lib/msx/cartridge.asm"
+# file opened: ./lib/msx/cartridge.asm
+  1+  0000
+  2+  0000              ; =============================================================================
+  3+  0000              ; 	MSX cartridge (ROM) header, entry point and initialization
+  4+  0000              ; =============================================================================
+  5+  0000
+  6+  0000              CFG_RAM_CARTRIDGE:	equ 1
+  7+  0000
+  8+  0000              ; -----------------------------------------------------------------------------
+  9+  0000              ; Cartridge header
+ 10+  0000              	IFDEF CFG_INIT_ROM_SIZE
+ 11+  0000 ~            	IF (CFG_INIT_ROM_SIZE < 32)
+ 12+  0000 ~            		org	$4000,$4000 + (CFG_INIT_ROM_SIZE * $0400) - 1
+ 13+  0000 ~            	ELSE
+ 14+  0000 ~            		org	$4000,$bfff
+ 15+  0000 ~            	ENDIF ; IF (CFG_INIT_ROM_SIZE < 32)
+ 16+  0000              	ELSE
+ 17+  0000              		org	$4000 ; JC tniasm can use the second arg to give a warning
+ 18+  4000              		; org	$4000,$7fff
+ 19+  4000              	ENDIF
+ 20+  4000              	; IFDEF CFG_INIT_ROM_SIZE
+ 21+  4000
+ 22+  4000              CARTRIDGE_HEADER:
+ 23+  4000 41 42        	db	"AB"		; ROM Catridge ID ("AB")
+ 24+  4002 10 40        	dw	CARTRIDGE_INIT	; INIT
+ 25+  4004 00 00        	dw	$0000		; STATEMENT
+ 26+  4006 00 00        	dw	$0000		; DEVICE
+ 27+  4008 00 00        	dw	$0000		; TEXT
+ 28+  400A 00 00 00...  	ds	$4010 - $, $00	; Reserved
+ 29+  4010              ; -----------------------------------------------------------------------------
+ 30+  4010
+ 31+  4010              ; -----------------------------------------------------------------------------
+ 32+  4010              ; Cartridge entry point
+ 33+  4010              ; System initialization: stack pointer, slots, RAM, CPU, VDP, PSG, etc.
+ 34+  4010              CARTRIDGE_INIT:
+ 35+  4010              ; Ensures interrupt mode
+ 36+  4010 F3           	di
+ 37+  4011 ED 56        	im	1
+ 38+  4013
+ 39+  4013              ; Initializes stack pointer
+ 40+  4013              	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+ 41+  4013 ~            	ld	sp, [HIMEM]
+ 42+  4013              	ELSE
+ 43+  4013 31 80 F3     	ld	sp, STACK_POINTER_INIT
+ 44+  4016              ; Cancels the existing hooks (several BIOS routines re-enable interruptions)
+ 45+  4016 3E C9        	ld	a, $c9 ; opcode for "RET"
+ 46+  4018 32 9A FD     	ld	[HKEYI], a
+ 47+  401B 32 9F FD     	ld	[HTIMI], a
+ 48+  401E              	ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+ 49+  401E
+ 50+  401E              ; CPU: Ensures Z80 mode
+ 51+  401E 3A 2D 00     	ld	a, [MSXID3]
+ 52+  4021 FE 03        	cp	3 ; 3 = MSX turbo R
+ 53+  4023 20 05        	jr	nz, .CPU_OK
+ 54+  4025              ; MSX turbo R: switches to Z80 mode
+ 55+  4025 3E 80        	ld	a, $80 ; also disables the LED
+ 56+  4027 CD 80 01     	call	CHGCPU
+ 57+  402A              .CPU_OK:
+ 58+  402A
+ 59+  402A              	IFDEF CFG_INIT_ROM_SIZE
+ 60+  402A ~            	IF CFG_INIT_ROM_SIZE > 16
+ 61+  402A ~
+ 62+  402A ~            	IF CFG_INIT_ROM_SIZE <= 32
+ 63+  402A ~            ; Is the game running on RAM? (e.g.: ROM Loader)
+ 64+  402A ~            	ld	a, $18 ; opcode for "JR nn"
+ 65+  402A ~            	ld	[.JR_NC], a ; Replaces "JR NC,nn" by "JR nn" (if RAM)
+ 66+  402A ~            	scf
+ 67+  402A ~            .JR_NC:
+ 68+  402A ~            	jr	nc, .ROM_OK ; yes
+ 69+  402A ~            ; No:
+ 70+  402A ~            	ENDIF ; IF CFG_INIT_ROM_SIZE <= 32
+ 71+  402A ~
+ 72+  402A ~            ; Reads the primary slot of the page 1
+ 73+  402A ~            	call    RSLREG	; a = 33221100
+ 74+  402A ~            	rrca
+ 75+  402A ~            	rrca
+ 76+  402A ~            	and	$03	; a = xxxxxxPP
+ 77+  402A ~            	ld	c, a	; c = xxxxxxPP
+ 78+  402A ~            ; Reads the expanded slot flag
+ 79+  402A ~            	ld	hl, EXPTBL ; EXPTBL + a => EXPTBL for slot of page 1
+ 80+  402A ~            	add	a, l
+ 81+  402A ~            	ld	l, a
+ 82+  402A ~            	ld	a, [hl]
+ 83+  402A ~            	and	$80	; a = Exxxxxxx
+ 84+  402A ~            ; Defines slot ID (1/2)
+ 85+  402A ~            	or	c	; a = ExxxxxPP
+ 86+  402A ~            	ld	c, a	; c = ExxxxxPP
+ 87+  402A ~            ; Reads the secondary slot selection register
+ 88+  402A ~            	inc	l ; hl += 4 => = SLTTBL for slot of page 1
+ 89+  402A ~            	inc	l
+ 90+  402A ~            	inc	l
+ 91+  402A ~            	inc	l
+ 92+  402A ~            	ld	a, [hl]
+ 93+  402A ~            	and	$0c	; a = xxxxSSxx
+ 94+  402A ~            ; Define slot ID (2/2)
+ 95+  402A ~            	or	c	; a = ExxxSSPP
+ 96+  402A ~
+ 97+  402A ~            	IF CFG_INIT_ROM_SIZE > 32
+ 98+  402A ~            ; Saves the slot of the cartridge
+ 99+  402A ~            	push	af ; (Reserves a byte at the bottom of the stack
+100+  402A ~            	inc	sp ; to avoid accidental overwriting)
+101+  402A ~            	ENDIF
+102+  402A ~
+103+  402A ~            ; Enables page 2 cartridge slot/subslot at start
+104+  402A ~            	ld	h, $80 ; Bit 6 and 7: page 2 ($8000)
+105+  402A ~            	call	ENASLT
+106+  402A ~            .ROM_OK:
+107+  402A ~
+108+  402A ~            	ENDIF ; IF CFG_INIT_ROM_SIZE > 16
+109+  402A              	ENDIF ; IFDEF CFG_INIT_ROM_SIZE
+110+  402A
+111+  402A              ; Splash screens before further initialization
+112+  402A              	IF EXIST SPLASH_SCREENS_PACKED_TABLE
+113+  402A ~            ; Reads the number of splash screens to show
+114+  402A ~            	ld	hl, SPLASH_SCREENS_PACKED_TABLE
+115+  402A ~            	ld	b, [hl]
+116+  402A ~            	inc	hl
+117+  402A ~
+118+  402A ~            ; For each splash screen
+119+  402A ~            .SPLASH_LOOP:
+120+  402A ~            	push	bc ; preserves counter
+121+  402A ~            	push	hl ; preserves pointer
+122+  402A ~            ; Unpacks the actual splash screen
+123+  402A ~            	call	LD_HL_HL
+124+  402A ~            	ld	de, $e000
+125+  402A ~            	call	UNPACK
+126+  402A ~            ; Invokes the splash screen routine
+127+  402A ~            	call	$e000
+128+  402A ~            ; Goes for the next splash screen
+129+  402A ~            	pop	hl ; restores pointer
+130+  402A ~            	inc	hl
+131+  402A ~            	inc	hl
+132+  402A ~            	pop	bc ; restores counter
+133+  402A ~            	djnz	.SPLASH_LOOP
+134+  402A              	ENDIF ; IFEXIST SPLASH_SCREENS_PACKED_TABLE
+135+  402A
+136+  402A              	IFDEF CFG_INIT_16KB_RAM
+137+  402A ~            ; RAM: checks availability of 16kB
+138+  402A ~            	ld	hl, ram_start
+139+  402A ~            	ld	de, [BOTTOM]
+140+  402A ~            	call	DCOMPR
+141+  402A ~            	jr	nc, .RAM_OK ; yes (BOTTOM is less or equal than ram_start)
+142+  402A ~
+143+  402A ~            ; no: screen 1 and warning text
+144+  402A ~            	call	INIT32
+145+  402A ~            	ld	hl, .TXT
+146+  402A ~            	ld	de, NAMTBL + (SCR_WIDTH-.TXT_SIZE)/2 + 11*SCR_WIDTH
+147+  402A ~            	ld	bc, 17
+148+  402A ~            	call	LDIRVM
+149+  402A ~            ; halts the execution
+150+  402A ~            	di
+151+  402A ~            	halt
+152+  402A ~
+153+  402A ~            ; RAM check warning text
+154+  402A ~            .TXT:
+155+  402A ~            	db	"16KB RAM REQUIRED"
+156+  402A ~            	.TXT_SIZE
+156+  402A ~             	equ $ - .TXT
+157+  402A ~
+158+  402A ~            .RAM_OK:
+159+  402A ~
+160+  402A              	ENDIF ; CFG_INIT_16KB_RAM
+161+  402A
+162+  402A AF           	xor	a
+163+  402B              ; screen ,,0
+164+  402B 32 DB F3     	ld	[CLIKSW], a
+165+  402E              ; VDP: color 15,0,0
+166+  402E 32 EA F3     	ld	[BAKCLR], a
+167+  4031 32 EB F3     	ld	[BDRCLR], a
+168+  4034 3D           	dec	a
+169+  4035 32 E9 F3     	ld	[FORCLR], a
+170+  4038              ; screen 2
+171+  4038 CD 72 00     	call	INIGRP
+172+  403B              ; screen ,2
+173+  403B CD 41 00     	call	DISSCR
+174+  403E 21 E0 F3     	ld	hl, RG1SAV
+175+  4041 CB CE        	set	1, [hl] ; (first call to ENASCR will actually apply to the VDP)
+176+  4043
+177+  4043              	IF EXIST SET_PALETTE
+178+  4043 ~            ; MSX2 VDP: Custom palette
+179+  4043 ~            	ld	a, [MSXID3]
+180+  4043 ~            	or	a
+181+  4043 ~            	jr	z, .PALETTE_OK ; not MSX2
+182+  4043 ~            ; Is the 1 key or 2 key down?
+183+  4043 ~            	xor	a ; 7 6 5 4 3 2 1 0
+184+  4043 ~            	call	SNSMAT
+185+  4043 ~            	ld	hl, DEFAULT_PALETTE.TMS_APPROXIMATE
+186+  4043 ~            	rra	; carry = bit 0
+187+  4043 ~            	rra	; carry = bit 1
+188+  4043 ~            	jr	nc, .SET_PALETTE ; Yes (1 key): TMS approximate
+189+  4043 ~            	ld	hl, DEFAULT_PALETTE.MSX2
+190+  4043 ~            	rra	; carry = bit 2
+191+  4043 ~            	jr	nc, .SET_PALETTE ; Yes (2 key): Default MSX2 palette
+192+  4043 ~            ; no: sets custom palette
+193+  4043 ~            	IF EXIST CFG_CUSTOM_PALETTE
+194+  4043 ~            	ld	hl, CFG_CUSTOM_PALETTE
+195+  4043 ~            	ELSE
+196+  4043 ~            	ld	hl, DEFAULT_PALETTE.COOL_COLORS
+197+  4043 ~            	ENDIF
+198+  4043 ~            .SET_PALETTE:
+199+  4043 ~            	call	SET_PALETTE
+200+  4043 ~            .PALETTE_OK:
+201+  4043              	ENDIF
+202+  4043
+203+  4043              ; Zeroes all the used RAM
+204+  4043 21 00 E0     	ld	hl, ram_start
+205+  4046 11 01 E0     	ld	de, ram_start +1
+206+  4049 01 FF FF     	ld	bc, ram_end - ram_start  -1
+207+  404C 75           	ld	[hl], l ; l = $00
+208+  404D ED B0        	ldir
+209+  404F
+210+  404F              ; PSG: silence
+211+  404F CD 90 00     	call	GICINI
+212+  4052
+213+  4052              ; Initializes the replayer
+214+  4052              	IF EXIST REPLAYER.RESET
+215+  4052 ~            	call	REPLAYER.RESET
+216+  4052              	ENDIF
+217+  4052
+218+  4052              ; ; Frame rate related variables
+219+  4052              ; 	ld	a, [MSXID1]
+220+  4052              ; 	bit	7, a ; 0=60Hz, 1=50Hz
+221+  4052              ; 	ld	hl, (5<<8) + 50
+222+  4052              ; 	; frame rate and frames per tenth for 50Hz
+223+  4052              ; 	jr	nz, .HL_OK
+224+  4052              ; 	ld	hl, (6<<8) + 60 ; frame rate and frames per tenth for 60Hz
+225+  4052              ; .HL_OK:
+226+  4052              ; 	ld	[frame_rate], hl
+227+  4052
+228+  4052              ; Installs the H.TIMI hook in the interruption
+229+  4052              	IF EXIST HOOK
+230+  4052 ~            	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+231+  4052 ~            ; Preserves the existing hook
+232+  4052 ~            	ld	hl, HTIMI
+233+  4052 ~            	ld	de, old_htimi_hook
+234+  4052 ~            	ld	bc, HOOK_SIZE
+235+  4052 ~            	ldir
+236+  4052 ~            	ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+237+  4052 ~            ; Install the interrupt routine
+238+  4052 ~            	di
+239+  4052 ~            	ld	a, $c3 ; opcode for "JP nn"
+240+  4052 ~            	ld	[HTIMI], a
+241+  4052 ~            	ld	hl, HOOK
+242+  4052 ~            	ld	[HTIMI +1], hl
+243+  4052 ~            	ei
+244+  4052              	ENDIF
+245+  4052
+246+  4052              ; Skips to the game entry point
+247+  4052 C3 55 40     	jp	INIT
+248+  4055              ; -----------------------------------------------------------------------------
+249+  4055
+250+  4055              ; -----------------------------------------------------------------------------
+251+  4055              ; 48kB ROM: Declares routines to set the page 0 slot/subslot and restore the bios
+252+  4055              	IFDEF CFG_INIT_ROM_SIZE
+253+  4055 ~            	IF CFG_INIT_ROM_SIZE > 32
+254+  4055 ~
+255+  4055 ~            SET_PAGE0:
+256+  4055 ~
+257+  4055 ~            ; Restores the BIOS (selects and enables the Main ROM slot/subslot in page 0)
+258+  4055 ~            ; Caller is responsible of disabling interruptions before invoking this routine
+259+  4055 ~            ; touches: a, bc, d
+260+  4055 ~            .BIOS:
+261+  4055 ~            	ld	a, [MNROM]
+262+  4055 ~            	jr	.DO_SET_PAGE0
+263+  4055 ~
+264+  4055 ~            ; Selects and enables the cartridge slot/sublot in page 0
+265+  4055 ~            ; Caller is responsible of enabling interruptions after invoking this routine
+266+  4055 ~            ; touches: a, bc, d
+267+  4055 ~            .CARTRIDGE:
+268+  4055 ~            ; Retrieves the slot of the cartridge from the bottom of the stack
+269+  4055 ~            	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+270+  4055 ~            	ld	bc, [HIMEM]
+271+  4055 ~            	dec	bc ; bc = [HIMEM] - 1
+272+  4055 ~            	ld	a, [bc]
+273+  4055 ~            	ELSE
+274+  4055 ~            	ld	a, [STACK_POINTER_INIT - 1]
+275+  4055 ~            	ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+276+  4055 ~            	; jr	.DO_SET_PAGE0 ; falls through
+277+  4055 ~
+278+  4055 ~            ; Selects and permanently enables the requested slot in page 0
+279+  4055 ~            ; param a: slot ID (ExxxSSPP)
+280+  4055 ~            ; touches: a, bc, d
+281+  4055 ~            .DO_SET_PAGE0:
+282+  4055 ~            	ld	b, a		; b = ExxxSSPP
+283+  4055 ~            	and	$03		; a = 000000PP
+284+  4055 ~            	ld	c, a		; c = 000000PP
+285+  4055 ~            ; Computes the primary slot selection register
+286+  4055 ~            	in	a, [PPI.A]	; a = P3P2P1P0
+287+  4055 ~            	and	$fc		; a = P3P2P100
+288+  4055 ~            	or	c		; a = P3P2P1PP
+289+  4055 ~            ; Is the slot expanded?
+290+  4055 ~            	bit	7, b
+291+  4055 ~            	jr	z, .SET_PRIMARY ; no
+292+  4055 ~            ; yes
+293+  4055 ~            	ld	d, a ; (preserves primary slot selection register value)
+294+  4055 ~            ; Selects primary slot in page 3 first (for $FFFF to refer to that slot)
+295+  4055 ~            	rrc	c
+296+  4055 ~            	rrc	c		; c = PP000000
+297+  4055 ~            	ld	a, d		; a = P3P2P1PP
+298+  4055 ~            	and	$3f		; a = 00P2P1PP
+299+  4055 ~            	or	c		; a = PPP2P1PP
+300+  4055 ~            	out	[PPI.A], a
+301+  4055 ~            ; Selects secondary slot in page 0
+302+  4055 ~            	ld	a, b		; a = 1xxxSSPP
+303+  4055 ~            	and	$0c		; a = 0000SS00
+304+  4055 ~            	rrca
+305+  4055 ~            	rrca			; a = 000000SS
+306+  4055 ~            	ld	b, a		; b = 000000SS
+307+  4055 ~            	ld	a, [$ffff]
+308+  4055 ~            	cpl			; a = S3S2S1S0
+309+  4055 ~            	and	$fc		; a = S3S2S100
+310+  4055 ~            	or	b		; b = S3S2S1SS
+311+  4055 ~            	ld	[$ffff], a
+312+  4055 ~            ; Selects primary slot in page 0
+313+  4055 ~            	ld	a, d ; (restores primary slot selection register value)
+314+  4055 ~            .SET_PRIMARY:
+315+  4055 ~            	out	[PPI.A], a
+316+  4055 ~            	ret
+317+  4055 ~
+318+  4055 ~            	ENDIF ; IF CFG_INIT_ROM_SIZE > 32
+319+  4055              	ENDIF ; IFDEF CFG_INIT_ROM_SIZE
+320+  4055              ; -----------------------------------------------------------------------------
+321+  4055
+322+  4055              ; EOF
+323+  4055
+# file closed: ./lib/msx/cartridge.asm
+ 14   4055              ; -----------------------------------------------------------------------------
+ 15   4055
+ 16   4055              ; -----------------------------------------------------------------------------
+ 17   4055              ; Game entry point
+ 18   4055              INIT:
+ 19   4055
+ 20   4055              ; At this point, the cartridge is init, the RAM zeroed,
+ 21   4055              ; The screen mode 2 with 16x16 unmagnified sprites,
+ 22   4055              ; the keyboard click is muted, and the screen is disabled.
+ 23   4055
+ 24   4055              ;
+ 25   4055              ; YOUR CODE (ROM) START HERE
+ 26   4055              ;
+ 27   4055              ; Example:
+ 28   4055              ;
+ 29   4055
+ 30   4055              ; ; Frame rate related variables
+ 31   4055              ; 	ld	a, [MSXID1]
+ 32   4055              ; 	bit	7, a ; 0=60Hz, 1=50Hz
+ 33   4055              ; 	ld	hl, (5<<8) + 50
+ 34   4055              ; 	; frame rate and frames per tenth for 50Hz
+ 35   4055              ; 	jr	nz, .HL_OK
+ 36   4055              ; 	ld	hl, (6<<8) + 60 ; frame rate and frames per tenth for 60Hz
+ 37   4055              ; .HL_OK:
+ 38   4055              ; 	ld	[frame_rate], hl
+ 39   4055
+ 40   4055              ; In screen mode 2 we need to set up a charset
+ 41   4055              ; to actually show something in the screen.
+ 42   4055              ; Prepares a very uninspired charset (the default one) in the first bank
+ 43   4055 2A 04 00     	ld	hl, [CGTABL] ; (address of ROM character set)
+ 44   4058 11 00 00     	ld	de, CHRTBL
+ 45   405B 01 00 08     	ld	bc, CHRTBL_SIZE
+ 46   405E CD 5C 00     	call	LDIRVM
+ 47   4061 3E F0        	ld	a, $F0 ; (white over blak)
+ 48   4063 21 00 20     	ld	hl, CLRTBL
+ 49   4066 01 00 08     	ld	bc, CHRTBL_SIZE
+ 50   4069 CD 56 00     	call	FILVRM
+ 51   406C
+ 52   406C              ; Fills the name table with spaces
+ 53   406C              ; and prints a simple message
+ 54   406C 3E 20        	ld	a, $20 ; ' '
+ 55   406E 21 00 18     	ld	hl, NAMTBL
+ 56   4071 01 00 03     	ld	bc, NAMTBL_SIZE
+ 57   4074 CD 56 00     	call	FILVRM
+ 58   4077 21 89 40     	ld	hl, .MY_MESSAGE
+ 59   407A 11 00 18     	ld	de, NAMTBL
+ 60   407D 01 20 00     	ld	bc, .MY_MESSAGE_SIZE
+ 61   4080 CD 5C 00     	call	LDIRVM
+ 62   4083
+ 63   4083              ; Re-enables the screen so we can see the results
+ 64   4083 CD 44 00     	call	ENASCR
+ 65   4086
+ 66   4086              ; (infinite loop)
+ 67   4086              .LOOP:
+ 68   4086 76           	halt
+ 69   4087 18 FD        	jr	.LOOP
+ 70   4089
+ 71   4089              ; The message to print
+ 72   4089              .MY_MESSAGE:
+ 73   4089 48 65 6C 6C  	db	"Hello, Julek, it seems it works!"
+ 73   408D 6F 2C 20 4A
+ 73   4091 75 6C 65 6B
+ 73   4095 2C 20 69 74
+ 73   4099 20 73 65 65
+ 73   409D 6D 73 20 69
+ 73   40A1 74 20 77 6F
+ 73   40A5 72 6B 73 21
+ 74   40A9
+ 75   40A9              .MY_MESSAGE_SIZE:	equ $ - .MY_MESSAGE
+ 76   40A9              ; -----------------------------------------------------------------------------
+ 77   40A9
+ 78   40A9
+ 79   40A9              	include	"lib/rom_end.asm"
+# file opened: ./lib/rom_end.asm
+  1+  40A9
+  2+  40A9              ;
+  3+  40A9              ; =============================================================================
+  4+  40A9              ;	ROM end
+  5+  40A9              ; =============================================================================
+  6+  40A9              ;
+  7+  40A9
+  8+  40A9              ; -----------------------------------------------------------------------------
+  9+  40A9              ; (for debugging purposes only)
+ 10+  40A9              dbg_rom_msxlib_bytes:	equ INIT - CARTRIDGE_HEADER
+ 11+  40A9              dbg_rom_game_bytes:	equ $ - INIT
+ 12+  40A9              dbg_rom_size_bytes:	equ $ - CARTRIDGE_HEADER
+ 13+  40A9              ; -----------------------------------------------------------------------------
+ 14+  40A9
+ 15+  40A9              ; -----------------------------------------------------------------------------
+ 16+  40A9              ; Padding to a 16kB boundary with $FF (RST $38)
+ 17+  40A9              PADDING:
+ 18+  40A9              	IFDEF CFG_INIT_ROM_SIZE
+ 19+  40A9 ~            	IF CFG_INIT_ROM_SIZE < 32
+ 20+  40A9 ~            	ds	($ OR $1fff) -$ +1, $ff ; (8kB boundary to allow 8kB or 24kB ROMs)
+ 21+  40A9 ~            	ELSE
+ 22+  40A9 ~            	ds	($ OR $3fff) -$ +1, $ff
+ 23+  40A9 ~            	ENDIF
+ 24+  40A9              	ELSE ; IF CFG_INIT_ROM_SIZE < 32
+ 25+  40A9 FF FF FF...  	ds	($ OR $1fff) -$ +1, $ff ; (8kB boundary to allow 8kB or 24kB ROMs)
+ 26+  6000              	ENDIF ; IFDEF CFG_INIT_ROM_SIZE
+ 27+  6000
+ 28+  6000              .SIZE:	equ $ - PADDING
+ 29+  6000              ; -----------------------------------------------------------------------------
+ 30+  6000
+ 31+  6000              ; -----------------------------------------------------------------------------
+ 32+  6000              ; (for debugging purposes only)
+ 33+  6000              dbg_rom_free_bytes:	equ PADDING.SIZE
+ 34+  6000              ; -----------------------------------------------------------------------------
+ 35+  6000
+ 36+  6000              ; EOF
+ 37+  6000
+# file closed: ./lib/rom_end.asm
+ 80   6000
+ 81   6000              ; -----------------------------------------------------------------------------
+ 82   6000              ; MSXlib core and game-related variables
+ 83   6000              	include	"lib/ram.asm"
+# file opened: ./lib/ram.asm
+  1+  6000
+  2+  6000              ; =============================================================================
+  3+  6000              ; 	RAM
+  4+  6000              ; =============================================================================
+  5+  6000              	IFDEF CFG_INIT_16KB_RAM
+  6+  6000 ~            	; org	$c000, $f380
+  7+  6000 ~            	org	$c000
+  8+  6000              	ELSE
+  9+  6000              	; org	$e000, $f380
+ 10+  6000              	org	$e000
+ 11+  E000              	ENDIF
+ 12+  E000              ram_start:
+ 13+  E000
+ 14+  E000              ; -----------------------------------------------------------------------------
+ 15+  E000              	include "lib/msx/ram.asm"
+# file opened: ./lib/msx/ram.asm
+  1++ E000
+  2++ E000              	IFDEF CFG_RAM_VRAM
+  3++ E000 ~            ; -----------------------------------------------------------------------------
+  4++ E000 ~            ; Variables for: NAMBTL and SPRATR buffer routines (BIOS-based)
+  5++ E000 ~
+  6++ E000 ~            ; NAMTBL buffer in RAM ; (aligned to $xx00)
+  7++ E000 ~            namtbl_buffer:
+  8++ E000 ~            	rb	NAMTBL_SIZE
+  9++ E000 ~
+ 10++ E000 ~            	; SPRATR buffer in RAM ; (aligned to $xx00)
+ 11++ E000 ~            spratr_buffer:
+ 12++ E000 ~            	rb	SPRATR_SIZE
+ 13++ E000 ~            .end:
+ 14++ E000 ~            	rb	1 ; to store one SPAT_END when the buffer is full
+ 15++ E000 ~            	IFDEF CFG_SPRITES_FLICKER
+ 16++ E000 ~            	; (extra space for the flickering routine)
+ 17++ E000 ~            	rb	SPRATR_SIZE -CFG_SPRITES_NO_FLICKER *4 -16
+ 18++ E000 ~
+ 19++ E000 ~            ; Offset used by the flickering routine
+ 20++ E000 ~            .flicker_offset:
+ 21++ E000 ~            	rb	1
+ 22++ E000 ~            	ENDIF ; IFDEF CFG_SPRITES_FLICKER
+ 23++ E000 ~            ; -----------------------------------------------------------------------------
+ 24++ E000              	ENDIF ; IFDEF CFG_RAM_VRAM
+ 25++ E000
+ 26++ E000              	IFDEF CFG_RAM_CARTRIDGE
+ 27++ E000 ~            ; -----------------------------------------------------------------------------
+ 28++ E000 ~            ; Variables for: MSX cartridge (ROM) header, entry point and initialization
+ 29++ E000 ~
+ 30++ E000 ~            ; Refresh rate in Hertzs (50Hz/60Hz) and related convenience vars
+ 31++ E000 ~
+ 32++ E000 ~            frame_rate:
+ 33++ E000 ~             	rb	1
+ 34++ E000 ~            frames_per_tenth:
+ 35++ E000 ~            	rb	1
+ 36++ E000 ~
+ 37++ E000 ~            	; -----------------------------------------------------------------------------
+ 38++ E000              	ENDIF ; IFDEF CFG_RAM_CARTRIDGE
+ 39++ E000
+ 40++ E000
+ 41++ E000              	IFDEF CFG_RAM_HOOK
+ 42++ E000 ~            	; -----------------------------------------------------------------------------
+ 43++ E000 ~            	; Variables for: Interrupt routine (H.TIMI hook)
+ 44++ E000 ~
+ 45++ E000 ~            	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+ 46++ E000 ~            	; Backup of the H.TIMI hook previous to the installation of the replayer hook
+ 47++ E000 ~            old_htimi_hook:
+ 48++ E000 ~            	rb	HOOK_SIZE
+ 49++ E000 ~            	ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+ 50++ E000 ~
+ 51++ E000 ~            	IF EXIST REPLAYER.FRAME
+ 52++ E000 ~
+ 53++ E000 ~            ; 60Hz replayer synchronization
+ 54++ E000 ~            replayer.frameskip:
+ 55++ E000 ~            	rb	1
+ 56++ E000 ~
+ 57++ E000 ~            	ENDIF ; IFEXIST REPLAYER.FRAME
+ 58++ E000 ~            	; -----------------------------------------------------------------------------
+ 59++ E000              	ENDIF ; IFDEF CFG_RAM_HOOK
+ 60++ E000
+ 61++ E000              	IFDEF CFG_RAM_INPUT
+ 62++ E000 ~            ; -----------------------------------------------------------------------------
+ 63++ E000 ~            ; Variables for: Input routines (BIOS-based)
+ 64++ E000 ~
+ 65++ E000 ~            ; Stores joystick and keyboard as a bit map
+ 66++ E000 ~            input:
+ 67++ E000 ~            	.level
+ 67++ E000 ~
+ 68++ E000 ~            	rb	1
+ 69++ E000 ~            	.edge
+ 69++ E000 ~
+ 70++ E000 ~            	rb	1
+ 71++ E000 ~            ; -----------------------------------------------------------------------------
+ 72++ E000              	ENDIF ; IFDEF CFG_RAM_INPUT
+ 73++ E000
+ 74++ E000
+ 75++ E000              	IFDEF CFG_RAM_REPLAYER_PT3
+ 76++ E000 ~            ; -----------------------------------------------------------------------------
+ 77++ E000 ~            ; Variables for: Replayer routines: PT3-based implementation
+ 78++ E000 ~
+ 79++ E000 ~            ; PT3 variables
+ 80++ E000 ~            	include	"libext/pt3/PT3-RAM.tniasm.ASM"
+ 81++ E000 ~
+ 82++ E000 ~            	IF EXIST ayFX_SETUP
+ 83++ E000 ~
+ 84++ E000 ~            ; ayFX REPLAYER v1.31 variables
+ 85++ E000 ~            	include	"libext/ayFX-replayer/ayFX-RAM.tniasm.asm"
+ 86++ E000 ~
+ 87++ E000 ~            	ENDIF ; IFEXIST ayFX_SETUP
+ 88++ E000 ~            	; -----------------------------------------------------------------------------
+ 89++ E000              	ENDIF ; IFDEF CFG_RAM_REPLAYER_PT3
+ 90++ E000
+ 91++ E000
+ 92++ E000              	IFDEF CFG_RAM_REPLAYER_WYZ
+ 93++ E000 ~            ; -----------------------------------------------------------------------------
+ 94++ E000 ~            ; Variables for: Replayer routines: WYZPlayer v0.47c-based implementation
+ 95++ E000 ~
+ 96++ E000 ~            ; WYZPlayer v0.47c variables
+ 97++ E000 ~            	include	"libext/wyzplayer/WYZPROPLAY47c_RAM.tniasm.ASM"
+ 98++ E000 ~            ; -----------------------------------------------------------------------------
+ 99++ E000              	ENDIF ; IFDEF CFG_RAM_REPLAYER_WYZ
+100++ E000
+101++ E000              ; EOF
+102++ E000
+# file closed: ./lib/msx/ram.asm
+ 16+  E000              	include "lib/msx/etc/ram.asm"
+# file opened: ./lib/msx/etc/ram.asm
+  1++ E000
+  2++ E000              	IFDEF CFG_RAM_ATTRACT_PRINT
+  3++ E000 ~            ; -----------------------------------------------------------------------------
+  4++ E000 ~            ; Variables for: Attract-mode text-printing routines
+  5++ E000 ~            attract_print:
+  6++ E000 ~
+  7++ E000 ~            .source:
+  8++ E000 ~            	rw	1 ; source pointer
+  9++ E000 ~            .target_line:
+ 10++ E000 ~            	rw	1 ; destination pointer (current line)
+ 11++ E000 ~            .target_char:
+ 12++ E000 ~            	rw	1 ; destination pointer (current character)
+ 13++ E000 ~            .framecounter:
+ 14++ E000 ~            	rb	1 ; frame counter for slow printing
+ 15++ E000 ~            ; -----------------------------------------------------------------------------
+ 16++ E000              	ENDIF
+ 17++ E000
+ 18++ E000
+ 19++ E000              	IFDEF CFG_RAM_VPOKES
+ 20++ E000 ~            ; -----------------------------------------------------------------------------
+ 21++ E000 ~            ; Variables for: "vpoke" routines (deferred WRTVRMs routines)
+ 22++ E000 ~            vpokes:
+ 23++ E000 ~            .count:
+ 24++ E000 ~            	rb	1
+ 25++ E000 ~            .array:
+ 26++ E000 ~            	rb	CFG_VPOKES * VPOKE.SIZE
+ 27++ E000 ~            ; -----------------------------------------------------------------------------
+ 28++ E000              	ENDIF
+ 29++ E000
+ 30++ E000
+ 31++ E000              	IFDEF CFG_RAM_SPRITEABLES
+ 32++ E000 ~            ; -----------------------------------------------------------------------------
+ 33++ E000 ~            ; Variables for: Spriteables routines (2x2 chars that eventually become a sprite)
+ 34++ E000 ~            spriteables:
+ 35++ E000 ~            .count:
+ 36++ E000 ~            	rb	1
+ 37++ E000 ~            .array:
+ 38++ E000 ~            ; status:
+ 39++ E000 ~            ; 0 = idle
+ 40++ E000 ~            ; [MASK_TILE_SPRITE_DIRECTION | MASK_TILE_SPRITE_PENDING] = movement still pending)
+ 41++ E000 ~            	_SPRITEABLE_STATUS
+ 41++ E000 ~             	equ $ - spriteables.array
+ 42++ E000 ~            	rb	1
+ 43++ E000 ~            ; offset of the upper left character
+ 44++ E000 ~            	_SPRITEABLE_OFFSET_L
+ 44++ E000 ~             	equ $ - spriteables.array
+ 45++ E000 ~            	rb	1
+ 46++ E000 ~            	_SPRITEABLE_OFFSET_H
+ 46++ E000 ~             	equ $ - spriteables.array
+ 47++ E000 ~            	rb	1
+ 48++ E000 ~            ; characters that define the spriteable
+ 49++ E000 ~            	_SPRITEABLE_FOREGROUND
+ 49++ E000 ~             	equ $ - spriteables.array
+ 50++ E000 ~            	rb	4
+ 51++ E000 ~            ; background characters covered by the spriteable
+ 52++ E000 ~            	_SPRITEABLE_BACKGROUND
+ 52++ E000 ~             	equ $ - spriteables.array
+ 53++ E000 ~            	rb	4
+ 54++ E000 ~            ; equivalent sprite attributes
+ 55++ E000 ~            	_SPRITEABLE_PATTERN
+ 55++ E000 ~             	equ $ - spriteables.array
+ 56++ E000 ~            	rb	1	; pattern
+ 57++ E000 ~            	_SPRITEABLE_COLOR
+ 57++ E000 ~             	equ $ - spriteables.array
+ 58++ E000 ~            	rb	1	; color
+ 59++ E000 ~            	SPRITEABLE_SIZE
+ 59++ E000 ~             	equ $ - spriteables.array
+ 60++ E000 ~
+ 61++ E000 ~            ; (array)
+ 62++ E000 ~            	rb	(CFG_SPRITEABLES -1) * ($ - spriteables.array)
+ 63++ E000 ~            	spriteables.SIZE
+ 63++ E000 ~             	equ $ - spriteables.array
+ 64++ E000 ~            ; -----------------------------------------------------------------------------
+ 65++ E000              	ENDIF
+ 66++ E000
+ 67++ E000              ; EOF
+ 68++ E000
+# file closed: ./lib/msx/etc/ram.asm
+ 17+  E000              	include "lib/game/ram.asm"
+# file opened: ./lib/game/ram.asm
+  1++ E000
+  2++ E000              	IFDEF CFG_RAM_PLAYER
+  3++ E000 ~            ; -----------------------------------------------------------------------------
+  4++ E000 ~            ; Variables for: Player related routines (generic)
+  5++ E000 ~            player:
+  6++ E000 ~            ; Logical coordinates (in pixels)
+  7++ E000 ~            	.xy
+  7++ E000 ~
+  8++ E000 ~            	.y
+  8++ E000 ~
+  9++ E000 ~            	rb	1
+ 10++ E000 ~            	.x
+ 10++ E000 ~
+ 11++ E000 ~            	rb	1
+ 12++ E000 ~            ; Current animation delay (e.g.: when walking) (in frames)
+ 13++ E000 ~            	.animation_delay
+ 13++ E000 ~
+ 14++ E000 ~            	rb	1
+ 15++ E000 ~            ; Current player state
+ 16++ E000 ~            	.state
+ 16++ E000 ~
+ 17++ E000 ~            	rb	1
+ 18++ E000 ~            ; Delta-Y (dY) table index (when jumping and falling)
+ 19++ E000 ~            	.dy_index
+ 19++ E000 ~
+ 20++ E000 ~            	rb	1
+ 21++ E000 ~            ; -----------------------------------------------------------------------------
+ 22++ E000              	ENDIF
+ 23++ E000
+ 24++ E000              	IFDEF CFG_RAM_ENEMY
+ 25++ E000 ~            ; -----------------------------------------------------------------------------
+ 26++ E000 ~            ; Variables for: Enemies related routines (generic)
+ 27++ E000 ~            enemies:
+ 28++ E000 ~
+ 29++ E000 ~            enemy:
+ 30++ E000 ~            ; Logical coordinates (in pixels)
+ 31++ E000 ~            	.xy
+ 31++ E000 ~             		equ $ - enemy
+ 32++ E000 ~            	.y
+ 32++ E000 ~             		equ $ - enemy
+ 33++ E000 ~            	rb	1
+ 34++ E000 ~            	.x
+ 34++ E000 ~             		equ $ - enemy
+ 35++ E000 ~            	rb	1
+ 36++ E000 ~            ; Enemy sprite attributes
+ 37++ E000 ~            	.pattern
+ 37++ E000 ~             	equ $ - enemy
+ 38++ E000 ~            	rb	1
+ 39++ E000 ~            	.color
+ 39++ E000 ~             		equ $ - enemy
+ 40++ E000 ~            	rb	1
+ 41++ E000 ~            	.flags
+ 41++ E000 ~             		equ $ - enemy
+ 42++ E000 ~            	rb	1
+ 43++ E000 ~            ; State pointer
+ 44++ E000 ~            	.state
+ 44++ E000 ~             		equ $ - enemy
+ 45++ E000 ~            	.state_l
+ 45++ E000 ~             	equ $ - enemy
+ 46++ E000 ~            	rb	1
+ 47++ E000 ~            	.state_h
+ 47++ E000 ~             	equ $ - enemy
+ 48++ E000 ~            	rb	1
+ 49++ E000 ~            ; Current animation delay (e.g.: when walking) (in frames)
+ 50++ E000 ~            	.animation_delay
+ 50++ E000 ~             	equ $ - enemy
+ 51++ E000 ~            	rb	1
+ 52++ E000 ~            ; Current frame counter
+ 53++ E000 ~            	.frame_counter
+ 53++ E000 ~             	equ $ - enemy
+ 54++ E000 ~            	rb	1
+ 55++ E000 ~            ; Current trigger frame counter
+ 56++ E000 ~            	.trigger_frame_counter
+ 56++ E000 ~              equ $ - enemy
+ 57++ E000 ~            	rb	1
+ 58++ E000 ~            ; Delta-Y (dY) table index (when jumping and falling)
+ 59++ E000 ~            	.dy_index
+ 59++ E000 ~             	equ $ - enemy
+ 60++ E000 ~            	rb	1
+ 61++ E000 ~            ; Backup data for respawning the enemy
+ 62++ E000 ~            	.RESPAWN_SIZE
+ 62++ E000 ~             	equ .animation_delay ; (from .xy to .state)
+ 63++ E000 ~            	.respawn_data
+ 63++ E000 ~             	equ $ - enemy
+ 64++ E000 ~            	rb	.RESPAWN_SIZE
+ 65++ E000 ~
+ 66++ E000 ~            	.SIZE
+ 66++ E000 ~             		equ $ - enemy
+ 67++ E000 ~
+ 68++ E000 ~            ; (rest of the array)
+ 69++ E000 ~            	rb	(CFG_ENEMY_COUNT -1) * .SIZE
+ 70++ E000 ~
+ 71++ E000 ~            	enemies.SIZE
+ 71++ E000 ~             	equ $ - enemies
+ 72++ E000 ~            ; -----------------------------------------------------------------------------
+ 73++ E000              	ENDIF
+ 74++ E000
+ 75++ E000              	IFDEF CFG_RAM_BULLET
+ 76++ E000 ~            ; -----------------------------------------------------------------------------
+ 77++ E000 ~            ; Variables for: Bullet related routines (generic)
+ 78++ E000 ~            bullets:
+ 79++ E000 ~
+ 80++ E000 ~            bullet:
+ 81++ E000 ~            ; Logical coordinates (in pixels)
+ 82++ E000 ~            	.xy
+ 82++ E000 ~             		equ $ - bullet
+ 83++ E000 ~            	.y
+ 83++ E000 ~             		equ $ - bullet
+ 84++ E000 ~            	rb	1
+ 85++ E000 ~            	.x
+ 85++ E000 ~             		equ $ - bullet
+ 86++ E000 ~            	rb	1
+ 87++ E000 ~            ; Bullet sprite attributes
+ 88++ E000 ~            	.pattern
+ 88++ E000 ~             	equ $ - bullet
+ 89++ E000 ~            	rb	1
+ 90++ E000 ~            	.color
+ 90++ E000 ~             		equ $ - bullet
+ 91++ E000 ~            	rb	1
+ 92++ E000 ~            ; Bullet speed and direction
+ 93++ E000 ~            	.type
+ 93++ E000 ~             		equ $ - bullet
+ 94++ E000 ~            	rb	1
+ 95++ E000 ~
+ 96++ E000 ~            	.SIZE
+ 96++ E000 ~             		equ $ - bullet
+ 97++ E000 ~
+ 98++ E000 ~            ; (rest of the array)
+ 99++ E000 ~            	rb	(CFG_BULLET_COUNT -1) * .SIZE
+100++ E000 ~
+101++ E000 ~            	bullets.SIZE
+101++ E000 ~             	equ $ - bullets
+102++ E000 ~            ; -----------------------------------------------------------------------------
+103++ E000              	ENDIF
+104++ E000
+105++ E000              ; EOF
+106++ E000
+# file closed: ./lib/game/ram.asm
+ 18+  E000              	include "lib/game/etc/ram.asm"
+# file opened: ./lib/game/etc/ram.asm
+  1++ E000
+  2++ E000              	IFDEF CFG_RAM_PASSWORD
+  3++ E000 ~            ; -----------------------------------------------------------------------------
+  4++ E000 ~            ; Variables for: Password encoding/decoding routines
+  5++ E000 ~
+  6++ E000 ~            ; Password (0..9, A..Z)
+  7++ E000 ~            password:
+  8++ E000 ~            	rb	PASSWORD_SIZE
+  9++ E000 ~
+ 10++ E000 ~            ; Decoded value
+ 11++ E000 ~            password_value:
+ 12++ E000 ~            	rb	CFG_PASSWORD_DATA_SIZE
+ 13++ E000 ~            ; -----------------------------------------------------------------------------
+ 14++ E000              	ENDIF
+ 15++ E000
+ 16++ E000              	IFDEF CFG_RAM_MENU
+ 17++ E000 ~            ; -----------------------------------------------------------------------------
+ 18++ E000 ~            ; Variables for: Menu control routines
+ 19++ E000 ~
+ 20++ E000 ~            options_menu:
+ 21++ E000 ~            .size:
+ 22++ E000 ~            	rb	1 ; Number of options
+ 23++ E000 ~            .cursor_definition:
+ 24++ E000 ~            	rw	1 ; Cursor definition address
+ 25++ E000 ~            .offset:
+ 26++ E000 ~            	rw	1 ; Cursor-to-option text coordinates offset
+ 27++ E000 ~            .coordinates:
+ 28++ E000 ~            	rw	1 ; Address of the cursor coordinates table
+ 29++ E000 ~            .options:
+ 30++ E000 ~            	rw	1 ; Address of the option texts table
+ 31++ E000 ~            .current_position:
+ 32++ E000 ~            	rb	1
+ 33++ E000 ~            ; -----------------------------------------------------------------------------
+ 34++ E000              	ENDIF
+ 35++ E000
+ 36++ E000              ; EOF
+ 37++ E000
+# file closed: ./lib/game/etc/ram.asm
+ 19+  E000              ; -----------------------------------------------------------------------------
+ 20+  E000
+ 21+  E000              ; -----------------------------------------------------------------------------
+ 22+  E000              ; (for debugging purposes only)
+ 23+  E000              ram_msxlib_end:
+ 24+  E000              ; -----------------------------------------------------------------------------
+ 25+  E000
+ 26+  E000              ; EOF
+ 27+  E000
+# file closed: ./lib/ram.asm
+ 84   E000
+ 85   E000              ; lib/ram.asm automatically starts the RAM section at the proper address
+ 86   E000              ; (either $C000 (16KB) or $E000 (8KB)) and includes everything MSXlib requires.
+ 87   E000
+ 88   E000              ;;
+ 89   E000              ; ; YOUR VARIABLES (RAM) START HERE
+ 90   E000              ; frame_rate:
+ 91   E000              ; 	db	0x50
+ 92   E000              ; frames_per_tenth:
+ 93   E000              ; 	db	0x05
+ 94   E000
+ 95   E000              ; -----------------------------------------------------------------------------
+ 96   E000              	include	"lib/ram_end.asm"
+# file opened: ./lib/ram_end.asm
+  1+  E000
+  2+  E000              ;
+  3+  E000              ; =============================================================================
+  4+  E000              ;	RAM end
+  5+  E000              ; =============================================================================
+  6+  E000              ;
+  7+  E000
+  8+  E000              ; -----------------------------------------------------------------------------
+  9+  E000              ; (for debugging purposes only)
+ 10+  E000              dbg_ram_msxlib_bytes:	equ ram_msxlib_end - ram_start
+ 11+  E000              dbg_ram_game_bytes:	equ $ - ram_msxlib_end
+ 12+  E000              ; -----------------------------------------------------------------------------
+ 13+  E000
+ 14+  E000              ; -----------------------------------------------------------------------------
+ 15+  E000              	include "lib/unpack/ram.asm"
+# file opened: ./lib/unpack/ram.asm
+  1++ E000
+  2++ E000              	IFDEF UNPACK
+  3++ E000 ~
+  4++ E000 ~            ; -----------------------------------------------------------------------------
+  5++ E000 ~            ; Unpacker routine buffer
+  6++ E000 ~            unpack_buffer:
+  7++ E000 ~            	IFDEF CFG_RAM_RESERVE_BUFFER
+  8++ E000 ~            	rb	CFG_RAM_RESERVE_BUFFER
+  9++ E000 ~            	ENDIF ; IFDEF CFG_RAM_RESERVE_BUFFER
+ 10++ E000 ~            ; -----------------------------------------------------------------------------
+ 11++ E000 ~
+ 12++ E000              	ENDIF ; IFDEF UNPACK
+ 13++ E000
+ 14++ E000              ; EOF
+ 15++ E000
+# file closed: ./lib/unpack/ram.asm
+ 16+  E000              ram_end: ; (required by MSXlib)
+ 17+  E000              ; -----------------------------------------------------------------------------
+ 18+  E000
+ 19+  E000              ; -----------------------------------------------------------------------------
+ 20+  E000              ; (for debugging purposes only)
+ 21+  E000              dbg_ram_himem	equ ram_end
+ 22+  E000              dbg_ram_size_bytes	equ ram_end - ram_start
+ 23+  E000              dbg_ram_free_bytes 	equ $f380 - ram_end
+ 24+  E000              ; -----------------------------------------------------------------------------
+ 25+  E000
+ 26+  E000              ; EOF
+ 27+  E000
+# file closed: ./lib/ram_end.asm
+ 97   E000
+ 98   E000              ; EOF
+ 99   E000
+# file closed: games\examples\00minimal\minimal.asm

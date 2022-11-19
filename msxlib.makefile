@@ -61,8 +61,9 @@ SRCS_LIBEXT=\
 #
 
 clean:
-	$(REMOVE) $(ROM)
-	$(REMOVE) $(SYM) tniasm.sym tniasm.tmp
+	$(REMOVE) $(ROM) 2>nul
+	$(REMOVE) $(SYM) 2>nul
+	$(REMOVE) $(LST) 2>nul
 
 compile: $(ROM)
 

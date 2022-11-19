@@ -13,7 +13,13 @@ RENAME=cmd /c ren
 #
 # ASM=tniasm.exe
 ASM=sjasmplus.exe
-ASM_FLAGS=--fullpath
+ASM_FLAGS=--dirbol --fullpath --longptr --sym=$(basename $@).sym --lst=$(basename $@).lst --raw=$(basename $@).rom
+
+# This compiler does not support IF EXIST?
+# ASM=sjasm.exe
+# ASM_FLAGS= -v -l -s -i.
+
+# ASM_FLAGS=
 EMULATOR=cmd /c start
 DEBUGGER=cmd /c start \MSX\bin\blueMSX_2.8.2\blueMSX.exe
 PCX2MSX=pcx2msx+.exe
