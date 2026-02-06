@@ -16,13 +16,15 @@ ROM=\
 	games\examples\00minimal\minimal.rom \
 	games\examples\01basic\basic.rom \
 	games\examples\02snake\snake.rom \
-	games\examples\03minimal48kb\minimal48kb.rom
+	games\examples\03minimal48kb\minimal48kb.rom \
+	games\examples\minimal\minimal.rom
 
 SYM=\
 	games\examples\00minimal\minimal.sym \
 	games\examples\01basic\basic.sym \
 	games\examples\02snake\snake.sym \
-	games\examples\03minimal48kb\minimal48kb.sym
+	games\examples\03minimal48kb\minimal48kb.sym \
+	games\examples\minimal\minimal.sym
 
 SHARED_DATAS=\
 	games\examples\shared\charset.pcx.chr.$(PACK_EXTENSION) \
@@ -50,6 +52,9 @@ games\examples\02snake\snake.rom: games\examples\02snake\snake.asm $(SRCS_MSXLIB
 	$(ASM) $< $@
 
 games\examples\03minimal48kb\minimal48kb.rom: games\examples\03minimal48kb\minimal48kb.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT) $(SHARED_DATAS)
+	$(ASM) $< $@
+
+games\examples\minimal\minimal.rom: games\examples\minimal\minimal.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT)
 	$(ASM) $< $@
 
 # default targets
