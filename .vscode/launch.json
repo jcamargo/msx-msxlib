@@ -11,22 +11,20 @@
 		"remoteType": "openmsx",
 		"listFiles": [
 		    {
-			"path": "${workspaceFolder}/games/examples/00minimal/minimal.lst",
+			"path": "${fileDirname}/${fileBasenameNoExtension}.lst",
 			"useFiles": true,
 			"asm": "sjasmplus",
-			"mainFile": "${workspaceFolder}/games/examples/00minimal/minimal.asm"
+			"mainFile": "${fileDirname}/${fileBasenameNoExtension}.asm"
 		    }
 		],
-		// "openmsx": {
-		//      "pcInSlot": "3 2 3"
-		// },
-		"startAutomatically": false,
+
+		"startAutomatically": true,
 		"commandsAfterLaunch": [
 		    "-e openmsx_info version",
 		    "-assert enable"
 		],
 		"resetOnLaunch": false,
-		"rootFolder": "${workspaceFolder}/games/examples/00minimal",
+		"rootFolder": "${fileDirname}",
 		"tmpDir": ".tmp"
 	    }    
 	]

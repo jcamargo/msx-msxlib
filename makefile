@@ -1,40 +1,35 @@
-
 # commands and tools
 include config.makefile
 
 # default target
 default: compile
 
+PROJNAME=stand_alone
+ROOT=games\examples
+
+# ROOT=${fileDirname}
+
 #
 # paths and file lists
 #
-ROM=\
-	games\examples\00minimal\minimal.rom \
+SRC=\
+	$(ROOT)\$(PROJNAME)\$(PROJNAME).asm \
 
+ROM=\
+	$(ROOT)\$(PROJNAME)\$(PROJNAME).rom \
 
 SYM=\
-	games\examples\00minimal\minimal.sym \
+	$(ROOT)\$(PROJNAME)\$(PROJNAME).sym \
 
 LST=\
-	games\examples\00minimal\minimal.lst \
+	$(ROOT)\$(PROJNAME)\$(PROJNAME).lst \
 
-
-SHARED_DATAS=\
-	games\examples\shared\charset.pcx.chr.$(PACK_EXTENSION) \
-	games\examples\shared\charset.pcx.clr.$(PACK_EXTENSION) \
-	games\examples\shared\sprites.pcx.spr.$(PACK_EXTENSION) \
-	games\examples\shared\screen.tmx.bin.$(PACK_EXTENSION)
-
-SHARED_DATAS_INTERMEDIATE=\
-	games\examples\shared\charset.pcx.chr \
-	games\examples\shared\charset.pcx.clr \
-	games\examples\shared\sprites.pcx.spr \
-	games\examples\shared\screen.tmx.bin
-
-#
+SLD=\
+	$(ROOT)\$(PROJNAME)\$(PROJNAME).sld \
 # targets
-#
-games\examples\00minimal\minimal.rom: games\examples\00minimal\minimal.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT)
+$(ROM): $(SRC) $(SRCS_MSXLIB) $(SRCS_LIBEXT)
+	echo Julek test
+	echo $(CURDIR)
 	$(ASM) $(ASM_FLAGS) $< 
 
 # default targets

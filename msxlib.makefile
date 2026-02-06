@@ -64,6 +64,7 @@ clean:
 	$(REMOVE) $(ROM) 2>nul
 	$(REMOVE) $(SYM) 2>nul
 	$(REMOVE) $(LST) 2>nul
+	$(REMOVE) $(LST) 2>nul
 
 compile: $(ROM)
 

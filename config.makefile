@@ -13,7 +13,9 @@ RENAME=cmd /c ren
 #
 # ASM=tniasm.exe
 ASM=sjasmplus.exe
-ASM_FLAGS=--dirbol --fullpath --longptr --sym=$(basename $@).sym --lst=$(basename $@).lst --raw=$(basename $@).rom
+ASM_FLAGS=--dirbol --fullpath --longptr --sym=$(basename $@).sym \
+	--sld=$(basename $@).sld --lst=$(basename $@).lst \
+	--raw=$(basename $@).rom
 
 # This compiler does not support IF EXIST?
 # ASM=sjasm.exe
