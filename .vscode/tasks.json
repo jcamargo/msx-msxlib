@@ -4,7 +4,7 @@
 	"version": "2.0.0",
 	"presentation": {
 		"echo": true,
-		"reveal": "never",
+		"reveal": "always",
 		"focus": false,
 		"panel": "shared",
 		"showReuseMessage": true,
@@ -14,18 +14,18 @@
 		"$errmatcher-tniasm",
 		"$errmatcher-tniasm-preprocessor"
 	],
-	"tasks": [{
-		"label": "make clean build",
-		"type": "shell",
-		"command": "mingw32-make clean compile",
-		"group": "build"
-	}, {
-		"label": "make (default)",
-		"type": "shell",
-		"command": "mingw32-make",
-		"group": {
-			"kind": "build",
-			"isDefault": true
+	"tasks": [
+		{
+			"label": "make clean build",
+			"type": "shell",
+			"command": "make -f examples.makefile clean compile",
+			"group": "build"
+		},
+		{
+			"label": "make (default)",
+			"type": "shell",
+			"command": "make -f examples.makefile",
+			"group": "build"
 		}
-	}]
+	]
 }

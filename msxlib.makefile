@@ -69,7 +69,7 @@ compile: $(ROM)
 test: $(ROM)
 	$(EMULATOR) $<
 
-debug: $(ROM) $(SYMS)
+debug: $(ROM) $(SYM)
 	$(DEBUGGER) $<
 
 #
