@@ -28,9 +28,8 @@ SLD=\
 	$(ROOT)\$(PROJNAME)\$(PROJNAME).sld \
 # targets
 $(ROM): $(SRC) $(SRCS_MSXLIB) $(SRCS_LIBEXT)
-	echo Julek test
 	echo $(CURDIR)
-	$(ASM) $(ASM_FLAGS) $< 
+	$(ASM) $(ASM_FLAGS) $(subst \,/,$<) 
 
 # default targets
 include msxlib.makefile
