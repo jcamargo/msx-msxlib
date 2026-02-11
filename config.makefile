@@ -13,7 +13,7 @@ RENAME=cmd /c ren
 #
 # ASM=tniasm.exe
 ASM=sjasmplus.exe
-ASM_FLAGS=--longptr --sym=$(basename $@).sym \
+ASM_FLAGS=--longptr --fullpath --sym=$(basename $@).sym \
 	--sld=$(basename $@).sld --lst=$(basename $@).lst \
 	--raw=$(basename $@).rom
 
