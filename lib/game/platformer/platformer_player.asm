@@ -49,38 +49,38 @@ UPDATE_PLAYER:
 	bit	BIT_WORLD_SOLID, a
 	jp	nz, SET_PLAYER_DYING ; yes
 ; Has tile collision (single char) bit?
-IFEXIST ON_PLAYER_WALK_ON
-	bit	BIT_WORLD_WALK_ON, a
-	call	nz, ON_PLAYER_WALK_ON ; yes
-ENDIF
+	IFDEF ON_PLAYER_WALK_ON
+		bit	BIT_WORLD_WALK_ON, a
+		call	nz, ON_PLAYER_WALK_ON ; yes
+	ENDIF
 
-IFEXIST ON_PLAYER_WIDE_ON
+	IFDEF ON_PLAYER_WIDE_ON
 ; Reads the AND-ed flags of the tiles at the player coordinates
-	call	GET_PLAYER_TILE_FLAGS_WIDE
+		call	GET_PLAYER_TILE_FLAGS_WIDE
 ; Has wide tile collision (player width) bit?
-	bit	BIT_WORLD_WIDE_ON, a
-	call	nz, ON_PLAYER_WIDE_ON ; yes
-ENDIF
+		bit	BIT_WORLD_WIDE_ON, a
+		call	nz, ON_PLAYER_WIDE_ON ; yes
+	ENDIF
 
-IFEXIST ON_PLAYER_WALK_OVER
+	IFDEF ON_PLAYER_WALK_OVER
 ; Reads the OR-ed flags of the tiles under the player
-	call	GET_PLAYER_TILE_FLAGS_UNDER
+		call	GET_PLAYER_TILE_FLAGS_UNDER
 ; Has walking over tiles (player width) bit?
-	bit	BIT_WORLD_WALK_OVER, a
-	call	nz, ON_PLAYER_WALK_OVER ; yes
-ENDIF
+		bit	BIT_WORLD_WALK_OVER, a
+		call	nz, ON_PLAYER_WALK_OVER ; yes
+	ENDIF
 
 	ret
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
 ; Set the player to be on the floor in the next frame
-SET_PLAYER_FLOOR.LANDING:
-IFEXIST CFG_SOUND_PLAYER_LAND
-	ld	a, CFG_SOUND_PLAYER_LAND
-	ld	c, 15 ; lowest priority
-	call	ayFX_INIT
-ENDIF
+	SET_PLAYER_FLOOR.LANDING:
+	IFDEF CFG_SOUND_PLAYER_LAND
+		ld	a, CFG_SOUND_PLAYER_LAND
+		ld	c, 15 ; lowest priority
+		call	ayFX_INIT
+	ENDIF
 
 SET_PLAYER_FLOOR:
 ; Y adjust

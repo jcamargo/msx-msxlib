@@ -3,11 +3,9 @@
 ; 	RAM
 ; =============================================================================
 	IFDEF CFG_INIT_16KB_RAM
-	; org	$c000, $f380
-	org	$c000
+RAM_SEG:    equ $C000
 	ELSE
-	; org	$e000, $f380
-	org	$e000
+RAM_SEG:    equ $E000
 	ENDIF
 ram_start:
 

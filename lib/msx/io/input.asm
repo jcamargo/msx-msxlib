@@ -3,18 +3,18 @@
 ;	Input routines (BIOS-based)
 ; =============================================================================
 
-	CFG_RAM_INPUT:	equ 1
+CFG_RAM_INPUT:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Bits read by READ_INPUT and stored in input.edge and input.level
-	BIT_STICK_UP:		equ 0
-	BIT_STICK_DOWN:		equ 1
-	BIT_STICK_LEFT:		equ 2
-	BIT_STICK_RIGHT:	equ 3
-	BIT_TRIGGER_A:		equ 4
-	BIT_TRIGGER_B:		equ 5
-	BIT_BUTTON_SELECT:	equ 6
-	BIT_BUTTON_START:	equ 7
+BIT_STICK_UP:		equ 0
+BIT_STICK_DOWN:		equ 1
+BIT_STICK_LEFT:		equ 2
+BIT_STICK_RIGHT:	equ 3
+BIT_TRIGGER_A:		equ 4
+BIT_TRIGGER_B:		equ 5
+BIT_BUTTON_SELECT:	equ 6
+BIT_BUTTON_START:	equ 7
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -27,10 +27,10 @@
 READ_INPUT:
 ; Reads joystick #1
 
-IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
+	IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
 ; Disables interrupts if this routine is to be called manually
-	di
-ENDIF
+		di
+	ENDIF
 ; Reads PSG register #15
 	ld	a, 15
 	call	RDPSG
@@ -50,19 +50,19 @@ ENDIF
 ; Reads keyboard
 
 ; Cursors and space key
-IFEXIST SNSMAT_NO_DI_EI
-IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
-	ld	a, [OLDKEY + 8] ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
-ELSE
-	ld	c, 8 ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
-	call	SNSMAT_NO_DI_EI.C_OK
-	cpl
-ENDIF
-ELSE
-	ld	a, 8 ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
-	call	SNSMAT
-	cpl
-ENDIF
+	IFDEF SNSMAT_NO_DI_EI
+		IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
+			ld	a, [OLDKEY + 8] ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
+		ELSE
+			ld	c, 8 ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
+			call	SNSMAT_NO_DI_EI.C_OK
+			cpl
+		ENDIF
+	ELSE
+		ld	a, 8 ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
+		call	SNSMAT
+		cpl
+	ENDIF
 ; Saves LEFT in input value
 	rrca	; SPACE RIGHT DOWN UP LEFT DEL INS HOME
 	rrca	; HOME SPACE RIGHT DOWN UP LEFT DEL INS
@@ -86,18 +86,18 @@ ENDIF
 	ld	b, a
 
 ; Trigger B (M key)
-IFEXIST SNSMAT_NO_DI_EI
-IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
-	ld	a, [OLDKEY + 4] ; R Q P O N M L K
-	cpl
-ELSE
-	ld	c, 4 ; R Q P O N M L K
-	call	SNSMAT_NO_DI_EI.C_OK
-ENDIF
-ELSE
-	ld	a, 4 ; R Q P O N M L K
-	call	SNSMAT
-ENDIF
+	IFDEF SNSMAT_NO_DI_EI
+		IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
+			ld	a, [OLDKEY + 4] ; R Q P O N M L K
+			cpl
+		ELSE
+			ld	c, 4 ; R Q P O N M L K
+			call	SNSMAT_NO_DI_EI.C_OK
+		ENDIF
+	ELSE
+		ld	a, 4 ; R Q P O N M L K
+		call	SNSMAT
+	ENDIF
 	bit	2, a
 	jr	nz, .NOT_TRIGGER_B
 ; Saves trigger B in current level
@@ -105,18 +105,18 @@ ENDIF
 .NOT_TRIGGER_B:
 
 ; "Select" button (SEL key)
-IFEXIST SNSMAT_NO_DI_EI
-IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
-	ld	a, [OLDKEY + 7] ; CR SEL BS STOP TAB ESC F5 F4
-	cpl
-ELSE
-	ld	c, 7 ; CR SEL BS STOP TAB ESC F5 F4
-	call	SNSMAT_NO_DI_EI.C_OK
-ENDIF
-ELSE
-	ld	a, 7 ; CR SEL BS STOP TAB ESC F5 F4
-	call	SNSMAT
-ENDIF
+	IFDEF SNSMAT_NO_DI_EI
+		IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
+			ld	a, [OLDKEY + 7] ; CR SEL BS STOP TAB ESC F5 F4
+			cpl
+		ELSE
+			ld	c, 7 ; CR SEL BS STOP TAB ESC F5 F4
+			call	SNSMAT_NO_DI_EI.C_OK
+		ENDIF
+	ELSE
+		ld	a, 7 ; CR SEL BS STOP TAB ESC F5 F4
+		call	SNSMAT
+	ENDIF
 	bit	6, a
 	jr	nz, .NOT_SELECT
 ; Saves "select" button in current level
@@ -139,10 +139,10 @@ ENDIF
 	inc	hl ; hl = input.edge
 	ld	[hl], a ; saves edge
 
-IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
+	IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
 ; Enables interrupts if this routine is to be called manually
-	ei
-ENDIF
+		ei
+	ENDIF
 
 	ret
 ; -----------------------------------------------------------------------------

@@ -33,7 +33,7 @@ LDIRVM_BLOCKS:
 	ret
 ; -----------------------------------------------------------------------------
 
-IFEXIST UNPACK
+	IFDEF UNPACK
 
 ; -----------------------------------------------------------------------------
 ; Unpacks to VRAM using the decompression buffer
@@ -144,7 +144,7 @@ LDIRVM_CXRTBL:
 	ret
 ; -----------------------------------------------------------------------------
 
-ENDIF ; IFEXIST UNPACK
+	ENDIF
 
 
 ; =============================================================================
@@ -175,8 +175,8 @@ CLS_SPRATR:
 
 ; -----------------------------------------------------------------------------
 ; LDIRVM the NAMTBL buffer
-LDIRVM_NAMTBL:
-IFDEF CFG_LDIRVM_NAMTBL_FAST
+	LDIRVM_NAMTBL:
+	IFDEF CFG_LDIRVM_NAMTBL_FAST
 ; Sets the VRAM pointer
 	ld	hl, NAMTBL
 	call	SETWRT
@@ -197,30 +197,30 @@ IFDEF CFG_LDIRVM_NAMTBL_FAST
 	jp	nz, .LOOP2
 	ret
 
-ELSE
+	ELSE
 ; Uses BIOS' LDIRVM to blit the NAMTBL buffer
 	ld	hl, namtbl_buffer
 	ld	de, NAMTBL
 	ld	bc, NAMTBL_SIZE
 	jp	LDIRVM
-ENDIF ; IFDEF CFG_LDIRVM_NAMTBL_FAST
+	ENDIF
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
 ; LDIRVM the SPRATR buffer
-LDIRVM_SPRATR:
-IFDEF CFG_SPRITES_FLICKER
+	LDIRVM_SPRATR:
+	IFDEF CFG_SPRITES_FLICKER
 ; Has the VDP reported a 5th sprite?
 	ld	a, [STATFL]
 	bit	6, a
 	jr	z, .NO_FLICKER ; no: non-flickering LDIRVM
 ; yes
-IF CFG_SPRITES_NO_FLICKER > 4
+		IF CFG_SPRITES_NO_FLICKER > 4
 ; Was the 5th sprite one of the no-flicker ones?
 	and	$0f
 	sub	CFG_SPRITES_NO_FLICKER
 	jr	c, .NO_FLICKER ; yes: non-flickering LDIRVM
-ENDIF ; IF CFG_SPRITES_NO_FLICKER > 4
+		ENDIF
 
 ; Counts how many actual sprites are in the buffer
 	ld	hl, spratr_buffer + CFG_SPRITES_NO_FLICKER *4
@@ -238,27 +238,27 @@ ENDIF ; IF CFG_SPRITES_NO_FLICKER > 4
 	jp	nz, .LOOP
 
 ; Enough sprites in this frame to apply the flickering routine?
-IF CFG_SPRITES_NO_FLICKER < 4
+		IF CFG_SPRITES_NO_FLICKER < 4
 	ld	a, 4 ; (at least five sprites)
 ELSE
 	ld	a, CFG_SPRITES_NO_FLICKER + 1 ; (at least 2 flickering sprites)
-ENDIF ; IF CFG_SPRITES_NO_FLICKER < 4
+		ENDIF
 	cp	e
 	jr	nc, .NO_FLICKER ; no: non-flickering LDIRVM
 ; yes
 	push	hl ; (preserves actual spratr buffer end)
 
 ; Calculates flicker size (in bytes)
-IF CFG_SPRITES_NO_FLICKER != 0
+		IF CFG_SPRITES_NO_FLICKER != 0
 	ld	a, -CFG_SPRITES_NO_FLICKER ; e (size, bytes) = (e -CFG_SPRITES_NO_FLICKER) * 4
 	add	e
 	add	a
 	add	a
 	ld	e, a
-ELSE
+		ELSE
 	sla	e ; e (size, bytes) = e * 4
 	sla	e
-ENDIF ; IF CFG_SPRITES_NO_FLICKER != 0
+		ENDIF
 
 ; Reads the 5th sprite plane
 	ld	a, [STATFL]
@@ -295,13 +295,13 @@ ENDIF ; IF CFG_SPRITES_NO_FLICKER != 0
 	ld	a, SPAT_END
 	ld	[de], a
 
-IF CFG_SPRITES_NO_FLICKER != 0
+		IF CFG_SPRITES_NO_FLICKER != 0
 ; LDIRVM the non-flickering sprites
-	ld	hl, spratr_buffer
-	ld	de, SPRATR
-	ld	bc, CFG_SPRITES_NO_FLICKER *4
-	call	LDIRVM
-ENDIF ; IF CFG_SPRITES_NO_FLICKER != 0
+			ld	hl, spratr_buffer
+			ld	de, SPRATR
+			ld	bc, CFG_SPRITES_NO_FLICKER *4
+			call	LDIRVM
+		ENDIF
 
 ; LDIRVM the sprites, starting from the offset
 	ld	hl, spratr_buffer + CFG_SPRITES_NO_FLICKER *4
@@ -311,12 +311,12 @@ ENDIF ; IF CFG_SPRITES_NO_FLICKER != 0
 	ld	bc, SPRATR_SIZE - CFG_SPRITES_NO_FLICKER *4
 	jp	LDIRVM
 
-.RESET_OFFSET:
+	.RESET_OFFSET:
 ; The flickering size has changed between frames; resets the offset for the next frame
-	ld	[hl], 0
-	pop	hl ; (restores stack status)
-.NO_FLICKER:
-ENDIF ; IFDEF CFG_SPRITES_FLICKER
+		ld	[hl], 0
+		pop	hl ; (restores stack status)
+	.NO_FLICKER:
+	ENDIF
 
 ; LDIRVM the actual SPRATR buffer
 	ld	hl, spratr_buffer

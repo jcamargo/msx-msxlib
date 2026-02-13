@@ -7,24 +7,24 @@
 
 ; -----------------------------------------------------------------------------
 ; (direct pointers inside SPRATR buffer)
-IFDEF CFG_SPRITES_RESERVED
-	volatile_sprites:	equ spratr_buffer + CFG_SPRITES_RESERVED *4
-ENDIF
+	IFDEF CFG_SPRITES_RESERVED
+volatile_sprites:	equ spratr_buffer + CFG_SPRITES_RESERVED *4
+	ENDIF
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
 ; Resets the volatile sprites
 RESET_SPRITES:
 ; Fills with Y = SPAT_END
-IFDEF CFG_SPRITES_RESERVED
-	ld	hl, volatile_sprites
-	ld	de, 4
-	ld	b, (spratr_buffer.end - volatile_sprites) /4
-ELSE
-	ld	hl, spratr_buffer
-	ld	de, 4
-	ld	b, (spratr_buffer.end - spratr_buffer) /4
-ENDIF
+	IFDEF CFG_SPRITES_RESERVED
+		ld	hl, volatile_sprites
+		ld	de, 4
+		ld	b, (spratr_buffer.end - volatile_sprites) /4
+	ELSE
+		ld	hl, spratr_buffer
+		ld	de, 4
+		ld	b, (spratr_buffer.end - spratr_buffer) /4
+	ENDIF
 .LOOP:
 	ld	[hl], SPAT_END
 ; Skip to the next sprite
@@ -39,11 +39,11 @@ ENDIF
 ; param bc: attributes (pattern, color)
 ; touches: a, hl
 PUT_SPRITE:
-IFDEF CFG_SPRITES_RESERVED
-	ld	hl, volatile_sprites
-ELSE
-	ld	hl, spratr_buffer
-ENDIF
+	IFDEF CFG_SPRITES_RESERVED
+		ld	hl, volatile_sprites
+	ELSE
+		ld	hl, spratr_buffer
+	ENDIF
 	ld	a, SPAT_END
 .LOOP:
 	cp	[hl]
@@ -94,11 +94,11 @@ ENDIF
 ; touches: a, hl
 PUT_SPRITE_NO_OFFSET:
 ; Locates the SPAT_END
-IFDEF CFG_SPRITES_RESERVED
-	ld	hl, volatile_sprites
-ELSE
-	ld	hl, spratr_buffer
-ENDIF
+	IFDEF CFG_SPRITES_RESERVED
+		ld	hl, volatile_sprites
+	ELSE
+		ld	hl, spratr_buffer
+	ENDIF
 	ld	a, SPAT_END
 .LOOP:
 	cp	[hl]

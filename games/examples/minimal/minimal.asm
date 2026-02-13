@@ -3,14 +3,13 @@
 ; =============================================================================
 ;	MSXlib minimal example
 ; =============================================================================
-;
-	; include	"lib/preamble.asm"
+
 ; -----------------------------------------------------------------------------
 ; MSX symbolic constants
-	include	"../../../lib/msx/symbols.asm"
+	include	"lib/msx/symbols.asm"
 
 ; MSX cartridge (ROM) header, entry point and initialization
-	include "../../../lib/msx/cartridge.asm"
+	include "lib/msx/cartridge.asm"
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -20,9 +19,6 @@ INIT:
 ; At this point, the cartridge is init, the RAM zeroed,
 ; The screen mode 2 with 16x16 unmagnified sprites,
 ; the keyboard click is muted, and the screen is disabled.
-
-	XOR A
-
 
 ;
 ; YOUR CODE (ROM) START HERE
@@ -73,28 +69,35 @@ INIT:
 
 ; The message to print
 .MY_MESSAGE:
-	db	"Hello, Julek, it seems it works 3!"
+	db	"Hello, Julek, it seems it works!"
 
 .MY_MESSAGE_SIZE:	equ $ - .MY_MESSAGE
 ; -----------------------------------------------------------------------------
 
-	include	"../../../lib/rom_end.asm"
+
+	include	"lib/rom_end.asm"
 
 ; -----------------------------------------------------------------------------
-; ; MSXlib core and game-related variables
-; 	include	"lib/ram.asm"	
+; MSXlib core and game-related variables
+	include	"lib/ram.asm"	
 
-; ; lib/ram.asm automatically starts the RAM section at the proper address
-; ; (either $C000 (16KB) or $E000 (8KB)) and includes everything MSXlib requires.
+; lib/ram.asm automatically starts the RAM section at the proper address
+; (either $C000 (16KB) or $E000 (8KB)) and includes everything MSXlib requires.
 
-; ;;
-; ; ; YOUR VARIABLES (RAM) START HERE
-; ; frame_rate:
-; ; 	db	0x50
-; ; frames_per_tenth:
-; ; 	db	0x05
+;;
+; ; YOUR VARIABLES (RAM) START HERE
+
+; [JC] The hard part is that tniasm works with mem pages as if it is a rom page
+; the rom does not contain these 2 bytes.
+; tniasm handles this behind scenes and it works...
+; think how to solve this
+
+; frame_rate:
+; 	db	0x50
+; frames_per_tenth:
+; 	db	0x05
 	
-; ; -----------------------------------------------------------------------------
-; 	include	"lib/ram_end.asm"
+; -----------------------------------------------------------------------------
+	include	"lib/ram_end.asm"
 
 ; EOF

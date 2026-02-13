@@ -7,17 +7,7 @@ CFG_RAM_CARTRIDGE:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Cartridge header
-	IFDEF CFG_INIT_ROM_SIZE
-	IF (CFG_INIT_ROM_SIZE < 32)
-		org	$4000,$4000 + (CFG_INIT_ROM_SIZE * $0400) - 1
-	ELSE
-		org	$4000,$bfff
-	ENDIF ; IF (CFG_INIT_ROM_SIZE < 32)
-	ELSE
-		org	$4000 ; JC tniasm can use the second arg to give a warning
-		; org	$4000,$7fff
-	ENDIF 
-	; IFDEF CFG_INIT_ROM_SIZE
+	ORG	$4000 
 
 CARTRIDGE_HEADER:
 	db	"AB"		; ROM Catridge ID ("AB")
@@ -201,11 +191,11 @@ CARTRIDGE_INIT:
 	ENDIF
 
 ; Zeroes all the used RAM
-	ld	hl, ram_start
-	ld	de, ram_start +1
-	ld	bc, ram_end - ram_start  -1
-	ld	[hl], l ; l = $00
-	ldir
+	; ld	hl, ram_start
+	; ld	de, ram_start +1
+	; ld	bc, ram_end - ram_start  -1
+	; ld	[hl], l ; l = $00
+	; ldir
 
 ; PSG: silence
 	call	GICINI

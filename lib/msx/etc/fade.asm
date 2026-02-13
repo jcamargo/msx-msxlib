@@ -18,7 +18,7 @@ DISSCR_FADE_OUT:
 	bit	6, [hl]
 	ret	z ; yes: do nothing
 
-IFDEF CFG_FADE_TYPE_DOUBLE
+	IFDEF CFG_FADE_TYPE_DOUBLE
 ; Fade out (double)
 	ld	b, SCR_WIDTH /2
 .COL2:
@@ -38,7 +38,7 @@ IFDEF CFG_FADE_TYPE_DOUBLE
 	pop	bc ; restores contadore
 	djnz	.COL2
 
-ELSE
+	ELSE
 ; Fade out (simple)
 	ld	b, SCR_WIDTH
 .COL:
@@ -53,7 +53,7 @@ ELSE
 	pop	bc ; restores contadore
 	djnz	.COL
 
-ENDIF ; IFDEF CFG_FADE_TYPE_DOUBLE
+	ENDIF
 
 ; Disables the screen
 	jp	DISSCR
@@ -111,7 +111,7 @@ LDIRVM_NAMTBL_FADE_INOUT:
 	call	WRTVRM
 
 .KEEP_SPRITES:
-IFDEF CFG_FADE_TYPE_DOUBLE
+	IFDEF CFG_FADE_TYPE_DOUBLE
 ; Fade in (double)
 	ld	b, SCR_WIDTH /2
 .COL2:
@@ -131,7 +131,7 @@ IFDEF CFG_FADE_TYPE_DOUBLE
 	pop	bc ; restores contadores
 	djnz	.COL2
 
-ELSE
+	ELSE
 ; Fade in (simple)
 	ld	b, SCR_WIDTH
 .COL:
@@ -145,7 +145,7 @@ ELSE
 ; Moves right a position
 	pop	bc ; restores contadores
 	djnz	.COL
-ENDIF ; IFDEF CFG_FADE_TYPE_DOUBLE
+	ENDIF
 
 	ret
 ; -----------------------------------------------------------------------------

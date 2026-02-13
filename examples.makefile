@@ -11,56 +11,33 @@ default: compile
 #
 # paths and file lists
 #
+ROOT=games\examples
+PROJNAME=stand_alone
 
-ROM=\
-	games\examples\00minimal\minimal.rom \
-	games\examples\01basic\basic.rom \
-	games\examples\02snake\snake.rom \
-	games\examples\03minimal48kb\minimal48kb.rom \
-	games\examples\minimal\minimal.rom
+ROM=	$(ROOT)\00minimal\minimal.rom 
+	
 
-SYM=\
-	games\examples\00minimal\minimal.sym \
-	games\examples\01basic\basic.sym \
-	games\examples\02snake\snake.sym \
-	games\examples\03minimal48kb\minimal48kb.sym \
-	games\examples\minimal\minimal.sym
+SYM=	$(ROOT)\00minimal\minimal.sym 
+	
 
 SHARED_DATAS=\
-	games\examples\shared\charset.pcx.chr.$(PACK_EXTENSION) \
-	games\examples\shared\charset.pcx.clr.$(PACK_EXTENSION) \
-	games\examples\shared\sprites.pcx.spr.$(PACK_EXTENSION) \
-	games\examples\shared\screen.tmx.bin.$(PACK_EXTENSION)
+	$(ROOT)\shared\charset.pcx.chr.$(PACK_EXTENSION) \
+	$(ROOT)\shared\charset.pcx.clr.$(PACK_EXTENSION) \
+	$(ROOT)\shared\sprites.pcx.spr.$(PACK_EXTENSION) \
+	$(ROOT)\shared\screen.tmx.bin.$(PACK_EXTENSION)
 
 SHARED_DATAS_INTERMEDIATE=\
-	games\examples\shared\charset.pcx.chr \
-	games\examples\shared\charset.pcx.clr \
-	games\examples\shared\sprites.pcx.spr \
-	games\examples\shared\screen.tmx.bin
+	$(ROOT)\shared\charset.pcx.chr \
+	$(ROOT)\shared\charset.pcx.clr \
+	$(ROOT)\shared\sprites.pcx.spr \
+	$(ROOT)\shared\screen.tmx.bin
 
 #
 # targets
 #
 
-games\examples\00minimal\minimal.rom games\examples\00minimal\minimal.sym: games\examples\00minimal\minimal.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT)
-	$(ASM) $< $(@:%.sym=%.rom)
-	$(COPY) /Y tniasm.sym $(@:%.rom=%.sym)
-
-games\examples\01basic\basic.rom games\examples\01basic\basic.sym: games\examples\01basic\basic.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT) $(SHARED_DATAS)
-	$(ASM) $< $(@:%.sym=%.rom)
-	$(COPY) /Y tniasm.sym $(@:%.rom=%.sym)
-
-games\examples\02snake\snake.rom games\examples\02snake\snake.sym: games\examples\02snake\snake.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT) $(SHARED_DATAS)
-	$(ASM) $< $(@:%.sym=%.rom)
-	$(COPY) /Y tniasm.sym $(@:%.rom=%.sym)
-
-games\examples\03minimal48kb\minimal48kb.rom games\examples\03minimal48kb\minimal48kb.sym: games\examples\03minimal48kb\minimal48kb.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT) $(SHARED_DATAS)
-	$(ASM) $< $(@:%.sym=%.rom)
-	$(COPY) /Y tniasm.sym $(@:%.rom=%.sym)
-
-games\examples\minimal\minimal.rom games\examples\minimal\minimal.sym: games\examples\minimal\minimal.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT)
-	$(ASM) $< $(@:%.sym=%.rom)
-	$(COPY) /Y tniasm.sym $(@:%.rom=%.sym)
+$(ROOT)\00minimal\minimal.rom $(ROOT)\00minimal\minimal.sym: $(ROOT)\00minimal\minimal.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT)
+	$(ASM) $(ASM_FLAGS) $(subst \,/,$<) 
 
 # default targets
 include msxlib.makefile

@@ -88,12 +88,12 @@ NAMTBL_POINTER_TO_LOGICAL_COORDS:
 GET_TILE_VALUE:
 
 ; Checks screen borders
-IFDEF CFG_TILES_VALUE_BORDER
-	ld	a, d	; (0..7,   8..247, 248..255)
-	add	8	; (8..15, 16..255,   0..7)
-	cp	16	; (  c,     nc,       c)
-	jr	c, .BORDER ; yes
-ENDIF ; IFDEF CFG_TILES_VALUE_BORDER
+	IFDEF CFG_TILES_VALUE_BORDER
+		ld	a, d	; (0..7,   8..247, 248..255)
+		add	8	; (8..15, 16..255,   0..7)
+		cp	16	; (  c,     nc,       c)
+		jr	c, .BORDER ; yes
+	ENDIF
 
 ; no: Checks off-screen
 	ld	a, e	; (0..191, 192..255)
@@ -109,12 +109,12 @@ ENDIF ; IFDEF CFG_TILES_VALUE_BORDER
 	ld	a, [hl]
 	ret
 
-IFDEF CFG_TILES_VALUE_BORDER
-.BORDER:
+	IFDEF CFG_TILES_VALUE_BORDER
+	.BORDER:
 ; Screen border
-	ld	a, CFG_TILES_VALUE_BORDER
-	ret
-ENDIF ; IFDEF CFG_TILES_VALUE_BORDER
+		ld	a, CFG_TILES_VALUE_BORDER
+		ret
+	ENDIF
 
 .OFF_SCREEN:
 ; Is over or under visible screen?

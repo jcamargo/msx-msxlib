@@ -22,7 +22,7 @@ ASM_FLAGS=--longptr --fullpath --sym=$(basename $@).sym \
 # ASM_FLAGS= -v -l -s -i.
 
 # ASM_FLAGS=
-EMULATOR=cmd /c start
+EMULATOR=cmd /c start E:\DEV\MSX\TOOLS\Emulicious\Emulicious.exe
 DEBUGGER=cmd /c start \MSX\bin\blueMSX_2.8.2\blueMSX.exe
 PCX2MSX=pcx2msx+.exe
 PCX2SPR=pcx2spr.exe

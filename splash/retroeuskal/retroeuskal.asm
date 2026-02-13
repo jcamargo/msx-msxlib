@@ -10,23 +10,23 @@
 	CLS:	equ $00c3 ; Clear screen
 
 ; MSX system variables
-	CLIKSW:	equ $f3db ; Keyboard click sound
-	RG1SAV:	equ $f3e0 ; Content of VDP(1) register (R#1)
-	BAKCLR:	equ $f3ea ; Background colour
-	BDRCLR:	equ $f3eb ; Border colour
+CLIKSW:	equ $f3db ; Keyboard click sound
+RG1SAV:	equ $f3e0 ; Content of VDP(1) register (R#1)
+BAKCLR:	equ $f3ea ; Background colour
+BDRCLR:	equ $f3eb ; Border colour
 
 ; VRAM addresses
-	CHRTBL:	equ $0000 ; Pattern table
-	NAMTBL:	equ $1800 ; Name table
-	CLRTBL:	equ $2000 ; Color table
-	SPRATR:	equ $1B00 ; Sprite attributes table
-	SPRTBL:	equ $3800 ; Sprite pattern table
+CHRTBL:	equ $0000 ; Pattern table
+NAMTBL:	equ $1800 ; Name table
+CLRTBL:	equ $2000 ; Color table
+SPRATR:	equ $1B00 ; Sprite attributes table
+SPRTBL:	equ $3800 ; Sprite pattern table
 
 ; VDP symbolic constants
-	SCR_WIDTH:	equ 32
-	NAMTBL_SIZE:	equ 32 * 24
-	CHRTBL_SIZE:	equ 256 * 8
-	SPAT_END:	equ $d0 ; Sprite attribute table end marker
+SCR_WIDTH:	equ 32
+NAMTBL_SIZE:	equ 32 * 24
+CHRTBL_SIZE:	equ 256 * 8
+SPAT_END:	equ $d0 ; Sprite attribute table end marker
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------

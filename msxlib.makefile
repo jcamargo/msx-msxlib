@@ -56,22 +56,13 @@ SRCS_LIBEXT=\
 	libext\ZX1\z80\dzx1_standard.asm \
 	libext\zx7\dzx7_standard.tniasm.asm
 
-#
-# phony targets
-#
-
-clean:
-	$(REMOVE) $(ROM) 
-	$(REMOVE) $(SYM) 
-	$(REMOVE) $(LST) 
-	$(REMOVE) $(SLD) 
-
-compile: $(ROM)
-
 test: $(ROM)
+	@echo "target: $@"
+	@echo "args: $(ROM)"	
 	$(EMULATOR) $<
 
 debug: $(ROM) $(SYM)
+	@echo "target: $@"		
 	$(DEBUGGER) $<
 
 #

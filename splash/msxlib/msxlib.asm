@@ -9,19 +9,19 @@
 	INIT32:	equ $006f ; Initialize VDP to 32x24 Text Mode
 
 ; MSX system variables
-	RG1SAV:	equ $f3e0 ; Content of VDP(1) register (R#1)
-	FORCLR:	equ $f3e9 ; Foreground colour
+RG1SAV:	equ $f3e0 ; Content of VDP(1) register (R#1)
+FORCLR:	equ $f3e9 ; Foreground colour
 
 ; VRAM addresses
-	CHRTBL:	equ $0000 ; Pattern table
-	NAMTBL:	equ $1800 ; Name table
-	CLRTBL:	equ $2000 ; Color table
-	SPRATR:	equ $1B00 ; Sprite attributes table
-	SPRTBL:	equ $3800 ; Sprite pattern table
+CHRTBL:	equ $0000 ; Pattern table
+NAMTBL:	equ $1800 ; Name table
+CLRTBL:	equ $2000 ; Color table
+SPRATR:	equ $1B00 ; Sprite attributes table
+SPRTBL:	equ $3800 ; Sprite pattern table
 
 ; VDP symbolic constants
-	SCR_WIDTH:	equ 32
-	SPAT_END:	equ $d0 ; Sprite attribute table end marker
+SCR_WIDTH:	equ 32
+SPAT_END:	equ $d0 ; Sprite attribute table end marker
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------

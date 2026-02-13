@@ -3,7 +3,7 @@
 ;	Metatiles routines for NAMBTL buffer
 ; =============================================================================
 
-IFEXIST UNPACK
+	IFDEF UNPACK
 
 ; -----------------------------------------------------------------------------
 ; Prints a meta-tiles based screen using the decompression buffer
@@ -24,7 +24,7 @@ UNPACK_PRINT_METATILE_BLOCK:
 	; jp	LDIRVM ; falls through
 ; ------VVVV----falls through--------------------------------------------------
 
-ENDIF ; IFEXIST UNPACK
+	ENDIF
 
 ; -----------------------------------------------------------------------------
 ; Prints a meta-tiles based screen

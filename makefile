@@ -1,35 +1,54 @@
 # commands and tools
+# include examples.makefile
 include config.makefile
 
 # default target
-default: compile
-
-PROJNAME=stand_alone
+# default: compile
 ROOT=games\examples
+PROJNAME=basic
+PROJIDR=01basic
+# PROJNAME=stand_alone
+# PROJIDR=stand_alone
+SRC= $(ROOT)\$(PROJIDR)\$(PROJNAME).asm
+ROM= $(ROOT)\$(PROJIDR)\$(PROJNAME).rom
+SYM= $(ROOT)\$(PROJIDR)\$(PROJNAME).sym
+LST= $(ROOT)\$(PROJIDR)\$(PROJNAME).lst
+SLD= $(ROOT)\$(PROJIDR)\$(PROJNAME).sld
 
-# ROOT=${fileDirname}
+SHARED_DATAS=\
+	$(ROOT)\shared\charset.pcx.chr.$(PACK_EXTENSION) \
+	$(ROOT)\shared\charset.pcx.clr.$(PACK_EXTENSION) \
+	$(ROOT)\shared\sprites.pcx.spr.$(PACK_EXTENSION) \
+	$(ROOT)\shared\screen.tmx.bin.$(PACK_EXTENSION)
 
-#
-# paths and file lists
-#
-SRC=\
-	$(ROOT)\$(PROJNAME)\$(PROJNAME).asm \
+SHARED_DATAS_INTERMEDIATE=\
+	$(ROOT)\shared\charset.pcx.chr \
+	$(ROOT)\shared\charset.pcx.clr \
+	$(ROOT)\shared\sprites.pcx.spr \
+	$(ROOT)\shared\screen.tmx.bin
 
-ROM=\
-	$(ROOT)\$(PROJNAME)\$(PROJNAME).rom \
-
-SYM=\
-	$(ROOT)\$(PROJNAME)\$(PROJNAME).sym \
-
-LST=\
-	$(ROOT)\$(PROJNAME)\$(PROJNAME).lst \
-
-SLD=\
-	$(ROOT)\$(PROJNAME)\$(PROJNAME).sld \
-# targets
-$(ROM): $(SRC) $(SRCS_MSXLIB) $(SRCS_LIBEXT)
-	echo $(CURDIR)
-	$(ASM) $(ASM_FLAGS) $(subst \,/,$<) 
 
 # default targets
-include msxlib.makefile
+# include msxlib.makefile
+
+# targets
+$(ROM): $(SRC) $(SRCS_MSXLIB) $(SRCS_LIBEXT)
+	@echo $(CURDIR)
+	@echo "target: $@"
+	$(ASM) $(ASM_FLAGS) $(subst \,/,$<) $(SRCS_MSXLIB)  
+
+# phony targets
+compile: $(ROM)
+	@echo "target: $@"
+
+clean:
+	@echo "target: $@"
+	$(REMOVE) $(ROM) 
+	$(REMOVE) $(SYM) 
+	$(REMOVE) $(LST) 
+	$(REMOVE) $(SLD)
+
+# run: runnable
+# #	$(EMULATOR) games\examples\04flash\flash.rom
+# #	$(EMULATOR) games\examples\pt3music\pt3music.rom
+# #	$(EMULATOR) games\examples\wyzmusic\wyzmusic.rom
