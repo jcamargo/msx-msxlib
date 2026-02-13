@@ -43,8 +43,9 @@ DATAS_INTERMEDIATE=\
 # main targets
 #
 
-$(ROM) tniasm.sym: $(SRCS) $(SRCS_MSXLIB) $(SRCS_LIBEXT) $(DATAS)
-	$(ASM) $< $@
+$(ROM) $(SYM): $(SRCS) $(SRCS_MSXLIB) $(SRCS_LIBEXT) $(DATAS)
+	$(ASM) $< $(@:%.sym=%.rom)
+	$(COPY) /Y tniasm.sym $(@:%.rom=%.sym)
 # cmd /c findstr /b /i "dbg_" tniasm.sym | sort
 
 # default targets
