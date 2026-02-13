@@ -5,8 +5,8 @@ include config.makefile
 # default target
 # default: compile
 ROOT=games\examples
-PROJNAME=basic
-PROJIDR=01basic
+PROJNAME=minimal
+PROJIDR=00minimal
 # PROJNAME=stand_alone
 # PROJIDR=stand_alone
 SRC= $(ROOT)\$(PROJIDR)\$(PROJNAME).asm
@@ -48,6 +48,11 @@ clean:
 	$(REMOVE) $(LST) 
 	$(REMOVE) $(SLD)
 
+test: $(ROM)
+	@echo "target: $@"
+	@echo "args: $(ROM)"	
+	$(EMULATOR) $<
+	
 # run: runnable
 # #	$(EMULATOR) games\examples\04flash\flash.rom
 # #	$(EMULATOR) games\examples\pt3music\pt3music.rom

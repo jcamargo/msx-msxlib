@@ -3,8 +3,7 @@
 ; =============================================================================
 ;	MSXlib minimal example
 ; =============================================================================
-;
-	; include	"lib/preamble.asm"
+
 ; -----------------------------------------------------------------------------
 ; MSX symbolic constants
 	include	"../../../lib/msx/symbols.asm"
@@ -23,8 +22,6 @@ INIT:
 
 	XOR A
 
-
-;
 ; YOUR CODE (ROM) START HERE
 ;
 ; Example:
@@ -73,7 +70,7 @@ INIT:
 
 ; The message to print
 .MY_MESSAGE:
-	db	"Hello, Julek, it seems it works 3!"
+	db	"Hello, Julek, it seems it works 4!"
 
 .MY_MESSAGE_SIZE:	equ $ - .MY_MESSAGE
 ; -----------------------------------------------------------------------------
@@ -81,20 +78,18 @@ INIT:
 	include	"../../../lib/rom_end.asm"
 
 ; -----------------------------------------------------------------------------
-; ; MSXlib core and game-related variables
-; 	include	"lib/ram.asm"	
+; MSXlib core and game-related variables
+	include	"../../../lib/ram.asm"	
 
-; ; lib/ram.asm automatically starts the RAM section at the proper address
-; ; (either $C000 (16KB) or $E000 (8KB)) and includes everything MSXlib requires.
+; lib/ram.asm automatically starts the RAM section at the proper address
+; (either $C000 (16KB) or $E000 (8KB)) and includes everything MSXlib requires.
 
-; ;;
-; ; ; YOUR VARIABLES (RAM) START HERE
-; ; frame_rate:
-; ; 	db	0x50
-; ; frames_per_tenth:
-; ; 	db	0x05
+;
+; YOUR VARIABLES (RAM) START HERE
+frame_rate:	db	0x50
+frames_per_tenth:	db	0x05
 	
-; ; -----------------------------------------------------------------------------
-; 	include	"lib/ram_end.asm"
+; -----------------------------------------------------------------------------
+	include	"../../../lib/ram_end.asm"
 
 ; EOF

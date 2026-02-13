@@ -29,10 +29,8 @@ spratr_buffer:
 
 ; Refresh rate in Hertzs (50Hz/60Hz) and related convenience vars
 
-frame_rate:
- 	rb	1
-frames_per_tenth:
-	rb	1
+frame_rate:	rb	1
+frames_per_tenth:	rb	1
 
 	; -----------------------------------------------------------------------------
 	ENDIF ; IFDEF CFG_RAM_CARTRIDGE

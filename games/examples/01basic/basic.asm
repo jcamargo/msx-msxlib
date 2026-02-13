@@ -53,7 +53,7 @@ INIT:
 	jr	.LOOP
 
 .MY_SCREEN_PACKED:
-	incbin	"games/examples/shared/screen.tmx.bin.zx0"
+	incbin	"../shared/screen.tmx.bin.zx0"
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
