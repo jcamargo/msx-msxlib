@@ -24,17 +24,6 @@ INIT:
 ; YOUR CODE (ROM) START HERE
 ;
 ; Example:
-;
-
-; ; Frame rate related variables
-; 	ld	a, [MSXID1]
-; 	bit	7, a ; 0=60Hz, 1=50Hz
-; 	ld	hl, (5<<8) + 50 
-; 	; frame rate and frames per tenth for 50Hz
-; 	jr	nz, .HL_OK
-; 	ld	hl, (6<<8) + 60 ; frame rate and frames per tenth for 60Hz
-; .HL_OK:
-; 	ld	[frame_rate], hl
 
 ; In screen mode 2 we need to set up a charset
 ; to actually show something in the screen.
@@ -69,13 +58,13 @@ INIT:
 
 ; The message to print
 .MY_MESSAGE:
-	db	"Hello, Julek, it seems it works!"
+	db	"Hello, Julek, it seems it works 2!"
 
 .MY_MESSAGE_SIZE:	equ $ - .MY_MESSAGE
 ; -----------------------------------------------------------------------------
 
 
-	include	"lib/rom_end.asm"
+	include	"../../../lib/rom_end.asm"
 
 ; -----------------------------------------------------------------------------
 ; MSXlib core and game-related variables
@@ -92,12 +81,17 @@ INIT:
 ; tniasm handles this behind scenes and it works...
 ; think how to solve this
 
-; frame_rate:
-; 	db	0x50
-; frames_per_tenth:
-; 	db	0x05
-	
+; this usually comes from memory
+frame_rate:
+	db	0x50
+frames_per_tenth:
+	db	0x05
+
+ROMVAR_END:
+
+RAM_END equ RAMBASE + (ROMVAR_END - ROMVAR)
+
 ; -----------------------------------------------------------------------------
-	include	"../../../lib/ram_end.asm"
+	; include	"../../../lib/ram_end.asm"
 
 EOF

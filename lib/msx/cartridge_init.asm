@@ -112,10 +112,10 @@ CARTRIDGE_INIT:
 
 	IFDEF CFG_INIT_16KB_RAM
 ; RAM: checks availability of 16kB
-	ld	hl, ram_start
+	ld	hl, RAMBASE
 	ld	de, [BOTTOM]
 	call	DCOMPR
-	jr	nc, .RAM_OK ; yes (BOTTOM is less or equal than ram_start)
+	jr	nc, .RAM_OK ; yes (BOTTOM is less or equal than RAMBASE)
 
 ; no: screen 1 and warning text
 	call	INIT32
@@ -186,9 +186,9 @@ CARTRIDGE_INIT:
 	ENDIF ; IFDEF CFG_INIT_DISABLE_PALETTE
 
 ; Zeroes all the used RAM
-	ld	hl, ram_start
-	ld	de, ram_start +1
-	ld	bc, ram_end - ram_start  -1
+	ld	hl, RAMBASE
+	ld	de, RAMBASE +1
+	ld	bc, RAM_END - RAMBASE  -1
 	ld	[hl], l ; l = $00
 	ldir
 

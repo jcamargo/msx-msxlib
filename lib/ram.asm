@@ -4,12 +4,12 @@
 ; =============================================================================
 
 	IFDEF CFG_INIT_16KB_RAM
-	org	$c000
+RAMBASE:	equ $c000
 	ELSE
-	org	$e000
+RAMBASE:	equ $e000
 	ENDIF
-ram_start:
 
+ROMVAR:
 ; -----------------------------------------------------------------------------
 	include "msx/ram.asm"
 	include "msx/etc/ram.asm"
@@ -17,6 +17,7 @@ ram_start:
 	include "game/etc/ram.asm"
 	include "etc/ram.asm"
 ; -----------------------------------------------------------------------------
+
 
 ; -----------------------------------------------------------------------------
 ; (for debugging purposes only)

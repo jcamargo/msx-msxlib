@@ -12,3 +12,8 @@
 *.zx7
 tniasm.out
 tniasm.tmp
+/games/examples/evenless/*.lst
+/games/examples/evenless/*.rom
+/games/examples/evenless/*.sld
+/games/examples/stand_alone/*.asm
+/*.sld
