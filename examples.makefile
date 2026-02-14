@@ -1,12 +1,12 @@
 
+# default target
+default: compile
+
 # commands and tools
 include config.makefile
 
 # packer; must match the included unpacker routine
 PACK_EXTENSION=zx0
-
-# default target
-default: compile
 
 #
 # paths and file lists
@@ -21,23 +21,44 @@ SYM=	$(ROOT)\00minimal\minimal.sym
 	
 
 SHARED_DATAS=\
-	$(ROOT)\shared\charset.pcx.chr.$(PACK_EXTENSION) \
-	$(ROOT)\shared\charset.pcx.clr.$(PACK_EXTENSION) \
-	$(ROOT)\shared\sprites.pcx.spr.$(PACK_EXTENSION) \
-	$(ROOT)\shared\screen.tmx.bin.$(PACK_EXTENSION)
+	games\examples\shared\charset.png.chr.$(PACK_EXTENSION) \
+	games\examples\shared\charset.png.clr.$(PACK_EXTENSION) \
+	games\examples\shared\sprites.png.spr.$(PACK_EXTENSION) \
+	games\examples\shared\screen.tmx.bin.$(PACK_EXTENSION)
 
 SHARED_DATAS_INTERMEDIATE=\
-	$(ROOT)\shared\charset.pcx.chr \
-	$(ROOT)\shared\charset.pcx.clr \
-	$(ROOT)\shared\sprites.pcx.spr \
-	$(ROOT)\shared\screen.tmx.bin
+	games\examples\shared\charset.png.chr \
+	games\examples\shared\charset.png.clr \
+	games\examples\shared\sprites.png.spr \
+	games\examples\shared\screen.tmx.bin
 
 #
 # targets
 #
 
-$(ROOT)\00minimal\minimal.rom $(ROOT)\00minimal\minimal.sym: $(ROOT)\00minimal\minimal.asm $(SRCS_MSXLIB) $(SRCS_LIBEXT)
-	$(ASM) $(ASM_FLAGS) $(subst \,/,$<) 
-
 # default targets
 include msxlib.makefile
+
+games\examples\00minimal\minimal.rom: games\examples\00minimal\minimal.asm $(MSXLIB)
+	$(ASM) $< $@
+
+games\examples\01basic\basic.rom: games\examples\01basic\basic.asm $(MSXLIB) $(SHARED_DATAS)
+	$(ASM) $< $@
+
+games\examples\02snake\snake.rom: games\examples\02snake\snake.asm $(MSXLIB) $(SHARED_DATAS)
+	$(ASM) $< $@
+
+games\examples\03minimal48kb\minimal48kb.rom: games\examples\03minimal48kb\minimal48kb.asm $(MSXLIB) $(SHARED_DATAS)
+	$(ASM) $< $@
+
+games\examples\04flash\flash.rom: games\examples\04flash\flash.asm $(MSXLIB)
+	$(ASM) $< $@
+
+games\examples\pt3music\pt3music.rom: games\examples\pt3music\pt3music.asm $(MSXLIB)
+	$(ASM) $< $@
+
+games\examples\wyzmusic\wyzmusic.rom: games\examples\wyzmusic\wyzmusic.asm $(MSXLIB)
+	$(ASM) $< $@
+
+# secondary targets
+.secondary: $(SHARED_DATAS_INTERMEDIATE)

@@ -3,11 +3,12 @@
 *.chr
 *.clr
 *.dll
+*.pt3.hl
 *.plet5
 *.spr
+*.sym
 *.zx0
 *.zx1
 *.zx7
-tniams.out
-tniasm.sym
+tniasm.out
 tniasm.tmp

@@ -146,7 +146,7 @@ PRINT_BLOCK:
 ; Prepares for the next row
 	ex	de, hl ; preserves updated source (hl) in de
 	pop	hl ; restores destination in hl
-	ld	bc, SCR_WIDTH
+	ld	c, SCR_WIDTH ; (optimized from: ld bc, SCR_WIDTH)
 	add	hl, bc
 	ex	de, hl ; restores source and destination in hl and de
 	pop	bc ; restores counters
@@ -155,7 +155,7 @@ PRINT_BLOCK:
 	ret
 ; -----------------------------------------------------------------------------
 
-IFDEF BOX_CHARS
+IFEXIST BOX_CHARS
 
 ; -----------------------------------------------------------------------------
 ; Prints a box of b x c characters
@@ -201,6 +201,6 @@ PRINT_BOX:
 	ret
 ; -----------------------------------------------------------------------------
 
-ENDIF ; IFDEF BOX_CHARS
+ENDIF ; IFEXIST BOX_CHARS
 
 ; EOF

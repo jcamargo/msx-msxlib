@@ -73,11 +73,11 @@ INIT_GRAPHICS:
 
 ; The shared data of the examples
 .MY_CHRTBL_PACKED:
-	incbin	"games/examples/shared/charset.pcx.chr.zx0"
+	incbin	"games/examples/shared/charset.png.chr.zx0"
 .MY_CLRTBL_PACKED:
-	incbin	"games/examples/shared/charset.pcx.clr.zx0"
+	incbin	"games/examples/shared/charset.png.clr.zx0"
 .MY_SPRTBL_PACKED:
-	incbin	"games/examples/shared/sprites.pcx.spr.zx0"
+	incbin	"games/examples/shared/sprites.png.spr.zx0"
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------

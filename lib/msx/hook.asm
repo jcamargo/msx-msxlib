@@ -3,7 +3,7 @@
 ; 	Interrupt routine (H.TIMI hook)
 ; =============================================================================
 
-CFG_RAM_HOOK:	equ 1
+	CFG_RAM_HOOK:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; H.TIMI hook
@@ -15,7 +15,7 @@ HOOK:
 	push	af ; Preserves VDP status register S#0 (a)
 
 ; Invokes the replayer
-	IFDEF REPLAYER.FRAME
+	IFEXIST REPLAYER.FRAME
 	; Invokes the replayer (with frameskip in 60Hz machines)
 		ld	a, [frames_per_tenth]
 		cp	5
@@ -31,20 +31,22 @@ HOOK:
 		ld	[hl], a
 		jr	.FRAMESKIP
 
-.NO_FRAMESKIP:
-; Executes a frame of the replayer
+	.NO_FRAMESKIP:
+	; Executes a frame of the replayer
 		call	REPLAYER.FRAME
-.FRAMESKIP:
-	ENDIF ; blabla
+	.FRAMESKIP:
+	ENDIF ; REPLAYER.FRAME
 
 ; Reads the inputs
 	IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
 		call	READ_KEYBOARD
-	ENDIF
+	ENDIF ; CFG_HOOK_ENABLE_AUTO_KEYBOARD
 
-	IFNDEF CFG_HOOK_DISABLE_AUTO_INPUT
+	IFEXIST CFG_HOOK_DISABLE_AUTO_INPUT
+	ELSE
 		call	READ_INPUT
-	ENDIF
+	ENDIF ; CFG_HOOK_DISABLE_AUTO_INPUT
+
 ; Tricks BIOS' KEYINT to skip keyboard scan, TRGFLG, OLDKEY/NEWKEY, ON STRIG...
 	xor	a
 	ld	[SCNCNT], a
@@ -52,18 +54,18 @@ HOOK:
 
 	pop	af ; Restores VDP status register S#0 (a)
 
+; Tricks BIOS' KEYINT to skip ON SPRITE...
 	IFDEF CFG_HOOK_PRESERVE_SPRITE_COLLISION_FLAG
 	ELSE
-; Tricks BIOS' KEYINT to skip ON SPRITE...
 		and	$df ; Turns off sprite collision flag
-	ENDIF
+	ENDIF ; IFDEF CFG_HOOK_PRESERVE_SPRITE_COLLISION_FLAG
 
-	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 ; Invokes the previously existing hook
+	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 		jp	old_htimi_hook
 	ELSE
 		ret
-	ENDIF
+	ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 ; -----------------------------------------------------------------------------
 
 ; EOF

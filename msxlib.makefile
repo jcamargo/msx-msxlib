@@ -12,6 +12,8 @@ SRCS_MSXLIB=\
 	lib\ram_end.asm \
 	lib\msx\symbols.asm \
 	lib\msx\cartridge.asm \
+	lib\msx\cartridge_header.asm \
+	lib\msx\cartridge_init.asm \
 	lib\msx\hook.asm \
 	lib\msx\ram.asm \
 	lib\msx\io\input.asm \
@@ -29,6 +31,7 @@ SRCS_MSXLIB=\
 	lib\msx\etc\attract_print.asm \
 	lib\msx\etc\ram.asm \
 	lib\asm\asm.asm \
+	lib\asm\etc.asm \
 	lib\game\tiles.asm \
 	lib\game\player.asm \
 	lib\game\enemy.asm \
@@ -37,12 +40,16 @@ SRCS_MSXLIB=\
 	lib\game\ram.asm \
 	lib\game\platformer\platformer_player.asm \
 	lib\game\platformer\platformer_enemy.asm \
+	lib\game\etc\menu.asm \
 	lib\game\etc\password.asm \
+	lib\game\etc\konamicode.asm \
 	lib\game\etc\ram.asm \
 	lib\unpack\unpack_zx0.asm \
 	lib\unpack\unpack_zx1.asm \
 	lib\unpack\unpack_zx7.asm \
-	lib\unpack\ram.asm
+	lib\unpack\ram.asm \
+	lib\etc\random.asm \
+	lib\etc\ram.asm
 
 SRCS_LIBEXT=\
 	libext\ayFX-replayer\ayFX-ROM.tniasm.asm \
@@ -50,32 +57,62 @@ SRCS_LIBEXT=\
 	libext\pletter05c\pletter05c-unpackRam.tniasm.asm \
 	libext\pt3\PT3-ROM.tniasm.asm \
 	libext\pt3\PT3-RAM.tniasm.asm \
-	libext\wyzplayer\WYZPROPLAY47cMSX.ASM \
-	libext\wyzplayer\WYZPROPLAY47c_RAM.tniasm.ASM \
+	libext\wyzplayer047d\wyzplayer-ROM.tniasm.asm \
+	libext\wyzplayer047d\wyzplayer-RAM.tniasm.asm \
 	libext\ZX0\z80\dzx0_standard.asm \
 	libext\ZX1\z80\dzx1_standard.asm \
 	libext\zx7\dzx7_standard.tniasm.asm
 
-test: $(ROM)
-	@echo "target: $@"
-	@echo "args: $(ROM)"	
-	$(EMULATOR) $<
+BINS_MSXLIB=\
+	splash\msxlib.bin.plet5 \
+	splash\msxlib.bin.zx0 \
+	splash\msxlib.bin.zx1 \
+	splash\msxlib.bin.zx7 \
+	splash\retroeuskal.bin.plet5 \
+	splash\retroeuskal.bin.zx0 \
+	splash\retroeuskal.bin.zx1 \
+	splash\retroeuskal.bin.zx7
 
-debug: $(ROM) $(SYM)
-	@echo "target: $@"		
-	$(DEBUGGER) $<
+MSXLIB=$(SRC_MSXLIB) $(SRCS_LIBEXT) $(BINS_MSXLIB)
+
+#
+# phony targets
+#
+
+clean:
+	$(REMOVE) $(ROM)
+	$(REMOVE) $(SYM) tniasm.sym tniasm.tmp
+
+compile: $(ROM) $(MSXLIB)
+
+run: runnable
+	$(EMULATOR) $(ROM)
+
+debug: debuggable
+	$(DEBUGGER) $(ROM)
+
+#
+# Convenience auxiliary targets
+#
+
+runnable: $(ROM)
+
+debuggable: $(ROM) $(SYM)
+
+$(SYM): tniasm.sym
+	$(COPY) $< $@
 
 #
 # GFXs, SPRs, and BINs targets
 #
 
-# -lh by default because packing usally produces smaller binaries
+# -hl by default for FILVRM compatibility
 %.pcx.chr %.pcx.clr: %.pcx
-	$(PCX2MSX) -lh $<
+	$(PCX2MSX) -hl $<
 
-# -lh by default because packing usally produces smaller binaries
+# -hl by default for FILVRM compatibility
 %.png.chr %.png.clr: %.png
-	$(PNG2MSX) -lh $<
+	$(PNG2MSX) -hl $<
 
 %.pcx.spr: %.pcx
 	$(PCX2SPR) $<
@@ -110,46 +147,42 @@ debug: $(ROM) $(SYM)
 # ZX0 v2.0
 
 %.bin.zx0: %.bin
-	$(REMOVE) $@
-	$(PACK_ZX0) $<
+	$(PACK_ZX0) -f $<
 
 %.chr.zx0: %.chr
-	$(REMOVE) $@
-	$(PACK_ZX0) $<
+	$(PACK_ZX0) -f $<
 
 %.clr.zx0: %.clr
-	$(REMOVE) $@
-	$(PACK_ZX0) $<
+	$(PACK_ZX0) -f $<
 
 %.nam.zx0: %.nam
-	$(REMOVE) $@
-	$(PACK_ZX0) $<
+	$(PACK_ZX0) -f $<
+
+%.mus.zx0: %.mus
+	$(PACK_ZX0) -f $<
 
 %.spr.zx0: %.spr
-	$(REMOVE) $@
-	$(PACK_ZX0) $<
+	$(PACK_ZX0) -f $<
 
 # ZX1
 
 %.bin.zx1: %.bin
-	$(REMOVE) $@
-	$(PACK_ZX1) $<
+	$(PACK_ZX1) -f $<
 
 %.chr.zx1: %.chr
-	$(REMOVE) $@
-	$(PACK_ZX1) $<
+	$(PACK_ZX1) -f $<
 
 %.clr.zx1: %.clr
-	$(REMOVE) $@
-	$(PACK_ZX1) $<
+	$(PACK_ZX1) -f $<
 
 %.nam.zx1: %.nam
-	$(REMOVE) $@
-	$(PACK_ZX1) $<
+	$(PACK_ZX1) -f $<
+
+%.mus.zx1: %.mus
+	$(PACK_ZX1) -f $<
 
 %.spr.zx1: %.spr
-	$(REMOVE) $@
-	$(PACK_ZX1) $<
+	$(PACK_ZX1) -f $<
 
 # ZX7
 
@@ -166,6 +199,10 @@ debug: $(ROM) $(SYM)
 	$(PACK_ZX7) $<
 
 %.nam.zx7: %.nam
+	$(REMOVE) $@
+	$(PACK_ZX7) $<
+
+%.mus.zx7: %.mus
 	$(REMOVE) $@
 	$(PACK_ZX7) $<
 

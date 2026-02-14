@@ -51,9 +51,17 @@ REPLAYER.STOP:
 	ld	hl, SONG_TABLE
 	call	GET_HL_A_WORD
 ; Unpacks the song
-	ld	de, unpack_buffer
+	IFEXIST unpack_buffer.song
+		ld	de, unpack_buffer.song
+	ELSE
+		ld	de, unpack_buffer
+	ENDIF ; IFEXIST unpack_buffer.song
 	call	UNPACK
-	ld	hl, unpack_buffer
+	IFEXIST unpack_buffer.song
+		ld	hl, unpack_buffer.song
+	ELSE
+		ld	hl, unpack_buffer
+	ENDIF ; IFEXIST unpack_buffer.song
 
 	ELSE
 ; Locates the song (2/2, unpacked)

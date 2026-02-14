@@ -33,7 +33,11 @@ RESET_PASSWORD:
 ; ret [password]: the encoded password
 ENCODE_PASSWORD:
 ; Random first digit
-	ld	a, r
+	IFEXIST GET_RANDOM
+		call	GET_RANDOM
+	ELSE
+		ld	a, r
+	ENDIF ; IFEXIST GET_RANDOM
 	; and	$0f ; unnecessary (because .WRITE_DIGIT implementation)
 	ld	c, a ; preserves digit in c
 	ex	af, af'

@@ -9,31 +9,26 @@
 	INIT32:	equ $006f ; Initialize VDP to 32x24 Text Mode
 
 ; MSX system variables
-RG1SAV:	equ $f3e0 ; Content of VDP(1) register (R#1)
-FORCLR:	equ $f3e9 ; Foreground colour
+	RG1SAV:	equ $f3e0 ; Content of VDP(1) register (R#1)
+	BAKCLR:	equ $f3ea ; Background colour
+	BDRCLR:	equ $f3eb ; Border colour
 
 ; VRAM addresses
-CHRTBL:	equ $0000 ; Pattern table
-NAMTBL:	equ $1800 ; Name table
-CLRTBL:	equ $2000 ; Color table
-SPRATR:	equ $1B00 ; Sprite attributes table
-SPRTBL:	equ $3800 ; Sprite pattern table
+	CHRTBL:	equ $0000 ; Pattern table
+	NAMTBL:	equ $1800 ; Name table
+	CLRTBL:	equ $2000 ; Color table
+	SPRATR:	equ $1B00 ; Sprite attributes table
+	SPRTBL:	equ $3800 ; Sprite pattern table
 
 ; VDP symbolic constants
-SCR_WIDTH:	equ 32
-SPAT_END:	equ $d0 ; Sprite attribute table end marker
+	SCR_WIDTH:	equ 32
+	SPAT_END:	equ $d0 ; Sprite attribute table end marker
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
-; VDP: color ,1,1
-	ld	hl, FORCLR
-	ld	a, 15
-	ld	[hl], a
-	ld	a, 4
-	inc	hl ; BAKCLR
-	ld	[hl], a
-	inc	hl ; BDRCLR
-	ld	[hl], a
+; VDP: color ,4,4
+	ld	hl, $0404
+	ld	[BAKCLR], hl
 ; VDP: screen 2
 	call	INIT32
 ; screen ,2

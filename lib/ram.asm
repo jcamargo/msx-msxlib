@@ -2,18 +2,20 @@
 ; =============================================================================
 ; 	RAM
 ; =============================================================================
-	IFDEF CFG_INIT_16KB_RAM
-RAM_SEG:    equ $C000
-	ELSE
-RAM_SEG:    equ $E000
-	ENDIF
+
+IFDEF CFG_INIT_16KB_RAM
+	org	$c000, $f380
+ELSE
+	org	$e000, $f380
+ENDIF
 ram_start:
 
 ; -----------------------------------------------------------------------------
-	include "msx/ram.asm"
-	include "msx/etc/ram.asm"
-	include "game/ram.asm"
-	include "game/etc/ram.asm"
+	include "lib/msx/ram.asm"
+	include "lib/msx/etc/ram.asm"
+	include "lib/game/ram.asm"
+	include "lib/game/etc/ram.asm"
+	include "lib/etc/ram.asm"
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
