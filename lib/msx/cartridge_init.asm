@@ -203,9 +203,9 @@ CARTRIDGE_INIT:
 ; Frame rate related variables
 	ld	a, [MSXID1]
 	bit	7, a ; 0=60Hz, 1=50Hz
-	ld	hl, 5 << 8 + 50 ; frame rate and frames per tenth for 50Hz
+	ld	hl, (5 << 8) + 50 ; frame rate and frames per tenth for 50Hz
 	jr	nz, .HL_OK
-	ld	hl, 6 << 8 + 60 ; frame rate and frames per tenth for 60Hz
+	ld	hl, (6 << 8) + 60 ; frame rate and frames per tenth for 60Hz
 .HL_OK:
 	ld	[frame_rate], hl
 

@@ -5,8 +5,8 @@ include config.makefile
 # default target
 # default: compile
 ROOT=games\examples
-PROJNAME=minimal
-PROJIDR=minimal
+PROJNAME=evenless
+PROJIDR=evenless
 
 # PROJNAME=stand_alone
 # PROJIDR=stand_alone

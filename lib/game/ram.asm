@@ -1,4 +1,4 @@
-﻿
+﻿	
 	IFDEF CFG_RAM_PLAYER
 ; -----------------------------------------------------------------------------
 ; Variables for: Player related routines (generic)

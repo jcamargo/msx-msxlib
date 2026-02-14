@@ -3,6 +3,7 @@
 ; =============================================================================
 ;	MSXlib minimal example
 ; =============================================================================
+;
 
 ; -----------------------------------------------------------------------------
 ; MSX symbolic constants
@@ -20,22 +21,11 @@ INIT:
 ; The screen mode 2 with 16x16 unmagnified sprites,
 ; the keyboard click is muted, and the screen is disabled.
 
-	XOR A
-
+;
 ; YOUR CODE (ROM) START HERE
 ;
 ; Example:
 ;
-
-; ; Frame rate related variables
-; 	ld	a, [MSXID1]
-; 	bit	7, a ; 0=60Hz, 1=50Hz
-; 	ld	hl, (5<<8) + 50 
-; 	; frame rate and frames per tenth for 50Hz
-; 	jr	nz, .HL_OK
-; 	ld	hl, (6<<8) + 60 ; frame rate and frames per tenth for 60Hz
-; .HL_OK:
-; 	ld	[frame_rate], hl
 
 ; In screen mode 2 we need to set up a charset
 ; to actually show something in the screen.
@@ -59,7 +49,7 @@ INIT:
 	ld	de, NAMTBL
 	ld	bc, .MY_MESSAGE_SIZE
 	call	LDIRVM
-   
+
 ; Re-enables the screen so we can see the results
 	call	ENASCR
 
@@ -70,26 +60,25 @@ INIT:
 
 ; The message to print
 .MY_MESSAGE:
-	db	"Hello, Julek, it seems it works 4!"
-
-.MY_MESSAGE_SIZE:	equ $ - .MY_MESSAGE
+	db	"Hello, World!"
+	.MY_MESSAGE_SIZE:	equ $ - .MY_MESSAGE
 ; -----------------------------------------------------------------------------
 
-	include	"../../../lib/rom_end.asm"
+	include	"../../../lib/msx/rom_end.asm"
 
 ; -----------------------------------------------------------------------------
 ; MSXlib core and game-related variables
-	include	"../../../lib/ram.asm"	
+	include	"../../../lib/msx/ram.asm"
 
 ; lib/ram.asm automatically starts the RAM section at the proper address
 ; (either $C000 (16KB) or $E000 (8KB)) and includes everything MSXlib requires.
 
 ;
 ; YOUR VARIABLES (RAM) START HERE
-frame_rate:	db	0x50
-frames_per_tenth:	db	0x05
-	
+;
+
 ; -----------------------------------------------------------------------------
-	include	"../../../lib/ram_end.asm"
+
+	include	"lib/ram_end.asm"
 
 ; EOF

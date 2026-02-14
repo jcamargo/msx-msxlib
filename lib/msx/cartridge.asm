@@ -5,8 +5,8 @@
 
 ; -----------------------------------------------------------------------------
 ; MSX cartridge (ROM) header, entry point and initialization
-	include "cartridge_header.asm"
-	include "cartridge_init.asm"
+
+	
 ; -----------------------------------------------------------------------------
 
 ; EOF
