@@ -1,4 +1,4 @@
-﻿
+
 ; =============================================================================
 ;	Input routines (BIOS-based)
 ; =============================================================================
@@ -27,11 +27,10 @@ BIT_BUTTON_START:	equ 7
 READ_INPUT:
 ; Reads joystick #1
 
-; Disables interrupts if this routine is to be called manually
 	IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
+; Disables interrupts if this routine is to be called manually
 		di
-	ENDIF ; IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
-
+	ENDIF
 ; Reads PSG register #15
 	ld	a, 15
 	call	RDPSG
@@ -58,12 +57,12 @@ READ_INPUT:
 			ld	c, 8 ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
 			call	SNSMAT_NO_DI_EI.C_OK
 			cpl
-		ENDIF ; IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
+		ENDIF
 	ELSE
 		ld	a, 8 ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
 		call	SNSMAT
 		cpl
-	ENDIF ; IFDEF SNSMAT_NO_DI_EI
+	ENDIF
 ; Saves LEFT in input value
 	rrca	; SPACE RIGHT DOWN UP LEFT DEL INS HOME
 	rrca	; HOME SPACE RIGHT DOWN UP LEFT DEL INS
@@ -90,18 +89,17 @@ READ_INPUT:
 	IFDEF SNSMAT_NO_DI_EI
 		IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
 			ld	a, [OLDKEY + 4] ; R Q P O N M L K
+			cpl
 		ELSE
 			ld	c, 4 ; R Q P O N M L K
 			call	SNSMAT_NO_DI_EI.C_OK
-			cpl
-		ENDIF ; IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
+		ENDIF
 	ELSE
 		ld	a, 4 ; R Q P O N M L K
 		call	SNSMAT
-		cpl
-	ENDIF ; IFDEF SNSMAT_NO_DI_EI
-	and	$0c ; N or M
-	jr	z, .NOT_TRIGGER_B
+	ENDIF
+	bit	2, a
+	jr	nz, .NOT_TRIGGER_B
 ; Saves trigger B in current level
 	set	BIT_TRIGGER_B, b
 .NOT_TRIGGER_B:
@@ -110,35 +108,24 @@ READ_INPUT:
 	IFDEF SNSMAT_NO_DI_EI
 		IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
 			ld	a, [OLDKEY + 7] ; CR SEL BS STOP TAB ESC F5 F4
+			cpl
 		ELSE
 			ld	c, 7 ; CR SEL BS STOP TAB ESC F5 F4
 			call	SNSMAT_NO_DI_EI.C_OK
-			cpl
-		ENDIF ; IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
+		ENDIF
 	ELSE
 		ld	a, 7 ; CR SEL BS STOP TAB ESC F5 F4
 		call	SNSMAT
-		cpl
-	ENDIF ; IFDEF SNSMAT_NO_DI_EI
-	ld	c, a ; (preserves a in c)
-	IFDEF CFG_INPUT_SELECT_MASK
-		and	CFG_INPUT_SELECT_MASK
-	ELSE
-		and	$68 ; SEL BS or TAB
-	ENDIF ; IFDEF CFG_INPUT_SELECT_MASK
-	jr	z, .NOT_SELECT
+	ENDIF
+	bit	6, a
+	jr	nz, .NOT_SELECT
 ; Saves "select" button in current level
 	set	BIT_BUTTON_SELECT, b
 .NOT_SELECT:
 
 ; "Start" button (STOP key)
-	ld	a, c ; (restores a)
-	IFDEF CFG_INPUT_START_MASK
-		and	CFG_INPUT_START_MASK
-	ELSE
-		and	$94 ; CR STOP or ESC
-	ENDIF ; IFDEF CFG_INPUT_START_MASK
-	jr	z, .NOT_START
+	bit	4, a
+	jr	nz, .NOT_START
 ; Saves "start" button in current level
 	set	BIT_BUTTON_START, b
 .NOT_START:
@@ -152,10 +139,10 @@ READ_INPUT:
 	inc	hl ; hl = input.edge
 	ld	[hl], a ; saves edge
 
-; Enables interrupts if this routine is to be called manually
 	IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
+; Enables interrupts if this routine is to be called manually
 		ei
-	ENDIF ; IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
+	ENDIF
 
 	ret
 ; -----------------------------------------------------------------------------

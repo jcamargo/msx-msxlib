@@ -6,10 +6,10 @@
 
 ; -----------------------------------------------------------------------------
 ; MSX symbolic constants
-	include	"lib/msx/symbols.asm"
+	include	"../../../lib/msx/symbols.asm"
 
 ; MSX cartridge (ROM) header, entry point and initialization
-	include "lib/msx/cartridge.asm"
+	include "../../../lib/msx/cartridge.asm"
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -79,7 +79,7 @@ INIT:
 
 ; -----------------------------------------------------------------------------
 ; MSXlib core and game-related variables
-	include	"lib/ram.asm"	
+	include	"../../../lib/ram.asm"	
 
 ; lib/ram.asm automatically starts the RAM section at the proper address
 ; (either $C000 (16KB) or $E000 (8KB)) and includes everything MSXlib requires.
@@ -100,4 +100,4 @@ INIT:
 ; -----------------------------------------------------------------------------
 	include	"lib/ram_end.asm"
 
-; EOF
+EOF

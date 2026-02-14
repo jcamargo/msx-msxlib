@@ -11,11 +11,11 @@
 ram_start:
 
 ; -----------------------------------------------------------------------------
-	include "lib/msx/ram.asm"
-	include "lib/msx/etc/ram.asm"
-	include "lib/game/ram.asm"
-	include "lib/game/etc/ram.asm"
-	include "lib/etc/ram.asm"
+	include "msx/ram.asm"
+	include "msx/etc/ram.asm"
+	include "game/ram.asm"
+	include "game/etc/ram.asm"
+	include "etc/ram.asm"
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
