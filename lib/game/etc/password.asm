@@ -1,16 +1,16 @@
-
+﻿
 ; =============================================================================
 ;	Password encoding/decoding routines
 ; =============================================================================
 
-	CFG_RAM_PASSWORD:	equ	1
+CFG_RAM_PASSWORD:	equ	1
 
 ; -----------------------------------------------------------------------------
 ; Password length (in bytes)
-	PASSWORD_SIZE:	equ 1 + CFG_PASSWORD_DATA_SIZE * 2 + 1
+PASSWORD_SIZE:	equ 1 + CFG_PASSWORD_DATA_SIZE * 2 + 1
 
 ; Salt to obfuscate sequences (000000.. becomes 05AF49..)
-	PASSWORD_SALT:		equ $05
+PASSWORD_SALT:		equ $05
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -33,11 +33,11 @@ RESET_PASSWORD:
 ; ret [password]: the encoded password
 ENCODE_PASSWORD:
 ; Random first digit
-	IFEXIST GET_RANDOM
+	IFDEF GET_RANDOM
 		call	GET_RANDOM
 	ELSE
 		ld	a, r
-	ENDIF ; IFEXIST GET_RANDOM
+	ENDIF ; IFDEF GET_RANDOM
 	; and	$0f ; unnecessary (because .WRITE_DIGIT implementation)
 	ld	c, a ; preserves digit in c
 	ex	af, af'
@@ -179,21 +179,21 @@ DECODE_PASSWORD:
 ; ret hl: digit address
 ; ret z/nz: z = no digit was read, nz = a digit was read
 INPUT_HEXADECIMAL_DIGIT:
-IFEXIST READ_KEYBOARD
+	IFDEF READ_KEYBOARD
 	push	hl ; preserves address
 	ld	bc, $0400 ; (only first 4 rows)
 	call	READ_KEYBOARD.BC_OK
 	pop	hl ; restores address
-ENDIF ; IFEXIST READ_KEYBOARD
+	ENDIF ; IFDEF READ_KEYBOARD
 .KEYBOARD_READ:
 ; Checks 0..7
-IFEXIST READ_KEYBOARD
+	IFDEF READ_KEYBOARD
 	ld	a, [NEWKEY + 0] ; 0 = 7 6 5 4 3 2 1 0
-ELSE
+	ELSE
 	xor	a ; a = 0 = 7 6 5 4 3 2 1 0
 	call	SNSMAT
 	cpl
-ENDIF ; IFEXIST READ_KEYBOARD
+	ENDIF ; IFDEF READ_KEYBOARD
 	or	a
 	jr	z, .NOT_0_TO_7 ; no
 ; yes: computes digit (0 to 7)
@@ -202,13 +202,13 @@ ENDIF ; IFEXIST READ_KEYBOARD
 .NOT_0_TO_7:
 
 ; Checks 8..9
-IFEXIST READ_KEYBOARD
+	IFDEF READ_KEYBOARD
 	ld	a, [NEWKEY + 1] ; 1 = ; ] [ \ = - 9 8
-ELSE
+	ELSE
 	inc	a ; a = 1 = ; ] [ \ = - 9 8
 	call	SNSMAT
 	cpl
-ENDIF ; IFEXIST READ_KEYBOARD
+	ENDIF ; IFDEF READ_KEYBOARD
 	and	$03
 	jr	z, .NOT_8_TO_9 ; no
 ; yes: computes digit (8 or 9)
@@ -217,13 +217,13 @@ ENDIF ; IFEXIST READ_KEYBOARD
 .NOT_8_TO_9:
 
 ; Checks A..B
-IFEXIST READ_KEYBOARD
+	IFDEF READ_KEYBOARD
 	ld	a, [NEWKEY + 2] ; 2 = B A pound / . , ` '
-ELSE
+	ELSE
 	ld	a, 2 ; a = 2 = B A pound / . , ` '
 	call	SNSMAT
 	cpl
-ENDIF ; IFEXIST READ_KEYBOARD
+	ENDIF ; IFDEF READ_KEYBOARD
 	and	$c0
 	jr	z, .NOT_A_TO_B ; no
 ; yes: computes digit
@@ -237,13 +237,13 @@ ENDIF ; IFEXIST READ_KEYBOARD
 .NOT_A_TO_B:
 
 ; Checks C..F
-IFEXIST READ_KEYBOARD
+	IFDEF READ_KEYBOARD
 	ld	a, [NEWKEY + 3] ; 3 = J I H G F E D C
-ELSE
+	ELSE
 	ld	a, 3 ; a = 3 = J I H G F E D C
 	call	SNSMAT
 	cpl
-ENDIF ; IFEXIST READ_KEYBOARD
+	ENDIF ; IFDEF READ_KEYBOARD
 	and	$0f
 	ret	z ; no input
 ; yes: computes digit

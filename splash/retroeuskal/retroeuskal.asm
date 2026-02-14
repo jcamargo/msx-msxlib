@@ -1,13 +1,13 @@
-
+﻿
 ; -----------------------------------------------------------------------------
 ; MSX BIOS
-	DISSCR:	equ $0041 ; Disable screen
-	ENASCR:	equ $0044 ; Enable screen
-	WRTVRM:	equ $004d ; Write byte to VRAM
-	FILVRM:	equ $0056 ; Fill block of VRAM with data byte
-	LDIRVM:	equ $005c ; Copy block to VRAM, from memory
-	INIT32:	equ $006f ; Initialize VDP to 32x24 Text Mode
-	CLS:	equ $00c3 ; Clear screen
+DISSCR:	equ $0041 ; Disable screen
+ENASCR:	equ $0044 ; Enable screen
+WRTVRM:	equ $004d ; Write byte to VRAM
+FILVRM:	equ $0056 ; Fill block of VRAM with data byte
+LDIRVM:	equ $005c ; Copy block to VRAM, from memory
+INIT32:	equ $006f ; Initialize VDP to 32x24 Text Mode
+CLS:	equ $00c3 ; Clear screen
 
 ; MSX system variables
 CLIKSW:	equ $f3db ; Keyboard click sound
@@ -106,19 +106,19 @@ SPAT_END:	equ $d0 ; Sprite attribute table end marker
 ; -----------------------------------------------------------------------------
 .CHRTBL_0:
 	incbin	"retroeuskal/charset.png.chr"
-	.CHRTBL_0_SIZE:	equ $ - .CHRTBL_0
+.CHRTBL_0_SIZE:	equ $ - .CHRTBL_0
 .NAMTBL_0:
 	incbin	"retroeuskal/screen.tmx.bin"
-	.NAMTBL_0_SIZE:		equ $ - .NAMTBL_0
-	.NAMTBL_0_ROW_SIZE:	equ .NAMTBL_0_SIZE /4
-	.NAMTBL_0_CENTER:	equ (SCR_WIDTH - .NAMTBL_0_ROW_SIZE) / 2
+.NAMTBL_0_SIZE:		equ $ - .NAMTBL_0
+.NAMTBL_0_ROW_SIZE:	equ .NAMTBL_0_SIZE /4
+.NAMTBL_0_CENTER:	equ (SCR_WIDTH - .NAMTBL_0_ROW_SIZE) / 2
 .SPRTBL_0:
 	incbin	"retroeuskal/sprites.png.spr"
-	.SPRTBL_0_SIZE:	equ $ - .SPRTBL_0
+.SPRTBL_0_SIZE:	equ $ - .SPRTBL_0
 .SPRATR_0:
 	db	96 -1, 72, $00, 8
 	db	SPAT_END
-	.SPRATR_0_SIZE:	equ $ - .SPRATR_0
+.SPRATR_0_SIZE:	equ $ - .SPRATR_0
 ; -----------------------------------------------------------------------------
 
 ; EOF

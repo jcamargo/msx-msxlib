@@ -1,4 +1,4 @@
-;
+﻿;
 ; =============================================================================
 ;	Enemies related routines (generic)
 ;	Generic enemy state handlers (generic)
@@ -6,26 +6,26 @@
 ; =============================================================================
 ;
 
-	CFG_RAM_ENEMY:	equ 1
+CFG_RAM_ENEMY:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Bounding box coordinates offset from the logical coordinates
-	ENEMY_BOX_X_OFFSET:	equ -(CFG_ENEMY_WIDTH / 2)
-	ENEMY_BOX_Y_OFFSET:	equ -CFG_ENEMY_HEIGHT
+ENEMY_BOX_X_OFFSET:	equ -(CFG_ENEMY_WIDTH / 2)
+ENEMY_BOX_Y_OFFSET:	equ -CFG_ENEMY_HEIGHT
 
 ; Enemy pattern modifiers (as bit indexes)
-	BIT_ENEMY_PATTERN_ANIM:	equ 2
-	BIT_ENEMY_PATTERN_LEFT:	equ 3
+BIT_ENEMY_PATTERN_ANIM:	equ 2
+BIT_ENEMY_PATTERN_LEFT:	equ 3
 
 ; Enemy pattern modifiers (as flags)
-	FLAG_ENEMY_PATTERN_ANIM:	equ (1 << BIT_ENEMY_PATTERN_ANIM) ; $04
-	FLAG_ENEMY_PATTERN_LEFT:	equ (1 << BIT_ENEMY_PATTERN_LEFT) ; $08
+FLAG_ENEMY_PATTERN_ANIM:	equ (1 << BIT_ENEMY_PATTERN_ANIM) ; $04
+FLAG_ENEMY_PATTERN_LEFT:	equ (1 << BIT_ENEMY_PATTERN_LEFT) ; $08
 
 ; Enemy flags (as bit indexes)
-	BIT_ENEMY_LETHAL:	equ 0 ; Kills the player on collision
+BIT_ENEMY_LETHAL:	equ 0 ; Kills the player on collision
 
 ; Enemy flags (as flags)
-	FLAG_ENEMY_LETHAL:	equ (1 << BIT_ENEMY_LETHAL) ; $01
+FLAG_ENEMY_LETHAL:	equ (1 << BIT_ENEMY_LETHAL) ; $01
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -109,11 +109,11 @@ UPDATE_ENEMIES:
 ; no: update enemy
 	push	bc ; preserves counter in b
 
-IFEXIST KILL_ENEMY
+	IFDEF KILL_ENEMY
 ; Reads the tile flags at the enemy coordinates
 	call	GET_ENEMY_TILE_FLAGS
 
-IFEXIST BIT_ENEMY_SOLID
+	IFDEF BIT_ENEMY_SOLID
 ; Is the tile solid?
 	bit	BIT_WORLD_SOLID, a
 	jp	z, .NOT_SOLID ; no
@@ -122,7 +122,7 @@ IFEXIST BIT_ENEMY_SOLID
 	jr	nz, .KILL_ENEMY ; yes
 ; no
 .NOT_SOLID:
-ENDIF ; IFEXIST BIT_WORLD_SOLID
+	ENDIF ; IFDEF BIT_WORLD_SOLID
 
 ; Has the tile the death bit?
 	bit	BIT_WORLD_DEATH, a
@@ -136,7 +136,7 @@ ENDIF ; IFEXIST BIT_WORLD_SOLID
 	call	KILL_ENEMY
 
 .NOT_KILLED:
-ENDIF ; IFEXIST KILL_ENEMY
+	ENDIF ; IFDEF KILL_ENEMY
 
 ; Dereferences the state pointer of the current enemy
 	ld	l, [ix + enemy.state_l]

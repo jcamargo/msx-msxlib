@@ -7,6 +7,7 @@ include config.makefile
 ROOT=games\examples
 PROJNAME=minimal
 PROJIDR=00minimal
+
 # PROJNAME=stand_alone
 # PROJIDR=stand_alone
 SRC= $(ROOT)\$(PROJIDR)\$(PROJNAME).asm

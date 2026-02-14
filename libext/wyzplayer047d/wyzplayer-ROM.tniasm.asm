@@ -1,4 +1,4 @@
-; MSX PSG proPLAYER v0.47d - WYZ 09.03.2016
+﻿; MSX PSG proPLAYER v0.47d - WYZ 09.03.2016
 
 ; CARACTERISTICAS
 ; 5 OCTAVAS:            O[2-6]=60 NOTAS
@@ -95,9 +95,9 @@ WYZ_PLAYER_OFF:
 ;PLAYER OFF
         XOR	A			;***** IMPORTANTE SI NO HAY MUSICA ****
         LD	[WYZ_FLAGS], A
-        IFDEF CFG_WYZ_FADE
+	IFDEF CFG_WYZ_FADE
                 LD	[FADE], A	;solo si hay fade out
-        ENDIF ; IFDEF CFG_WYZ_FADE
+	ENDIF ; IFDEF CFG_WYZ_FADE
 
 ; CLEAR_PSG_BUFFER:
         LD	HL, PSG_REG
@@ -139,9 +139,9 @@ WYZ_CARGA_CANCION_HL:
 ; Previene interrupciones con la canción a medias de cargar
                 XOR     A
                 LD	[WYZ_FLAGS], A
-        IFDEF CFG_WYZ_FADE
+	IFDEF CFG_WYZ_FADE
                 LD	[FADE], A
-        ENDIF ; IFDEF CFG_WYZ_FADE
+	ENDIF ; IFDEF CFG_WYZ_FADE
 
 ;DECODIFICAR
 
@@ -424,12 +424,12 @@ WYZ_INICIA_EFECTO:
                 SET     WYZ_BIT_SFX,[HL]
                 RET
 
-        ENDIF ; IFDEF CFG_WYZ_SFX
+	ENDIF ; IFDEF CFG_WYZ_SFX
 ;______________________________________________________
 
 
 ;____________________________________________________________
-        IFDEF CFG_WYZ_FADE
+	IFDEF CFG_WYZ_FADE
 
 ;FADE_OUT 100% A 0% *
 ;IN [A]:CADENCIA
@@ -468,7 +468,7 @@ WYZ_REPRODUCE_FRAME:
         call    nz, REPRODUCE_EFECTO_MUSICA
 
 ; Invoca REPRODUCE_FADE_OUT condicionalmente
-        IFDEF CFG_WYZ_FADE
+	IFDEF CFG_WYZ_FADE
                 ld      a, [FADE]
                 rrca                    ; ESTA ACTIVADO EL FADE?
                 call    c, REPRODUCE_FADE_OUT
@@ -486,7 +486,7 @@ WYZ_REPRODUCE_FRAME:
 
 
 ;______________________________________________________
-        IFDEF CFG_WYZ_FADE
+	IFDEF CFG_WYZ_FADE
 
 WYZ_REPRODUCE_FADE_OUT:
                 LD      HL, FADE

@@ -1,4 +1,4 @@
-;
+﻿;
 ; =============================================================================
 ;	Enemy type: killed (generic)
 ; =============================================================================
@@ -8,11 +8,11 @@
 ; Kills the enemy
 ; param ix: pointer to the current enemy
 KILL_ENEMY:
-IFEXIST CFG_SOUND_ENEMY_KILLED
+	IFDEF CFG_SOUND_ENEMY_KILLED
 	ld	a, CFG_SOUND_ENEMY_KILLED
 	ld	c, 7 ; default-high priority
 	call	ayFX_INIT
-ENDIF
+	ENDIF
 .NO_SOUND:
 ; Makes the enemy non-lethal and non-solid
 	ld	a, [ix + enemy.flags]

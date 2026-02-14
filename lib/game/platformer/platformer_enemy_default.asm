@@ -1,4 +1,4 @@
-;
+﻿;
 ; =============================================================================
 ;	Additional default enemy types (platformer game)
 ;	Convenience enemy state handlers (platformer game)
@@ -8,12 +8,12 @@
 
 ; -----------------------------------------------------------------------------
 ; Enemy flags (as bit indexes) (platformer game)
-	BIT_ENEMY_SOLID:	equ 1 ; (can be killed by solid tiles)
-	BIT_ENEMY_DEATH:	equ 2 ; (can be killed by death tiles)
+BIT_ENEMY_SOLID:	equ 1 ; (can be killed by solid tiles)
+BIT_ENEMY_DEATH:	equ 2 ; (can be killed by death tiles)
 
 ; Enemy flags (as flags)
-	FLAG_ENEMY_SOLID:	equ (1 << BIT_ENEMY_SOLID) ; $02
-	FLAG_ENEMY_DEATH:	equ (1 << BIT_ENEMY_DEATH) ; $04
+FLAG_ENEMY_SOLID:	equ (1 << BIT_ENEMY_SOLID) ; $02
+FLAG_ENEMY_DEATH:	equ (1 << BIT_ENEMY_DEATH) ; $04
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -267,15 +267,15 @@ ENEMY_TYPE_PACER:
 ; Checks floor (or wall)
 	call	CAN_ENEMY_WALK
 	jp	nz, MOVE_ENEMY ; yes: moves the enemy
-IFEXIST ENEMY_TYPE_KILLED
+	IFDEF ENEMY_TYPE_KILLED
 	call	TURN_ENEMY ; no: turns around
 ; Is the enemy trapped?
 	call	CAN_ENEMY_WALK
 	ret	nz ; no
 	jp	KILL_ENEMY ; yes: kills the enemy
-ELSE
+	ELSE
 	jp	TURN_ENEMY ; no: turns around
-ENDIF ; IFEXIST ENEMY_TYPE_KILLED
+	ENDIF ; IFDEF ENEMY_TYPE_KILLED
 
 ; The enemy walks ahead a number of pixels along the ground
 ; or until a wall is hit, the end of the platform is reached

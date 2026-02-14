@@ -1,4 +1,4 @@
-
+﻿
 ;
 ; =============================================================================
 ;	MSXlib 48kB ROM minimal example
@@ -17,7 +17,7 @@
 ; The message to print
 MY_MESSAGE:
 	db	"Hello, World!"
-	.SIZE:	equ $ - MY_MESSAGE
+.SIZE:	equ $ - MY_MESSAGE
 
 	include "lib/page0_end.asm"
 ; -----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ MY_MESSAGE:
 ; Includes search for page 2 slot/subslot at start
 ; and declares routines to set the page 0 cartridge's slot/subslot
 ; and to restore the BIOS at page 0
-	CFG_INIT_ROM_SIZE:	equ 48
+CFG_INIT_ROM_SIZE:	equ 48
 
 ; MSXlib helper: default configuration
 	include	"lib/rom-default.asm"

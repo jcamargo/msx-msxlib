@@ -1,4 +1,4 @@
-
+﻿
 ;
 ; =============================================================================
 ;	MSXlib core configuration, routines and initialization
@@ -19,7 +19,7 @@
 
 ; Number of sprites reserved at the beginning of the SPRATR buffer
 ; (i.e.: first sprite number for the "volatile" sprites)
-	CFG_SPRITES_RESERVED:	equ CFG_PLAYER_SPRITES
+CFG_SPRITES_RESERVED:	equ CFG_PLAYER_SPRITES
 
 ; Enable for faster LDIRVM_NAMTBL routine (for NAMTBL-blitting intensive games)
 	; CFG_LDIRVM_NAMTBL_FAST:
@@ -64,7 +64,7 @@
 
 ; Define to enable the "vpoke" routines (deferred WRTVRMs)
 ; Maximum number of "vpokes" per frame
-	CFG_VPOKES: 		equ 4
+CFG_VPOKES: 		equ 4
 
 ; Define to enable the spriteable routines
 ; Maximum number of simultaneous spriteables
@@ -108,9 +108,9 @@
 
 ; Tile indexes (values) to be returned by GET_TILE_VALUE
 ; when the coordinates are over and under visible screen
-	CFG_TILES_VALUE_BORDER:	equ $a0 ; tile with BIT_WORLD_FLOOR | BIT_WORLD_SOLID
-	CFG_TILES_VALUE_OVER:	equ $00 ; tile with no flags
-	CFG_TILES_VALUE_UNDER:	equ $d0 ; tile with BIT_WORLD_DEATH
+CFG_TILES_VALUE_BORDER:	equ $a0 ; tile with BIT_WORLD_FLOOR | BIT_WORLD_SOLID
+CFG_TILES_VALUE_OVER:	equ $00 ; tile with no flags
+CFG_TILES_VALUE_UNDER:	equ $d0 ; tile with BIT_WORLD_DEATH
 
 ; Table of tile flags in pairs (up to index, tile flags)
 TILE_FLAGS_TABLE:
@@ -134,18 +134,18 @@ TILE_FLAGS_TABLE:
 ; Default player control routines (platformer game)
 
 ; Logical sprite sizes (bounding box size) (pixels)
-	CFG_PLAYER_WIDTH:		equ 8
-	CFG_PLAYER_HEIGHT:		equ 16
+CFG_PLAYER_WIDTH:		equ 8
+CFG_PLAYER_HEIGHT:		equ 16
 
 ; Number of sprites reserved before the player sprites
 ; (i.e.: first sprite number for the player sprites)
-	CFG_PLAYER_SPRITES_INDEX:	equ 0
+CFG_PLAYER_SPRITES_INDEX:	equ 0
 
 ; Number of player sprites (i.e.: number of colors)
-	CFG_PLAYER_SPRITES:		equ 2
+CFG_PLAYER_SPRITES:		equ 2
 
 ; Player animation delay (frames)
-	CFG_PLAYER_ANIMATION_DELAY:	equ 6
+CFG_PLAYER_ANIMATION_DELAY:	equ 6
 
 ; Custom player states (starting from 4 << 2)
 	; PLAYER_STATE_UVW:	equ (4 << 2) ; $10
@@ -174,16 +174,16 @@ PLAYER_DY_TABLE:
 	db	-4, -4			; (2,-8)
 	db	-2, -2, -2		; (5,-14)
 	db	-1, -1, -1, -1, -1, -1	; (11,-20)
-	.TOP_OFFSET:	equ $ - PLAYER_DY_TABLE
+.TOP_OFFSET:	equ $ - PLAYER_DY_TABLE
 	db	 0,  0,  0,  0,  0,  0	; (17,-20)
-	.FALL_OFFSET:	equ $ - PLAYER_DY_TABLE
+.FALL_OFFSET:	equ $ - PLAYER_DY_TABLE
 	db	1, 1, 1, 1, 1, 1	; (23,-14) / (6,6)
 	db	2, 2, 2			; (26,-8) / (9,12)
 	db	4
-	.SIZE:		equ $ - PLAYER_DY_TABLE
+.SIZE:		equ $ - PLAYER_DY_TABLE
 
 ; Terminal falling speed (pixels/frame)
-	CFG_PLAYER_GRAVITY:		equ 4
+CFG_PLAYER_GRAVITY:		equ 4
 
 ; Player related routines (generic)
 ; Player-tile helper routines
@@ -194,7 +194,7 @@ PLAYER_DY_TABLE:
 ; Default player control routines (platformer game)
 
 ; Controls if the player jumps with BIT_STRICK_UP or with BIT_TRIGGER_A/B
-	CFG_PLAYER_JUMP_INPUT:	equ BIT_TRIGGER_A
+CFG_PLAYER_JUMP_INPUT:	equ BIT_TRIGGER_A
 
 ; Side-view player related routines (two directions: left, right)
 	include	"lib/game/player_2dir.asm"
@@ -209,23 +209,23 @@ PLAYER_DY_TABLE:
 ; Enemy-tile helper routines
 
 ; Maximum simultaneous number of enemies
-	CFG_ENEMY_COUNT:		equ 8
+CFG_ENEMY_COUNT:		equ 8
 
 ; Logical sprite sizes (bounding box size) (pixels)
-	CFG_ENEMY_WIDTH:		equ 8
-	CFG_ENEMY_HEIGHT:		equ 16
+CFG_ENEMY_WIDTH:		equ 8
+CFG_ENEMY_HEIGHT:		equ 16
 
 ; Enemies animation delay (frames)
-	CFG_ENEMY_ANIMATION_DELAY:	equ 8
+CFG_ENEMY_ANIMATION_DELAY:	equ 8
 
 ; Enemies delta-Y (dY) table for jumping and falling
-	ENEMY_DY_TABLE:			equ PLAYER_DY_TABLE
-	.TOP_OFFSET:			equ PLAYER_DY_TABLE.TOP_OFFSET
-	.FALL_OFFSET:			equ PLAYER_DY_TABLE.FALL_OFFSET
-	.SIZE:				equ PLAYER_DY_TABLE.SIZE
+ENEMY_DY_TABLE:			equ PLAYER_DY_TABLE
+.TOP_OFFSET:			equ PLAYER_DY_TABLE.TOP_OFFSET
+.FALL_OFFSET:			equ PLAYER_DY_TABLE.FALL_OFFSET
+.SIZE:				equ PLAYER_DY_TABLE.SIZE
 
 ; Enemies terminal falling speed (pixels/frame)
-	CFG_ENEMY_GRAVITY:		equ CFG_PLAYER_GRAVITY
+CFG_ENEMY_GRAVITY:		equ CFG_PLAYER_GRAVITY
 
 ; Enemies related routines (generic)
 ; Convenience enemy state handlers (generic)
@@ -240,16 +240,16 @@ PLAYER_DY_TABLE:
 ; Convenience enemy helper routines (platform games)
 
 ; Pauses (frames) for the default enemy routines
-	CFG_ENEMY_PAUSE_S:	equ 16 ; short pause (~16 frames)
-	CFG_ENEMY_PAUSE_M:	equ 40 ; medium pause (~32 frames, < 64 frames)
-	CFG_ENEMY_PAUSE_L:	equ 96 ; long pause (~64 frames, < 256 frames)
+CFG_ENEMY_PAUSE_S:	equ 16 ; short pause (~16 frames)
+CFG_ENEMY_PAUSE_M:	equ 40 ; medium pause (~32 frames, < 64 frames)
+CFG_ENEMY_PAUSE_L:	equ 96 ; long pause (~64 frames, < 256 frames)
 
 ; Killed/respawning patterns
 	; CFG_ENEMY_DYING_PATTERN:	equ ENEMY_DYING_PATTERN ; $c4
 	; CFG_ENEMY_RESPAWN_PATTERN:	equ ENEMY_RESPAWN_PATTERN ; $c8
 
 ; Triggers will fire <n> pixels before the actual collision occurs
-	CFG_ENEMY_ADVANCE_COLLISION:	equ 0
+CFG_ENEMY_ADVANCE_COLLISION:	equ 0
 
 
 ; Default enemy types (platformer game)
@@ -304,12 +304,12 @@ INIT:
 	call	UNPACK_LDIRVM
 
 ; Initializes global vars
-IF (GLOBALS_0.SIZE > 0)
+	IF (GLOBALS_0.SIZE > 0)
 	ld	hl, GLOBALS_0
 	ld	de, globals
 	ld	bc, GLOBALS_0.SIZE
 	ldir
-ENDIF
+	ENDIF
 ; ------VVVV----falls through--------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -390,20 +390,20 @@ GAME_LOOP_INIT:
 	call	UNPACK
 
 ; Initializes stage vars
-IF (STAGE_0.SIZE > 0)
+	IF (STAGE_0.SIZE > 0)
 	ld	hl, STAGE_0
 	ld	de, stage
 	ld	bc, STAGE_0.SIZE
 	ldir
-ENDIF
+	ENDIF
 
 ; Initializes player vars
-IF (PLAYER_0.SIZE > 0)
+	IF (PLAYER_0.SIZE > 0)
 	ld	hl, PLAYER_0
 	ld	de, player
 	ld	bc, PLAYER_0.SIZE
 	ldir
-ENDIF
+	ENDIF
 
 ; Initializes sprite attribute table (SPRATR)
 	ld	hl, SPRATR_0
@@ -427,27 +427,27 @@ GAME_LOOP:
 ; Prepares next frame (1/2)
 	call	PUT_PLAYER_SPRITE
 
-IFDEF CFG_DEBUG_BDRCLR
+	IFDEF CFG_DEBUG_BDRCLR
 	ld	b, 1
 	call	SET_BDRCLR ; black: free frame time
-ENDIF
+	ENDIF
 
 ; Synchronization (halt)
 	halt
 
-IFDEF CFG_DEBUG_BDRCLR
+	IFDEF CFG_DEBUG_BDRCLR
 	ld	b, 4
 	call	SET_BDRCLR ; blue: VDP busy
-ENDIF
+	ENDIF
 
 ; Blit buffers to VRAM
 	call	EXECUTE_VPOKES
 	call	LDIRVM_SPRATR
 
-IFDEF CFG_DEBUG_BDRCLR
+	IFDEF CFG_DEBUG_BDRCLR
 	ld	b, 12 ; green: game logic
 	call	SET_BDRCLR
-ENDIF
+	ENDIF
 
 ; Prepares next frame (2/2)
 	call	RESET_SPRITES
@@ -474,10 +474,10 @@ ENDIF
 	jr	z, PLAYER_OVER ; player is dead
 
 ; (this should never happen)
-IFDEF CFG_DEBUG_BDRCLR
+	IFDEF CFG_DEBUG_BDRCLR
 	ld	b, 6
 	call	SET_BDRCLR ; red: this is bad
-ENDIF
+	ENDIF
 .THIS_IS_BAD:
 	halt
 	call	BEEP
@@ -673,18 +673,18 @@ ON_PLAYER_BULLET_COLLISION:	equ SET_PLAYER_DYING
 ; Literals
 TXT_STAGE:
 	db	"STAGE 00", $00
-	.SIZE:		equ $ - TXT_STAGE
-	.CENTER:	equ (SCR_WIDTH - .SIZE) /2
+.SIZE:		equ $ - TXT_STAGE
+.CENTER:	equ (SCR_WIDTH - .SIZE) /2
 
 TXT_LIVES:
 	db	"0 LIVES LEFT", $00
-	.SIZE: equ $ - TXT_LIVES
-	.CENTER:	equ (SCR_WIDTH - .SIZE) /2
+.SIZE: equ $ - TXT_LIVES
+.CENTER:	equ (SCR_WIDTH - .SIZE) /2
 
 TXT_GAME_OVER:
 	db	"GAME OVER", $00
-	.SIZE: equ $ - TXT_GAME_OVER
-	.CENTER:	equ (SCR_WIDTH - .SIZE) /2
+.SIZE: equ $ - TXT_GAME_OVER
+.CENTER:	equ (SCR_WIDTH - .SIZE) /2
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -692,7 +692,7 @@ TXT_GAME_OVER:
 GLOBALS_0:
 	dw	1000			; .hi_score
 	;	...			; ...
-	.SIZE:	equ $ - GLOBALS_0
+.SIZE:	equ $ - GLOBALS_0
 
 ; Initial value of the game-scope vars
 GAME_0:
@@ -701,12 +701,12 @@ GAME_0:
 	dw	0			; .score
 	db	5			; .lives
 	;	...			; ...
-	.SIZE:	equ $ - GAME_0
+.SIZE:	equ $ - GAME_0
 
 ; Initial value of the stage-scoped vars
 STAGE_0:
 	;	...			; ...
-	.SIZE:	equ $ - STAGE_0
+.SIZE:	equ $ - STAGE_0
 
 ; Initial (per stage) sprite attributes table
 SPRATR_0:
@@ -720,7 +720,7 @@ PLAYER_0:
 	db	0			; .animation_delay
 	db	PLAYER_STATE_FLOOR	; .state
 	db	0			; .dy_index
-	.SIZE:	equ $ - PLAYER_0
+.SIZE:	equ $ - PLAYER_0
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -747,7 +747,7 @@ CHARSET_PACKED:
 
 ; Charset-related symbolic constants
 CHARSET:
-	.ITEM_0:	equ $d8 ; First item
+.ITEM_0:	equ $d8 ; First item
 	; ...
 ; -----------------------------------------------------------------------------
 

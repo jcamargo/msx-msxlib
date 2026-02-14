@@ -1,21 +1,21 @@
-;
+﻿;
 ; =============================================================================
 ;	Player-enemy-bullet helper routines
 ; =============================================================================
 ;
 
 ; -----------------------------------------------------------------------------
-	PLAYER_ENEMY_X_SIZE:	equ (CFG_PLAYER_WIDTH + CFG_ENEMY_WIDTH) /2
-	PLAYER_ENEMY_Y_SIZE:	equ (CFG_PLAYER_HEIGHT + CFG_ENEMY_HEIGHT) /2
-	PLAYER_ENEMY_Y_OFFSET:	equ (CFG_ENEMY_HEIGHT - CFG_PLAYER_HEIGHT) /2
-	PLAYER_ENEMY_YX_SIZES:	equ (PLAYER_ENEMY_Y_SIZE << 8) + PLAYER_ENEMY_X_SIZE
+PLAYER_ENEMY_X_SIZE:	equ (CFG_PLAYER_WIDTH + CFG_ENEMY_WIDTH) /2
+PLAYER_ENEMY_Y_SIZE:	equ (CFG_PLAYER_HEIGHT + CFG_ENEMY_HEIGHT) /2
+PLAYER_ENEMY_Y_OFFSET:	equ (CFG_ENEMY_HEIGHT - CFG_PLAYER_HEIGHT) /2
+PLAYER_ENEMY_YX_SIZES:	equ (PLAYER_ENEMY_Y_SIZE << 8) + PLAYER_ENEMY_X_SIZE
 
-IFEXIST RESET_BULLETS
-	PLAYER_BULLET_X_SIZE:	equ (CFG_PLAYER_WIDTH + CFG_BULLET_WIDTH) /2
-	PLAYER_BULLET_Y_SIZE:	equ (CFG_PLAYER_HEIGHT + CFG_BULLET_HEIGHT) /2
-	PLAYER_BULLET_Y_OFFSET:	equ (CFG_BULLET_HEIGHT - CFG_PLAYER_HEIGHT) /2
-	PLAYER_BULLET_YX_SIZES:	equ (PLAYER_BULLET_Y_SIZE << 8) + PLAYER_BULLET_X_SIZE
-ENDIF
+	IFDEF RESET_BULLETS
+PLAYER_BULLET_X_SIZE:	equ (CFG_PLAYER_WIDTH + CFG_BULLET_WIDTH) /2
+PLAYER_BULLET_Y_SIZE:	equ (CFG_PLAYER_HEIGHT + CFG_BULLET_HEIGHT) /2
+PLAYER_BULLET_Y_OFFSET:	equ (CFG_BULLET_HEIGHT - CFG_PLAYER_HEIGHT) /2
+PLAYER_BULLET_YX_SIZES:	equ (PLAYER_BULLET_Y_SIZE << 8) + PLAYER_BULLET_X_SIZE
+	ENDIF
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -43,7 +43,7 @@ CHECK_PLAYER_ENEMIES_COLLISIONS:
 	ret
 ; -----------------------------------------------------------------------------
 
-IFEXIST RESET_BULLETS
+	IFDEF RESET_BULLETS
 ; -----------------------------------------------------------------------------
 ; Checks collision between the player and any bullet
 CHECK_PLAYER_BULLETS_COLLISIONS:
@@ -67,7 +67,7 @@ CHECK_PLAYER_BULLETS_COLLISIONS:
 	djnz	.BULLET_LOOP
 	ret
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
 ; -----------------------------------------------------------------------------
 ; Checks collision between the player and one enemy or bullet

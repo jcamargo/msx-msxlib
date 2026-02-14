@@ -52,7 +52,7 @@ old_htimi_hook:
 replayer.frameskip:
 	rb	1
 
-	ENDIF ; IFEXIST REPLAYER.FRAME
+	ENDIF ; IFDEF REPLAYER.FRAME
 	; -----------------------------------------------------------------------------
 	ENDIF ; IFDEF CFG_RAM_HOOK
 
@@ -82,7 +82,7 @@ input:
 ; ayFX REPLAYER v1.31 variables
 	include	"libext/ayFX-replayer/ayFX-RAM.tniasm.asm"
 
-	ENDIF ; IFEXIST ayFX_SETUP
+	ENDIF ; IFDEF ayFX_SETUP
 	; -----------------------------------------------------------------------------
 	ENDIF ; IFDEF CFG_RAM_REPLAYER_PT3
 

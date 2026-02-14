@@ -1,28 +1,28 @@
-
+﻿
 ; -----------------------------------------------------------------------------
 ; MSX BIOS
-	DISSCR:	equ $0041 ; Disable screen
-	ENASCR:	equ $0044 ; Enable screen
-	RDVRM:	equ $004a ; Read byte from VRAM
-	WRTVRM:	equ $004d ; Write byte to VRAM
-	LDIRVM:	equ $005c ; Copy block to VRAM, from memory
-	INIT32:	equ $006f ; Initialize VDP to 32x24 Text Mode
+DISSCR:	equ $0041 ; Disable screen
+ENASCR:	equ $0044 ; Enable screen
+RDVRM:	equ $004a ; Read byte from VRAM
+WRTVRM:	equ $004d ; Write byte to VRAM
+LDIRVM:	equ $005c ; Copy block to VRAM, from memory
+INIT32:	equ $006f ; Initialize VDP to 32x24 Text Mode
 
 ; MSX system variables
-	RG1SAV:	equ $f3e0 ; Content of VDP(1) register (R#1)
-	BAKCLR:	equ $f3ea ; Background colour
-	BDRCLR:	equ $f3eb ; Border colour
+RG1SAV:	equ $f3e0 ; Content of VDP(1) register (R#1)
+BAKCLR:	equ $f3ea ; Background colour
+BDRCLR:	equ $f3eb ; Border colour
 
 ; VRAM addresses
-	CHRTBL:	equ $0000 ; Pattern table
-	NAMTBL:	equ $1800 ; Name table
-	CLRTBL:	equ $2000 ; Color table
-	SPRATR:	equ $1B00 ; Sprite attributes table
-	SPRTBL:	equ $3800 ; Sprite pattern table
+CHRTBL:	equ $0000 ; Pattern table
+NAMTBL:	equ $1800 ; Name table
+CLRTBL:	equ $2000 ; Color table
+SPRATR:	equ $1B00 ; Sprite attributes table
+SPRTBL:	equ $3800 ; Sprite pattern table
 
 ; VDP symbolic constants
-	SCR_WIDTH:	equ 32
-	SPAT_END:	equ $d0 ; Sprite attribute table end marker
+SCR_WIDTH:	equ 32
+SPAT_END:	equ $d0 ; Sprite attribute table end marker
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -117,10 +117,10 @@
 ; -----------------------------------------------------------------------------
 .CHRTBL_0:
 	incbin	"msxlib/charset.png.chr"
-	.CHRTBL_0_SIZE:	equ $ - .CHRTBL_0
+.CHRTBL_0_SIZE:	equ $ - .CHRTBL_0
 .SPRTBL_0:
 	incbin	"msxlib/sprites.png.spr"
-	.SPRTBL_0_SIZE:	equ $ - .SPRTBL_0
+.SPRTBL_0_SIZE:	equ $ - .SPRTBL_0
 .SPRATR_0:
 	db	88 +12, 0,       $00, 0
 	db	88 +12, 0,       $00, 0
@@ -130,7 +130,7 @@
 	db	88 +18, 128 +16, $04, 15 ; MSX
 	db	88  +2, 128  +8, $08, 1	; LIB
 	db	SPAT_END
-	.SPRATR_0_SIZE:	equ $ - .SPRATR_0
+.SPRATR_0_SIZE:	equ $ - .SPRATR_0
 ; -----------------------------------------------------------------------------
 
 ; EOF

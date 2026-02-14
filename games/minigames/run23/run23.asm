@@ -1,4 +1,4 @@
-
+﻿
 ;
 ; =============================================================================
 ;	RUN'23 minigame
@@ -7,7 +7,7 @@
 
 ; -----------------------------------------------------------------------------
 ; 16KB ROM
-	CFG_INIT_ROM_SIZE:	equ 8
+CFG_INIT_ROM_SIZE:	equ 8
 
 ; Automatically reads the keyboard
 	CFG_HOOK_ENABLE_AUTO_KEYBOARD:
@@ -46,13 +46,13 @@
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
-	NO_LIVES:		equ $80
+NO_LIVES:		equ $80
 
-	CFG_TIMER_WAIT:		equ 9
-	CFG_TIMER_PUSH:		equ 5
+CFG_TIMER_WAIT:		equ 9
+CFG_TIMER_PUSH:		equ 5
 
-	BIT_INPUT:		equ 0
-	BIT_FORWARD:		equ 1
+BIT_INPUT:		equ 0
+BIT_FORWARD:		equ 1
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -1289,11 +1289,11 @@ SONG_TABLE:
 SOUND_BANK:
 	incbin	"games/minigames/run23/music/run23.afb"
 
-	CFG_SOUND_JOIN:			equ 1 -1
-	CFG_SOUND_PUSH:			equ 2 -1
-	CFG_SOUND_TIMEOUT:		equ 3 -1
-	CFG_SOUND_WEIGHT_MOVE:		equ 5 -1
-	CFG_SOUND_WEIGHT_FALL:		equ 4 -1
+CFG_SOUND_JOIN:			equ 1 -1
+CFG_SOUND_PUSH:			equ 2 -1
+CFG_SOUND_TIMEOUT:		equ 3 -1
+CFG_SOUND_WEIGHT_MOVE:		equ 5 -1
+CFG_SOUND_WEIGHT_FALL:		equ 4 -1
 ; -----------------------------------------------------------------------------
 
 	include	"lib/rom_end.asm"

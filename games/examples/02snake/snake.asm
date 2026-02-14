@@ -1,4 +1,4 @@
-
+﻿
 ;
 ; =============================================================================
 ;	MSXlib basic example: snake game
@@ -6,12 +6,12 @@
 ;
 
 ; Symbolic constants to easily change the characters used in the game
-	SNAKE_CHAR:		equ $01
-	FRUIT_CHAR:		equ $03
-	EMPTY_CHAR:		equ $20
-	BORDER_TOP_CHAR:	equ $84
-	BORDER_BOTTOM_CHAR:	equ $84
-	BORDER_SIDES_CHAR:	equ $94
+SNAKE_CHAR:		equ $01
+FRUIT_CHAR:		equ $03
+EMPTY_CHAR:		equ $20
+BORDER_TOP_CHAR:	equ $84
+BORDER_BOTTOM_CHAR:	equ $84
+BORDER_SIDES_CHAR:	equ $94
 
 ; -----------------------------------------------------------------------------
 ; Faster LDIRVM_NAMTBL routine (this example is NAMTBL-blitting intensive)
@@ -568,7 +568,7 @@ GAME_OVER:
 ; The snake buffer is a circular buffer of pointers to the NAMTBL buffer
 snake_buffer:
 	rw	256
-	.SIZE:	equ $ - snake_buffer
+.SIZE:	equ $ - snake_buffer
 
 ; Index of the snake buffer that contains the position of the snake head
 head_index:

@@ -1,10 +1,10 @@
-
+﻿
 ; =============================================================================
 ;	VRAM routines (BIOS-based)
 ;	NAMBTL and SPRATR buffer routines (BIOS-based)
 ; =============================================================================
 
-	CFG_RAM_VRAM:	equ 1
+CFG_RAM_VRAM:	equ 1
 
 ; =============================================================================
 ;	VRAM routines (BIOS-based)
@@ -33,7 +33,7 @@ LDIRVM_BLOCKS:
 	ret
 ; -----------------------------------------------------------------------------
 
-IFEXIST UNPACK
+	IFDEF UNPACK
 
 ; -----------------------------------------------------------------------------
 ; Unpacks to VRAM using the decompression buffer
@@ -104,7 +104,7 @@ LDIRVM_UNPACKED_CLRTBL_BANK:
 	jp	LDIRVM
 ; -----------------------------------------------------------------------------
 
-ELSE ; IFEXIST UNPACK
+	ELSE ; IFDEF UNPACK
 
 ; -----------------------------------------------------------------------------
 ; LDIRVMs CHRTBL to the three banks
@@ -144,7 +144,7 @@ LDIRVM_CXRTBL:
 	ret
 ; -----------------------------------------------------------------------------
 
-ENDIF ; IFEXIST UNPACK
+	ENDIF ; IFDEF UNPACK
 
 
 ; =============================================================================
@@ -176,7 +176,7 @@ CLS_SPRATR:
 ; -----------------------------------------------------------------------------
 ; LDIRVM the NAMTBL buffer
 LDIRVM_NAMTBL:
-IFDEF CFG_LDIRVM_NAMTBL_FAST
+	IFDEF CFG_LDIRVM_NAMTBL_FAST
 ; Sets the VRAM pointer
 	ld	hl, NAMTBL
 	call	SETWRT
@@ -197,19 +197,19 @@ IFDEF CFG_LDIRVM_NAMTBL_FAST
 	jp	nz, .LOOP2
 	ret
 
-ELSE
+	ELSE
 ; Uses BIOS' LDIRVM to blit the NAMTBL buffer
 	ld	hl, namtbl_buffer
 	ld	de, NAMTBL
 	ld	bc, NAMTBL_SIZE
 	jp	LDIRVM
-ENDIF ; IFDEF CFG_LDIRVM_NAMTBL_FAST
+	ENDIF ; IFDEF CFG_LDIRVM_NAMTBL_FAST
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
 ; LDIRVM the SPRATR buffer
 LDIRVM_SPRATR:
-IFDEF CFG_SPRITES_FLICKER
+	IFDEF CFG_SPRITES_FLICKER
 ; Has the VDP reported a 5th sprite?
 	ld	a, [STATFL]
 	bit	6, a
@@ -322,7 +322,7 @@ IFDEF CFG_SPRITES_FLICKER
 ; The flickering size has changed between frames; resets the offset for the next frame
 	ld	[hl], 0
 	pop	hl ; (restores stack status)
-ENDIF ; IFDEF CFG_SPRITES_FLICKER
+	ENDIF ; IFDEF CFG_SPRITES_FLICKER
 
 ; LDIRVM the actual SPRATR buffer
 .NO_FLICKER:

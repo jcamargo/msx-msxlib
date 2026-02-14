@@ -1,4 +1,4 @@
-
+﻿
 	IFDEF CFG_RAM_ATTRACT_PRINT
 ; -----------------------------------------------------------------------------
 ; Variables for: Attract-mode text-printing routines
@@ -38,29 +38,29 @@ spriteables:
 ; status:
 ; 0 = idle
 ; [MASK_TILE_SPRITE_DIRECTION | MASK_TILE_SPRITE_PENDING] = movement still pending)
-	_SPRITEABLE_STATUS:	equ $ - spriteables.array
+_SPRITEABLE_STATUS:	equ $ - spriteables.array
 	rb	1
 ; offset of the upper left character
-	_SPRITEABLE_OFFSET_L:	equ $ - spriteables.array
+_SPRITEABLE_OFFSET_L:	equ $ - spriteables.array
 	rb	1
-	_SPRITEABLE_OFFSET_H:	equ $ - spriteables.array
+_SPRITEABLE_OFFSET_H:	equ $ - spriteables.array
 	rb	1
 ; characters that define the spriteable
-	_SPRITEABLE_FOREGROUND:	equ $ - spriteables.array
+_SPRITEABLE_FOREGROUND:	equ $ - spriteables.array
 	rb	4
 ; background characters covered by the spriteable
-	_SPRITEABLE_BACKGROUND:	equ $ - spriteables.array
+_SPRITEABLE_BACKGROUND:	equ $ - spriteables.array
 	rb	4
 ; equivalent sprite attributes
-	_SPRITEABLE_PATTERN:	equ $ - spriteables.array
+_SPRITEABLE_PATTERN:	equ $ - spriteables.array
 	rb	1	; pattern
-	_SPRITEABLE_COLOR:	equ $ - spriteables.array
+_SPRITEABLE_COLOR:	equ $ - spriteables.array
 	rb	1	; color
-	SPRITEABLE_SIZE:	equ $ - spriteables.array
+SPRITEABLE_SIZE:	equ $ - spriteables.array
 
 ; (array)
 	rb	(CFG_SPRITEABLES -1) * ($ - spriteables.array)
-	spriteables.SIZE:	equ $ - spriteables.array
+spriteables.SIZE:	equ $ - spriteables.array
 ; -----------------------------------------------------------------------------
 	ENDIF
 

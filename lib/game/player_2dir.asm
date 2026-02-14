@@ -1,4 +1,4 @@
-;
+﻿;
 ; =============================================================================
 ;	Side-view player related routines (two directions: left, right)
 ; =============================================================================
@@ -6,12 +6,12 @@
 
 ; -----------------------------------------------------------------------------
 ; Player state modifiers (as bit indexes)
-	BIT_STATE_LEFT:		equ 1
-	PLAYER_STATE_MOD_BITS:	equ 2
+BIT_STATE_LEFT:		equ 1
+PLAYER_STATE_MOD_BITS:	equ 2
 
 ; Player state modifiers (as flags)
-	FLAG_STATE_LEFT:	equ (1 << BIT_STATE_LEFT) ; $02
-	FLAGS_STATE:		equ FLAG_STATE_LEFT OR FLAG_STATE_ANIM ; $03
+FLAG_STATE_LEFT:	equ (1 << BIT_STATE_LEFT) ; $02
+FLAGS_STATE:		equ FLAG_STATE_LEFT OR FLAG_STATE_ANIM ; $03
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------

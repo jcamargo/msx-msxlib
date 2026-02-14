@@ -1,5 +1,5 @@
-
-IFDEF CFG_RAM_RANDOM
+﻿
+	IFDEF CFG_RAM_RANDOM
 ; -----------------------------------------------------------------------------
 ; Variables for: Random routines
 
@@ -7,6 +7,6 @@ IFDEF CFG_RAM_RANDOM
 current_random:
 	rw	2
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
 ; EOF

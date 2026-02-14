@@ -1,6 +1,6 @@
-		; --- ayFX REPLAYER v1.31 ---
+﻿		; --- ayFX REPLAYER v1.31 ---
 
-		CFG_REPLAYER_AYFX:	equ 1
+CFG_REPLAYER_AYFX:	equ 1
 
 		; --- v1.31	Fixed bug on previous version, only PSG channel C worked
 		; --- v1.3	Fixed volume and Relative volume versions on the same file, conditional compilation

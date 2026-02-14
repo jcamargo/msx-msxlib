@@ -1,9 +1,9 @@
-
+﻿
 ; =============================================================================
 ;	Menu control routines
 ; =============================================================================
 
-	CFG_RAM_MENU:	equ	1
+CFG_RAM_MENU:	equ	1
 
 ; -----------------------------------------------------------------------------
 ; Initializes the options menu
@@ -230,9 +230,9 @@ HANDLE_OPTIONS_MENU:
 .DO_DEC:
 	dec	[hl]
 ; Feedback sound
-	IFEXIST	CFG_MENU_ON_MOVE
+	IFDEF	CFG_MENU_ON_MOVE
 		call	CFG_MENU_ON_MOVE
-	ENDIF ; IFEXIST CFG_MENU_ON_MOVE
+	ENDIF ; IFDEF CFG_MENU_ON_MOVE
 ; rets c
 	scf
 	ret
@@ -261,9 +261,9 @@ HANDLE_OPTIONS_MENU:
 .DO_INC:
 	inc	[hl]
 ; Feedback sound
-	IFEXIST	CFG_MENU_ON_MOVE
+	IFDEF	CFG_MENU_ON_MOVE
 		call	CFG_MENU_ON_MOVE
-	ENDIF ; IFEXIST CFG_MENU_ON_MOVE
+	ENDIF ; IFDEF CFG_MENU_ON_MOVE
 ; rets c
 	scf
 	ret
@@ -274,9 +274,9 @@ HANDLE_OPTIONS_MENU:
 	xor	a
 	ld	[hl], a
 ; Feedback sound
-	IFEXIST	CFG_MENU_ON_MOVE
+	IFDEF	CFG_MENU_ON_MOVE
 		call	CFG_MENU_ON_MOVE
-	ENDIF ; IFEXIST CFG_MENU_ON_MOVE
+	ENDIF ; IFDEF CFG_MENU_ON_MOVE
 ; rets c
 	scf
 	ret
@@ -300,9 +300,9 @@ HANDLE_OPTIONS_MENU:
 .DO_LAST_A_OK:
 	ld	[hl], a
 ; Feedback sound
-	IFEXIST	CFG_MENU_ON_MOVE
+	IFDEF	CFG_MENU_ON_MOVE
 		call	CFG_MENU_ON_MOVE
-	ENDIF ; IFEXIST CFG_MENU_ON_MOVE
+	ENDIF ; IFDEF CFG_MENU_ON_MOVE
 ; rets c
 	scf
 	ret

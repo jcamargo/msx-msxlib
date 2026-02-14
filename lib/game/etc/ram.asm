@@ -1,5 +1,5 @@
-
-IFDEF CFG_RAM_MENU
+﻿
+	IFDEF CFG_RAM_MENU
 ; -----------------------------------------------------------------------------
 ; Variables for: Menu control routines
 
@@ -17,9 +17,9 @@ options_menu:
 .current_position:
 	rb	1
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
-IFDEF CFG_RAM_PASSWORD
+	IFDEF CFG_RAM_PASSWORD
 ; -----------------------------------------------------------------------------
 ; Variables for: Password encoding/decoding routines
 
@@ -31,9 +31,9 @@ password:
 password_value:
 	rb	CFG_PASSWORD_DATA_SIZE
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
-IFDEF CFG_RAM_KONAMI_CODE
+	IFDEF CFG_RAM_KONAMI_CODE
 ; -----------------------------------------------------------------------------
 ; Variables for: "Konami code" routines
 
@@ -41,6 +41,6 @@ konami_code:
 .pointer:
 	rw	1 ; Address of the next expected input edge
 ; -----------------------------------------------------------------------------
-ENDIF
+	ENDIF
 
 ; EOF

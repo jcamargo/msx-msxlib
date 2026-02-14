@@ -1,4 +1,4 @@
-
+﻿
 ; =============================================================================
 ;	Timing and wait routines
 ; =============================================================================
@@ -36,7 +36,7 @@ WAIT_FRAMES:
 	ret
 ; -----------------------------------------------------------------------------
 
-IFEXIST READ_INPUT
+	IFDEF READ_INPUT
 
 ; -----------------------------------------------------------------------------
 ; Skippable four seconds pause
@@ -88,15 +88,15 @@ WAIT_TRIGGER_FRAMES_A:
 ; ret z: if the pause timed out
 ; touches: a, bc, de, hl
 WAIT_TRIGGER_FRAMES:
-IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
+	IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
 	push	bc ; preserves counter
 	halt
 	call	READ_INPUT
 	pop	bc ; restores counter
-ELSE
+	ELSE
 	halt
 	ld	a, [input.edge]
-ENDIF ; IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
+	ENDIF ; IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
 	and	$30 ; 1 << BIT_TRIGGER_A or 1 << BIT_TRIGGER_B
 	ret	nz ; trigger
 	djnz	WAIT_TRIGGER_FRAMES
@@ -119,7 +119,7 @@ WAIT_TRIGGER:
 	ret	; trigger (nz)
 ; -----------------------------------------------------------------------------
 
-ENDIF ; IFEXIST READ_INPUT
+	ENDIF ; IFDEF READ_INPUT
 
 ; ; -----------------------------------------------------------------------------
 ; ; Waits until no key is pressed

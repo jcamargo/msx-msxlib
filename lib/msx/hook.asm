@@ -1,9 +1,9 @@
-
+﻿
 ; =============================================================================
 ; 	Interrupt routine (H.TIMI hook)
 ; =============================================================================
 
-	CFG_RAM_HOOK:	equ 1
+CFG_RAM_HOOK:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; H.TIMI hook
@@ -15,7 +15,7 @@ HOOK:
 	push	af ; Preserves VDP status register S#0 (a)
 
 ; Invokes the replayer
-	IFEXIST REPLAYER.FRAME
+	IFDEF REPLAYER.FRAME
 	; Invokes the replayer (with frameskip in 60Hz machines)
 		ld	a, [frames_per_tenth]
 		cp	5
@@ -42,7 +42,7 @@ HOOK:
 		call	READ_KEYBOARD
 	ENDIF ; CFG_HOOK_ENABLE_AUTO_KEYBOARD
 
-	IFEXIST CFG_HOOK_DISABLE_AUTO_INPUT
+	IFDEF CFG_HOOK_DISABLE_AUTO_INPUT
 	ELSE
 		call	READ_INPUT
 	ENDIF ; CFG_HOOK_DISABLE_AUTO_INPUT

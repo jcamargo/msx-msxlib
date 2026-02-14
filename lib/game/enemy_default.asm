@@ -1,4 +1,4 @@
-;
+﻿;
 ; =============================================================================
 ;	Convenience enemy state handlers (generic)
 ; =============================================================================
@@ -157,11 +157,11 @@ WAIT_ENEMY_HANDLER:
 ; ret z/nz: z if the wait has finished (the player is above), nz otherwise
 .PLAYER_ABOVE_DEFAULT:
 ; Default horizontal maximum distance
-IFEXIST CFG_ENEMY_ADVANCE_COLLISION
+	IFDEF CFG_ENEMY_ADVANCE_COLLISION
 	ld	l, PLAYER_ENEMY_X_SIZE + CFG_ENEMY_ADVANCE_COLLISION * 2
-ELSE
+	ELSE
 	ld	l, PLAYER_ENEMY_X_SIZE
-ENDIF
+	ENDIF
 	; jr	.PLAYER_ABOVE ; falls through
 ; ------VVVV----falls through--------------------------------------------------
 
@@ -184,11 +184,11 @@ ENDIF
 ; ret z/nz: z if the wait has finished (the player is below), nz otherwise
 .PLAYER_BELOW_DEFAULT:
 ; Default horizontal maximum distance
-IFEXIST CFG_ENEMY_ADVANCE_COLLISION
+	IFDEF CFG_ENEMY_ADVANCE_COLLISION
 	ld	l, PLAYER_ENEMY_X_SIZE + CFG_ENEMY_ADVANCE_COLLISION * 2
-ELSE
+	ELSE
 	ld	l, PLAYER_ENEMY_X_SIZE
-ENDIF
+	ENDIF
 	; jr	.PLAYER_BELOW : falls through
 ; ------VVVV----falls through--------------------------------------------------
 

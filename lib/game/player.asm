@@ -1,31 +1,31 @@
-;
+﻿;
 ; =============================================================================
 ;	Player related routines (generic)
 ;	Player-tile helper routines
 ; =============================================================================
 ;
 
-	CFG_RAM_PLAYER:	equ 1
+CFG_RAM_PLAYER:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Bounding box offset (based on the logical sprite sizes)
-	PLAYER_BOX_X_OFFSET:	equ -(CFG_PLAYER_WIDTH / 2)
-	PLAYER_BOX_Y_OFFSET:	equ -(CFG_PLAYER_HEIGHT)
+PLAYER_BOX_X_OFFSET:	equ -(CFG_PLAYER_WIDTH / 2)
+PLAYER_BOX_Y_OFFSET:	equ -(CFG_PLAYER_HEIGHT)
 
 ; Player state modifiers (as bit indexes)
-	BIT_STATE_ANIM:		equ 0
+BIT_STATE_ANIM:		equ 0
 	; (...)
-	BIT_STATE_FINISH:	equ 7 ; (special state marker: exit state)
+BIT_STATE_FINISH:	equ 7 ; (special state marker: exit state)
 
 ; Player state modifiers (as flags)
-	FLAG_STATE_ANIM:	equ (1 << BIT_STATE_ANIM) ; $01
+FLAG_STATE_ANIM:	equ (1 << BIT_STATE_ANIM) ; $01
 	; (...)
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
 ; (direct pointers inside SPRATR buffer)
 player_spratr:		equ spratr_buffer +CFG_PLAYER_SPRITES_INDEX *4
-		.pattern:	equ player_spratr +2
+.pattern:	equ player_spratr +2
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -87,11 +87,11 @@ MOVE_PLAYER_V:
 ; ret a: new player state with previous flags
 ; touches: hl, b
 SET_PLAYER_STATE:
-IFEXIST FLAGS_STATE
+	IFDEF FLAGS_STATE
 	ld	b, ($ff XOR FLAGS_STATE XOR FLAG_STATE_ANIM)
-ELSE
+	ELSE
 	ld	b, $ff
-ENDIF ; IFEXIST FLAGS_STATE
+	ENDIF ; IFDEF FLAGS_STATE
 ; ------VVVV----falls through--------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -128,7 +128,7 @@ LD_HL_A_MASK:
 ; =============================================================================
 ;
 
-IFEXIST GET_TILE_VALUE
+	IFDEF GET_TILE_VALUE
 
 ; -----------------------------------------------------------------------------
 ; Reads the tile index (value) at the player coordinates
@@ -279,6 +279,6 @@ GET_PLAYER_TILE_FLAGS_WIDE_UNDER:
 	jp	GET_PLAYER_H_TILE_FLAGS.AND
 ; -----------------------------------------------------------------------------
 
-ENDIF ; IFEXIST GET_TILE_VALUE
+	ENDIF ; IFDEF GET_TILE_VALUE
 
 ; EOF

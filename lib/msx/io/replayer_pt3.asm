@@ -1,9 +1,9 @@
-
+﻿
 ; =============================================================================
 ; 	Replayer routines: PT3-based implementation
 ; =============================================================================
 
-	CFG_RAM_REPLAYER_PT3:	equ 1
+CFG_RAM_REPLAYER_PT3:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Initializes the replayer
@@ -51,17 +51,17 @@ REPLAYER.STOP:
 	ld	hl, SONG_TABLE
 	call	GET_HL_A_WORD
 ; Unpacks the song
-	IFEXIST unpack_buffer.song
+	IFDEF unpack_buffer.song
 		ld	de, unpack_buffer.song
 	ELSE
 		ld	de, unpack_buffer
-	ENDIF ; IFEXIST unpack_buffer.song
+	ENDIF ; IFDEF unpack_buffer.song
 	call	UNPACK
-	IFEXIST unpack_buffer.song
+	IFDEF unpack_buffer.song
 		ld	hl, unpack_buffer.song
 	ELSE
 		ld	hl, unpack_buffer
-	ENDIF ; IFEXIST unpack_buffer.song
+	ENDIF ; IFDEF unpack_buffer.song
 
 	ELSE
 ; Locates the song (2/2, unpacked)
@@ -84,7 +84,7 @@ REPLAYER.STOP:
 	ret
 ; -----------------------------------------------------------------------------
 
-IFDEF CFG_PT3_PACKED
+	IFDEF CFG_PT3_PACKED
 
 ; -----------------------------------------------------------------------------
 ; Starts the replayer over an un packed song
@@ -96,7 +96,7 @@ REPLAYER.PLAY_UNPACKED:
 	jr	REPLAYER.PLAY_HL_OK
 ; -----------------------------------------------------------------------------
 
-ENDIF ; CFG_PT3_PACKED
+	ENDIF ; CFG_PT3_PACKED
 
 ; -----------------------------------------------------------------------------
 ; Processes a frame in the replayer

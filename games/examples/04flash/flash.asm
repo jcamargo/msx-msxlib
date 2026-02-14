@@ -1,4 +1,4 @@
-
+﻿
 ;
 ; =============================================================================
 ;	MSXlib minimal example
@@ -78,7 +78,7 @@ INIT:
 ; The message to print
 .MY_MESSAGE:
 	db	"Hello, World!"
-	.MY_MESSAGE_SIZE:	equ $ - .MY_MESSAGE
+.MY_MESSAGE_SIZE:	equ $ - .MY_MESSAGE
 ; -----------------------------------------------------------------------------
 
 	include	"lib/rom_end.asm"

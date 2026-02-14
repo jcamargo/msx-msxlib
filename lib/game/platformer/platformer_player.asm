@@ -1,4 +1,4 @@
-;
+﻿;
 ; =============================================================================
 ;	Default player control routines (platformer game)
 ; =============================================================================
@@ -6,22 +6,22 @@
 
 ; -----------------------------------------------------------------------------
 ; Bit index for the tile properties (platformer game)
-	BIT_WORLD_FLOOR:	equ 1
-	BIT_WORLD_STAIRS:	equ 2
-	BIT_WORLD_DEATH:	equ 3
-	BIT_WORLD_WALK_ON:	equ 4 ; Tile collision (single char)
-	BIT_WORLD_WIDE_ON:	equ 5 ; Wide tile collision (player width)
-	BIT_WORLD_WALK_OVER:	equ 6 ; Walking over tiles (player width)
-	BIT_WORLD_PUSHABLE:	equ 7 ; Pushable tiles (player height)
+BIT_WORLD_FLOOR:	equ 1
+BIT_WORLD_STAIRS:	equ 2
+BIT_WORLD_DEATH:	equ 3
+BIT_WORLD_WALK_ON:	equ 4 ; Tile collision (single char)
+BIT_WORLD_WIDE_ON:	equ 5 ; Wide tile collision (player width)
+BIT_WORLD_WALK_OVER:	equ 6 ; Walking over tiles (player width)
+BIT_WORLD_PUSHABLE:	equ 7 ; Pushable tiles (player height)
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
 ; Default player states
-	PLAYER_STATE_FLOOR:	equ (0 << 2) ; $00
-	PLAYER_STATE_STAIRS:	equ (1 << 2) ; $04
-	PLAYER_STATE_AIR:	equ (2 << 2) ; $08
-	PLAYER_STATE_DYING:	equ (3 << 2) + (1 << BIT_STATE_FINISH) ; $8c
-	PLAYER_STATE_FINISH:	equ PLAYER_STATE_FLOOR + (1 << BIT_STATE_FINISH) ; $80
+PLAYER_STATE_FLOOR:	equ (0 << 2) ; $00
+PLAYER_STATE_STAIRS:	equ (1 << 2) ; $04
+PLAYER_STATE_AIR:	equ (2 << 2) ; $08
+PLAYER_STATE_DYING:	equ (3 << 2) + (1 << BIT_STATE_FINISH) ; $8c
+PLAYER_STATE_FINISH:	equ PLAYER_STATE_FLOOR + (1 << BIT_STATE_FINISH) ; $80
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -216,11 +216,11 @@ SET_PLAYER_FALLING:
 ; -----------------------------------------------------------------------------
 ; Set the player to be jumping in the next frame
 SET_PLAYER_JUMPING:
-IFEXIST CFG_SOUND_PLAYER_JUMP
+	IFDEF CFG_SOUND_PLAYER_JUMP
 	ld	a, CFG_SOUND_PLAYER_JUMP
 	ld	c, 14 ; almost lowest priority
 	call	ayFX_INIT
-ENDIF
+	ENDIF
 ; Sets the player state
 	ld	a, PLAYER_STATE_AIR
 	call	SET_PLAYER_STATE
@@ -277,14 +277,14 @@ SET_PLAYER_DYING:
 	ret	z ; yes (do nothing)
 ; no: Sets the player state
 	ld	a, PLAYER_STATE_DYING
-IFEXIST CFG_SOUND_PLAYER_KILLED
+	IFDEF CFG_SOUND_PLAYER_KILLED
 	call	SET_PLAYER_STATE
 	ld	a, CFG_SOUND_PLAYER_KILLED
 	ld	c, 0 ; highest priority
 	jp	ayFX_INIT
-ELSE
+	ELSE
 	jp	SET_PLAYER_STATE
-ENDIF
+	ENDIF
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -352,26 +352,26 @@ MOVE_PLAYER_LR_ANIMATE:
 	ld	hl, player.state
 	res	BIT_STATE_ANIM, [hl]
 
-IFEXIST ON_PLAYER_PUSH
+	IFDEF ON_PLAYER_PUSH
 .RESET_FLOOR:
 ; Resets floor state (in case ON_PLAYER_PUSH is defined)
 	; ld	a, PLAYER_STATE_FLOOR
 	xor	a ; (optimization; assumes PLAYER_STATE_FLOOR = 0)
 	ld	b, $ff XOR FLAGS_STATE
 	jp	SET_PLAYER_STATE.MASK
-ELSE
+	ELSE
 	ret
-ENDIF
+	ENDIF
 
 .LEFT:
 ; Is there solid left to the player?
 	call	GET_PLAYER_TILE_FLAGS_LEFT
 
-IFEXIST ON_PLAYER_PUSH.LEFT
+	IFDEF ON_PLAYER_PUSH.LEFT
 ; Are there pushable tiles left to the player?
 	bit	BIT_WORLD_PUSHABLE, a
 	jp	nz, ON_PLAYER_PUSH.LEFT
-ENDIF
+	ENDIF
 
 ; Is there solid left to the player?
 	; bit	BIT_WORLD_SOLID, a
@@ -380,10 +380,10 @@ ENDIF
 	jr	c, .RESET_ANIMATION
 
 ; no
-IFEXIST ON_PLAYER_PUSH
+	IFDEF ON_PLAYER_PUSH
 ; Resets floor state (in case ON_PLAYER_PUSH is defined)
 	call	.RESET_FLOOR
-ENDIF
+	ENDIF
 	call	UPDATE_PLAYER_ANIMATION
 	jp	MOVE_PLAYER_LEFT
 
@@ -391,11 +391,11 @@ ENDIF
 ; Is there solid right to the player?
 	call	GET_PLAYER_TILE_FLAGS_RIGHT
 
-IFEXIST ON_PLAYER_PUSH.RIGHT
+	IFDEF ON_PLAYER_PUSH.RIGHT
 ; Are there pushable tiles right to the player?
 	bit	BIT_WORLD_PUSHABLE, a
 	jp	nz, ON_PLAYER_PUSH.RIGHT
-ENDIF
+	ENDIF
 
 ; Is there solid right to the player?
 	; bit	BIT_WORLD_SOLID, a
@@ -404,10 +404,10 @@ ENDIF
 	jr	c, .RESET_ANIMATION
 
 ; no
-IFEXIST ON_PLAYER_PUSH
+	IFDEF ON_PLAYER_PUSH
 ; Resets floor state (in case ON_PLAYER_PUSH is defined)
 	call	.RESET_FLOOR
-ENDIF
+	ENDIF
 	call	UPDATE_PLAYER_ANIMATION
 	jp	MOVE_PLAYER_RIGHT
 ; -----------------------------------------------------------------------------

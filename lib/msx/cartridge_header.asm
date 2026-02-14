@@ -5,15 +5,7 @@
 
 ; -----------------------------------------------------------------------------
 ; Cartridge header
-IFDEF CFG_INIT_ROM_SIZE
-IF (CFG_INIT_ROM_SIZE < 32)
-	org	$4000, $4000 + (CFG_INIT_ROM_SIZE * $0400) - 1
-ELSE
-	org	$4000, $bfff
-ENDIF ; IF (CFG_INIT_ROM_SIZE < 32)
-ELSE
-	org	$4000, $7fff
-ENDIF ; IFDEF CFG_INIT_ROM_SIZE
+	org	$4000
 
 CARTRIDGE_HEADER:
 	db	"AB"		; ROM Catridge ID ("AB")

@@ -1,16 +1,16 @@
-
+﻿
 ; =============================================================================
 ;	"vpoke" routines (deferred WRTVRMs routines)
 ; =============================================================================
 
-	CFG_RAM_VPOKES:	equ 1
+CFG_RAM_VPOKES:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Symbolic constants for "vpokes"
-	VPOKE.L:	equ 0 ; NAMTBL address (low)
-	VPOKE.H:	equ 1 ; NAMTBL address (high)
-	VPOKE.A:	equ 2 ; value to write
-	VPOKE.SIZE:	equ 3
+VPOKE.L:	equ 0 ; NAMTBL address (low)
+VPOKE.H:	equ 1 ; NAMTBL address (high)
+VPOKE.A:	equ 2 ; value to write
+VPOKE.SIZE:	equ 3
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------

@@ -1,20 +1,20 @@
-
+﻿
 ; =============================================================================
 ;	Input routines (BIOS-based)
 ; =============================================================================
 
-	CFG_RAM_INPUT:	equ 1
+CFG_RAM_INPUT:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Bits read by READ_INPUT and stored in input.edge and input.level
-	BIT_STICK_UP:		equ 0
-	BIT_STICK_DOWN:		equ 1
-	BIT_STICK_LEFT:		equ 2
-	BIT_STICK_RIGHT:	equ 3
-	BIT_TRIGGER_A:		equ 4
-	BIT_TRIGGER_B:		equ 5
-	BIT_BUTTON_SELECT:	equ 6
-	BIT_BUTTON_START:	equ 7
+BIT_STICK_UP:		equ 0
+BIT_STICK_DOWN:		equ 1
+BIT_STICK_LEFT:		equ 2
+BIT_STICK_RIGHT:	equ 3
+BIT_TRIGGER_A:		equ 4
+BIT_TRIGGER_B:		equ 5
+BIT_BUTTON_SELECT:	equ 6
+BIT_BUTTON_START:	equ 7
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ READ_INPUT:
 ; Reads keyboard
 
 ; Cursors and space key
-	IFEXIST SNSMAT_NO_DI_EI
+	IFDEF SNSMAT_NO_DI_EI
 		IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
 			ld	a, [OLDKEY + 8] ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
 		ELSE
@@ -63,7 +63,7 @@ READ_INPUT:
 		ld	a, 8 ; RIGHT DOWN UP LEFT DEL INS HOME SPACE
 		call	SNSMAT
 		cpl
-	ENDIF ; IFEXIST SNSMAT_NO_DI_EI
+	ENDIF ; IFDEF SNSMAT_NO_DI_EI
 ; Saves LEFT in input value
 	rrca	; SPACE RIGHT DOWN UP LEFT DEL INS HOME
 	rrca	; HOME SPACE RIGHT DOWN UP LEFT DEL INS
@@ -87,7 +87,7 @@ READ_INPUT:
 	ld	b, a
 
 ; Trigger B (M key)
-	IFEXIST SNSMAT_NO_DI_EI
+	IFDEF SNSMAT_NO_DI_EI
 		IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
 			ld	a, [OLDKEY + 4] ; R Q P O N M L K
 		ELSE
@@ -99,7 +99,7 @@ READ_INPUT:
 		ld	a, 4 ; R Q P O N M L K
 		call	SNSMAT
 		cpl
-	ENDIF ; IFEXIST SNSMAT_NO_DI_EI
+	ENDIF ; IFDEF SNSMAT_NO_DI_EI
 	and	$0c ; N or M
 	jr	z, .NOT_TRIGGER_B
 ; Saves trigger B in current level
@@ -107,7 +107,7 @@ READ_INPUT:
 .NOT_TRIGGER_B:
 
 ; "Select" button (SEL key)
-	IFEXIST SNSMAT_NO_DI_EI
+	IFDEF SNSMAT_NO_DI_EI
 		IFDEF CFG_HOOK_ENABLE_AUTO_KEYBOARD
 			ld	a, [OLDKEY + 7] ; CR SEL BS STOP TAB ESC F5 F4
 		ELSE
@@ -119,13 +119,13 @@ READ_INPUT:
 		ld	a, 7 ; CR SEL BS STOP TAB ESC F5 F4
 		call	SNSMAT
 		cpl
-	ENDIF ; IFEXIST SNSMAT_NO_DI_EI
+	ENDIF ; IFDEF SNSMAT_NO_DI_EI
 	ld	c, a ; (preserves a in c)
-	IFEXIST CFG_INPUT_SELECT_MASK
+	IFDEF CFG_INPUT_SELECT_MASK
 		and	CFG_INPUT_SELECT_MASK
 	ELSE
 		and	$68 ; SEL BS or TAB
-	ENDIF ; IFEXIST CFG_INPUT_SELECT_MASK
+	ENDIF ; IFDEF CFG_INPUT_SELECT_MASK
 	jr	z, .NOT_SELECT
 ; Saves "select" button in current level
 	set	BIT_BUTTON_SELECT, b
@@ -133,11 +133,11 @@ READ_INPUT:
 
 ; "Start" button (STOP key)
 	ld	a, c ; (restores a)
-	IFEXIST CFG_INPUT_START_MASK
+	IFDEF CFG_INPUT_START_MASK
 		and	CFG_INPUT_START_MASK
 	ELSE
 		and	$94 ; CR STOP or ESC
-	ENDIF ; IFEXIST CFG_INPUT_START_MASK
+	ENDIF ; IFDEF CFG_INPUT_START_MASK
 	jr	z, .NOT_START
 ; Saves "start" button in current level
 	set	BIT_BUTTON_START, b

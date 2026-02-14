@@ -1,17 +1,17 @@
-
+﻿
 ; =============================================================================
 ; 	Unpacker routine: ZX7 decoder-based implementation
 ; =============================================================================
 
-	CFG_UNPACK_ZX7:	equ 1
+CFG_UNPACK_ZX7:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Unpack to RAM routine
 ; param hl: packed data source address
 ; param de: destination buffer address
 UNPACK:
-IFDEF CFG_INIT_ROM_SIZE
-IF (CFG_INIT_ROM_SIZE > 32)
+	IFDEF CFG_INIT_ROM_SIZE
+	IF (CFG_INIT_ROM_SIZE > 32)
 ; Is the source from the page 0? (hl < $4000)
 	ld	a, $3f
 	cp	h
@@ -29,14 +29,14 @@ IF (CFG_INIT_ROM_SIZE > 32)
 	ei
 	ret
 
-ELSE
+	ELSE
 	; jp	dzx7_standard ; falls through
 
-ENDIF ; IF (CFG_INIT_ROM_SIZE > 32)
-ELSE
+	ENDIF ; IF (CFG_INIT_ROM_SIZE > 32)
+	ELSE
 	; jp	dzx7_standard ; falls through
 
-ENDIF ; IFDEF CFG_INIT_ROM_SIZE
+	ENDIF ; IFDEF CFG_INIT_ROM_SIZE
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------

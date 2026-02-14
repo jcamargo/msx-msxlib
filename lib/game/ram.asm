@@ -1,4 +1,4 @@
-
+﻿
 	IFDEF CFG_RAM_PLAYER
 ; -----------------------------------------------------------------------------
 ; Variables for: Player related routines (generic)
@@ -28,47 +28,47 @@ enemies:
 
 enemy:
 ; Logical coordinates (in pixels)
-	.xy:		equ $ - enemy
-	.y:		equ $ - enemy
+.xy:		equ $ - enemy
+.y:		equ $ - enemy
 	rb	1
-	.x:		equ $ - enemy
+.x:		equ $ - enemy
 	rb	1
 ; Enemy sprite attributes
-	.pattern:	equ $ - enemy
+.pattern:	equ $ - enemy
 	rb	1
-	.color:		equ $ - enemy
+.color:		equ $ - enemy
 	rb	1
-	.flags:		equ $ - enemy
+.flags:		equ $ - enemy
 	rb	1
 ; State pointer
-	.state:		equ $ - enemy
-	.state_l:	equ $ - enemy
+.state:		equ $ - enemy
+.state_l:	equ $ - enemy
 	rb	1
-	.state_h:	equ $ - enemy
+.state_h:	equ $ - enemy
 	rb	1
 ; Current animation delay (e.g.: when walking) (in frames)
-	.animation_delay:	equ $ - enemy
+.animation_delay:	equ $ - enemy
 	rb	1
 ; Current frame counter
-	.frame_counter:	equ $ - enemy
+.frame_counter:	equ $ - enemy
 	rb	1
 ; Current trigger frame counter
-	.trigger_frame_counter: equ $ - enemy
+.trigger_frame_counter: equ $ - enemy
 	rb	1
 ; Delta-Y (dY) table index (when jumping and falling)
-	.dy_index:	equ $ - enemy
+.dy_index:	equ $ - enemy
 	rb	1
 ; Backup data for respawning the enemy
-	.RESPAWN_SIZE:	equ .animation_delay ; (from .xy to .state)
-	.respawn_data:	equ $ - enemy
+.RESPAWN_SIZE:	equ .animation_delay ; (from .xy to .state)
+.respawn_data:	equ $ - enemy
 	rb	.RESPAWN_SIZE
 	
-	.SIZE:		equ $ - enemy
+.SIZE:		equ $ - enemy
 
 ; (rest of the array)
 	rb	(CFG_ENEMY_COUNT -1) * .SIZE
 	
-	enemies.SIZE:	equ $ - enemies
+enemies.SIZE:	equ $ - enemies
 ; -----------------------------------------------------------------------------
 	ENDIF
 	
@@ -79,26 +79,26 @@ bullets:
 
 bullet:
 ; Logical coordinates (in pixels)
-	.xy:		equ $ - bullet
-	.y:		equ $ - bullet
+.xy:		equ $ - bullet
+.y:		equ $ - bullet
 	rb	1
-	.x:		equ $ - bullet
+.x:		equ $ - bullet
 	rb	1
 ; Bullet sprite attributes
-	.pattern:	equ $ - bullet
+.pattern:	equ $ - bullet
 	rb	1
-	.color:		equ $ - bullet
+.color:		equ $ - bullet
 	rb	1
 ; Bullet speed and direction
-	.type:		equ $ - bullet
+.type:		equ $ - bullet
 	rb	1
 	
-	.SIZE:		equ $ - bullet
+.SIZE:		equ $ - bullet
 
 ; (rest of the array)
 	rb	(CFG_BULLET_COUNT -1) * .SIZE
 	
-	bullets.SIZE:	equ $ - bullets
+bullets.SIZE:	equ $ - bullets
 ; -----------------------------------------------------------------------------
 	ENDIF
 

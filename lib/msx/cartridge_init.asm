@@ -1,9 +1,9 @@
-
+﻿
 ; =============================================================================
 ; 	MSX cartridge entry point and initialization
 ; =============================================================================
 
-	CFG_RAM_CARTRIDGE:	equ 1
+CFG_RAM_CARTRIDGE:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Cartridge entry point
@@ -14,15 +14,15 @@ CARTRIDGE_INIT:
 	im	1
 
 ; Initializes stack pointer
-IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 	ld	sp, [HIMEM]
-ELSE
+	ELSE
 	ld	sp, STACK_POINTER_INIT
 ; Cancels the existing hooks (several BIOS routines re-enable interruptions)
 	ld	a, $c9 ; opcode for "RET"
 	ld	[HKEYI], a
 	ld	[HTIMI], a
-ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+	ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 
 ; CPU: Ensures Z80 mode
 	ld	a, [MSXID3]
@@ -33,10 +33,10 @@ ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 	call	CHGCPU
 .CPU_OK:
 
-IFDEF CFG_INIT_ROM_SIZE
-IF CFG_INIT_ROM_SIZE > 16
+	IFDEF CFG_INIT_ROM_SIZE
+	IF CFG_INIT_ROM_SIZE > 16
 
-IF CFG_INIT_ROM_SIZE <= 32
+	IF CFG_INIT_ROM_SIZE <= 32
 ; Is the game running on RAM? (e.g.: ROM Loader)
 	ld	a, $18 ; opcode for "JR nn"
 	ld	[.JR_NC], a ; Replaces "JR NC,nn" by "JR nn" (if RAM)
@@ -44,7 +44,7 @@ IF CFG_INIT_ROM_SIZE <= 32
 .JR_NC:
 	jr	nc, .ROM_OK ; yes
 ; No:
-ENDIF ; IF CFG_INIT_ROM_SIZE <= 32
+	ENDIF ; IF CFG_INIT_ROM_SIZE <= 32
 
 ; Reads the primary slot of the page 1
 	call    RSLREG	; a = 33221100
@@ -71,22 +71,22 @@ ENDIF ; IF CFG_INIT_ROM_SIZE <= 32
 ; Define slot ID (2/2)
 	or	c	; a = ExxxSSPP
 
-IF CFG_INIT_ROM_SIZE > 32
+	IF CFG_INIT_ROM_SIZE > 32
 ; Saves the slot of the cartridge
 	push	af ; (Reserves a byte at the bottom of the stack
 	inc	sp ; to avoid accidental overwriting)
-ENDIF
+	ENDIF
 
 ; Enables page 2 cartridge slot/subslot at start
 	ld	h, $80 ; Bit 6 and 7: page 2 ($8000)
 	call	ENASLT
 .ROM_OK:
 
-ENDIF ; IF CFG_INIT_ROM_SIZE > 16
-ENDIF ; IFDEF CFG_INIT_ROM_SIZE
+	ENDIF ; IF CFG_INIT_ROM_SIZE > 16
+	ENDIF ; IFDEF CFG_INIT_ROM_SIZE
 
 ; Splash screens before further initialization
-IFEXIST SPLASH_SCREENS_PACKED_TABLE
+	IFDEF SPLASH_SCREENS_PACKED_TABLE
 ; Reads the number of splash screens to show
 	ld	hl, SPLASH_SCREENS_PACKED_TABLE
 	ld	b, [hl]
@@ -108,9 +108,9 @@ IFEXIST SPLASH_SCREENS_PACKED_TABLE
 	inc	hl
 	pop	bc ; restores counter
 	djnz	.SPLASH_LOOP
-ENDIF ; IFEXIST SPLASH_SCREENS_PACKED_TABLE
+	ENDIF ; IFDEF SPLASH_SCREENS_PACKED_TABLE
 
-IFDEF CFG_INIT_16KB_RAM
+	IFDEF CFG_INIT_16KB_RAM
 ; RAM: checks availability of 16kB
 	ld	hl, ram_start
 	ld	de, [BOTTOM]
@@ -130,25 +130,25 @@ IFDEF CFG_INIT_16KB_RAM
 ; RAM check warning text
 .TXT:
 	db	"16KB RAM REQUIRED"
-	.TXT_SIZE:	equ $ - .TXT
+.TXT_SIZE:	equ $ - .TXT
 
 .RAM_OK:
 
-ENDIF ; CFG_INIT_16KB_RAM
+	ENDIF ; CFG_INIT_16KB_RAM
 
 	xor	a
 ; screen ,,0
 	ld	[CLIKSW], a
 ; VDP: color 15,0,0 (or color N,N,N)
-IFDEF CFG_INIT_BDRCLR
+	IFDEF CFG_INIT_BDRCLR
 	ld	a, CFG_INIT_BDRCLR
-ENDIF ; CFG_INIT_BDRCLR
+	ENDIF ; CFG_INIT_BDRCLR
 	ld	[BAKCLR], a
 	ld	[BDRCLR], a
-IFDEF CFG_INIT_BDRCLR
-ELSE
+	IFDEF CFG_INIT_BDRCLR
+	ELSE
 	dec	a
-ENDIF ; CFG_INIT_BDRCLR
+	ENDIF ; CFG_INIT_BDRCLR
 	ld	[FORCLR], a
 ; screen 2
 	call	INIGRP
@@ -157,9 +157,9 @@ ENDIF ; CFG_INIT_BDRCLR
 	ld	hl, RG1SAV
 	set	1, [hl] ; (first call to ENASCR will actually apply to the VDP)
 
-IFDEF CFG_INIT_DISABLE_PALETTE
-ELSE
-IFEXIST SET_PALETTE
+	IFDEF CFG_INIT_DISABLE_PALETTE
+	ELSE
+	IFDEF SET_PALETTE
 ; MSX2 VDP: Custom palette
 	call	CHECK_MSX2_VDP
 	jr	z, .PALETTE_OK ; not MSX2
@@ -174,16 +174,16 @@ IFEXIST SET_PALETTE
 	rra	; carry = bit 2
 	jr	nc, .SET_PALETTE ; Yes (2 key): Default MSX2 palette
 ; no: sets custom palette
-IFEXIST CFG_CUSTOM_PALETTE
+	IFDEF CFG_CUSTOM_PALETTE
 	ld	hl, CFG_CUSTOM_PALETTE
-ELSE
+	ELSE
 	ld	hl, DEFAULT_PALETTE.COOL_COLORS
-ENDIF ; IFEXIST CFG_CUSTOM_PALETTE
+	ENDIF ; IFDEF CFG_CUSTOM_PALETTE
 .SET_PALETTE:
 	call	SET_PALETTE
 .PALETTE_OK:
-ENDIF ; IFEXIST SET_PALETTE
-ENDIF ; IFDEF CFG_INIT_DISABLE_PALETTE
+	ENDIF ; IFDEF SET_PALETTE
+	ENDIF ; IFDEF CFG_INIT_DISABLE_PALETTE
 
 ; Zeroes all the used RAM
 	ld	hl, ram_start
@@ -196,9 +196,9 @@ ENDIF ; IFDEF CFG_INIT_DISABLE_PALETTE
 	call	GICINI
 
 ; Initializes the replayer
-IFEXIST REPLAYER.RESET
+	IFDEF REPLAYER.RESET
 	call	REPLAYER.RESET
-ENDIF
+	ENDIF
 
 ; Frame rate related variables
 	ld	a, [MSXID1]
@@ -210,22 +210,22 @@ ENDIF
 	ld	[frame_rate], hl
 
 ; Initializes the pseudo-random generator
-IFEXIST GET_RANDOM
+	IFDEF GET_RANDOM
 	ld  	hl, 0xA280
 	ld	[current_random +0], hl
         ld  	hl, 0xC0DE
 	ld	[current_random +2], hl
-ENDIF ; IFEXIST GET_RANDOM
+	ENDIF ; IFDEF GET_RANDOM
 
 ; Installs the H.TIMI hook in the interruption
-IFEXIST HOOK
-IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+	IFDEF HOOK
+	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 ; Preserves the existing hook
 	ld	hl, HTIMI
 	ld	de, old_htimi_hook
 	ld	bc, HOOK_SIZE
 	ldir
-ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+	ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 ; Install the interrupt routine
 	di
 	ld	a, $c3 ; opcode for "JP nn"
@@ -233,7 +233,7 @@ ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 	ld	hl, HOOK
 	ld	[HTIMI +1], hl
 	ei
-ENDIF
+	ENDIF
 
 ; Skips to the game entry point
 	jp	INIT
@@ -241,8 +241,8 @@ ENDIF
 
 ; -----------------------------------------------------------------------------
 ; 48kB ROM: Declares routines to set the page 0 slot/subslot and restore the bios
-IFDEF CFG_INIT_ROM_SIZE
-IF CFG_INIT_ROM_SIZE > 32
+	IFDEF CFG_INIT_ROM_SIZE
+	IF CFG_INIT_ROM_SIZE > 32
 
 SET_PAGE0:
 
@@ -258,13 +258,13 @@ SET_PAGE0:
 ; touches: a, bc, d
 .CARTRIDGE:
 ; Retrieves the slot of the cartridge from the bottom of the stack
-IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+	IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 	ld	bc, [HIMEM]
 	dec	bc ; bc = [HIMEM] - 1
 	ld	a, [bc]
-ELSE
+	ELSE
 	ld	a, [STACK_POINTER_INIT - 1]
-ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
+	ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 	; jr	.DO_SET_PAGE0 ; falls through
 
 ; Selects and permanently enables the requested slot in page 0
@@ -307,8 +307,8 @@ ENDIF ; IFDEF CFG_INIT_USE_HIMEM_KEEP_HOOKS
 	out	[PPI.A], a
 	ret
 
-ENDIF ; IF CFG_INIT_ROM_SIZE > 32
-ENDIF ; IFDEF CFG_INIT_ROM_SIZE
+	ENDIF ; IF CFG_INIT_ROM_SIZE > 32
+	ENDIF ; IFDEF CFG_INIT_ROM_SIZE
 ; -----------------------------------------------------------------------------
 
 ; EOF

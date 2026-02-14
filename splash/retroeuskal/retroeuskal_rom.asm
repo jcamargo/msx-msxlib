@@ -1,4 +1,4 @@
-
+﻿
 ; -----------------------------------------------------------------------------
 ; Cartridge header
 	org	$4000, $bfff
@@ -21,7 +21,7 @@ ROM_START:
 ; Padding to a 8kB boundary
 PADDING:
 	ds	($ OR $1fff) -$ +1, $ff ; $ff = rst $38
-	.SIZE:	equ $ - PADDING
+.SIZE:	equ $ - PADDING
 ; -----------------------------------------------------------------------------
 
 ; EOF

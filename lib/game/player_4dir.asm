@@ -1,4 +1,4 @@
-;
+﻿;
 ; =============================================================================
 ;	Top-down player related routines (four directions)
 ; =============================================================================
@@ -6,20 +6,20 @@
 
 ; -----------------------------------------------------------------------------
 ; Player state modifiers (as bit indexes)
-	BIT_STATE_LEFT:		equ 1 ; 0 = left, 1 = right
-	BIT_STATE_UP:		equ 1 ; 0 = up, 1 = down
-	BIT_STATE_UD_OR_LR:	equ 2 ; 0 = up/down, 1 = left/right
-	PLAYER_STATE_MOD_BITS:	equ 3
+BIT_STATE_LEFT:		equ 1 ; 0 = left, 1 = right
+BIT_STATE_UP:		equ 1 ; 0 = up, 1 = down
+BIT_STATE_UD_OR_LR:	equ 2 ; 0 = up/down, 1 = left/right
+PLAYER_STATE_MOD_BITS:	equ 3
 
 ; Player state modifiers (as flags)
-	FLAGS_STATE_DIRECTION:	equ ($03 << 1)
-	FLAGS_STATE:		equ FLAGS_STATE_DIRECTION OR FLAG_STATE_ANIM ; $07
+FLAGS_STATE_DIRECTION:	equ ($03 << 1)
+FLAGS_STATE:		equ FLAGS_STATE_DIRECTION OR FLAG_STATE_ANIM ; $07
 
 ; Player directions
-	PLAYER_DIRECTION_UP:	equ (0 << 1)
-	PLAYER_DIRECTION_DOWN:	equ (1 << 1)
-	PLAYER_DIRECTION_LEFT:	equ (2 << 1)
-	PLAYER_DIRECTION_RIGHT:	equ (3 << 1)
+PLAYER_DIRECTION_UP:	equ (0 << 1)
+PLAYER_DIRECTION_DOWN:	equ (1 << 1)
+PLAYER_DIRECTION_LEFT:	equ (2 << 1)
+PLAYER_DIRECTION_RIGHT:	equ (3 << 1)
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------

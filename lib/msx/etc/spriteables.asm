@@ -1,26 +1,26 @@
-
+﻿
 ; =============================================================================
 ;	Spriteables routines (2x2 chars that eventually become a sprite)
 ; =============================================================================
 
-	CFG_RAM_SPRITEABLES:	equ 1
+CFG_RAM_SPRITEABLES:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Symbolic constants for spriteables
-	MASK_SPRITEABLE_STATUS:		equ $f0 ; actual status
-	MASK_SPRITEABLE_DIRECTION:	equ $70 ; direction (inside status)
-	MASK_SPRITEABLE_PENDING:	equ $0f ; pending movement (in pixels)
-	BIT_SPRITEABLE_DISABLED:	equ 7
+MASK_SPRITEABLE_STATUS:		equ $f0 ; actual status
+MASK_SPRITEABLE_DIRECTION:	equ $70 ; direction (inside status)
+MASK_SPRITEABLE_PENDING:	equ $0f ; pending movement (in pixels)
+BIT_SPRITEABLE_DISABLED:	equ 7
 
-	SPRITEABLE_PENDING_0:		equ 8 ; 8 pixels (= 1 tile)
+SPRITEABLE_PENDING_0:		equ 8 ; 8 pixels (= 1 tile)
 
-	SPRITEABLE_IDLE:		equ $00 ; no movement, but can be moved
-	SPRITEABLE_MOVING_UP:		equ $10
-	SPRITEABLE_MOVING_DOWN:		equ $20
-	SPRITEABLE_MOVING_RIGHT:	equ $30
-	SPRITEABLE_MOVING_LEFT:		equ $40
-	SPRITEABLE_STOPPING:		equ $70 ; marker direction value for "stopping in this frame"
-	SPRITEABLE_DISABLED:		equ $80 ; no movement, and cannot be moved
+SPRITEABLE_IDLE:		equ $00 ; no movement, but can be moved
+SPRITEABLE_MOVING_UP:		equ $10
+SPRITEABLE_MOVING_DOWN:		equ $20
+SPRITEABLE_MOVING_RIGHT:	equ $30
+SPRITEABLE_MOVING_LEFT:		equ $40
+SPRITEABLE_STOPPING:		equ $70 ; marker direction value for "stopping in this frame"
+SPRITEABLE_DISABLED:		equ $80 ; no movement, and cannot be moved
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------

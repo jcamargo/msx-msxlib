@@ -1,25 +1,25 @@
-;
+﻿;
 ; =============================================================================
 ;	Bullet related routines (generic)
 ;	Bullet-tile helper routines
 ; =============================================================================
 ;
 
-	CFG_RAM_BULLET:	equ 1
+CFG_RAM_BULLET:	equ 1
 
 ; -----------------------------------------------------------------------------
 ; Bounding box coordinates offset from the logical coordinates
-	BULLET_BOX_X_OFFSET:	equ -(CFG_BULLET_WIDTH / 2)
-	BULLET_BOX_Y_OFFSET:	equ -CFG_BULLET_HEIGHT
+BULLET_BOX_X_OFFSET:	equ -(CFG_BULLET_WIDTH / 2)
+BULLET_BOX_Y_OFFSET:	equ -CFG_BULLET_HEIGHT
 
-	BIT_BULLET_DYING:	equ 0 ; bit set for dying bullet
+BIT_BULLET_DYING:	equ 0 ; bit set for dying bullet
 
-	MASK_BULLET_SPEED:	equ $fc ; speed (in signed pixels / frame)
-	MASK_BULLET_DIRECTION:	equ $82 ; movement direction (sign + direction)
-	MASK_BULLET_DYING:	equ ($01 << BIT_BULLET_DYING) ; flag for dying bullet
+MASK_BULLET_SPEED:	equ $fc ; speed (in signed pixels / frame)
+MASK_BULLET_DIRECTION:	equ $82 ; movement direction (sign + direction)
+MASK_BULLET_DYING:	equ ($01 << BIT_BULLET_DYING) ; flag for dying bullet
 
-	BULLET_DIR_UD:		equ $00
-	BULLET_DIR_LR:		equ $02
+BULLET_DIR_UD:		equ $00
+BULLET_DIR_LR:		equ $02
 ; -----------------------------------------------------------------------------
 
 ; -----------------------------------------------------------------------------
@@ -95,7 +95,7 @@ UPDATE_BULLETS:
 	push	bc ; preserves counter in b
 
 ; Checks for dying bullet animation
-IFDEF CFG_BULLET_DYING_PATTERN
+	IFDEF CFG_BULLET_DYING_PATTERN
 ; Is the dying bullet animation?
 	ld	a, [ix + bullet.type] ; (loaded to be reused in MOVE_BULLET.A_OK)
 	bit	BIT_BULLET_DYING, a
@@ -120,31 +120,31 @@ IFDEF CFG_BULLET_DYING_PATTERN
 .NOT_DYING:
 	call	MOVE_BULLET.A_OK
 
-ELSE
+	ELSE
 ; Moves the bullet and checks for collision
 	call	MOVE_BULLET
-ENDIF ; IFDEF CFG_BULLET_DYING_PATTERN
+	ENDIF ; IFDEF CFG_BULLET_DYING_PATTERN
 
 ; Has the bullet hit a wall?
 	bit	BIT_WORLD_SOLID, a
 	jp	z, .PUT_SPRITE ; no
-IFDEF CFG_BULLET_DYING_PATTERN
+	IFDEF CFG_BULLET_DYING_PATTERN
 ; yes: Prepares the dying bullet animation
 	ld	[ix + bullet.type], CFG_BULLET_DYING_PAUSE << 1 OR MASK_BULLET_DYING
 ; Prepares the sprite
-IF CFG_ENEMY_HEIGHT != CFG_BULLET_HEIGHT
+	IF CFG_ENEMY_HEIGHT != CFG_BULLET_HEIGHT
 	ld	a, [ix + bullet.y]
 	add	(CFG_ENEMY_HEIGHT - CFG_BULLET_HEIGHT) / 2
 	ld	[ix + bullet.y], a
-ENDIF ; IF CFG_ENEMY_HEIGHT = CFG_BULLET_HEIGHT
+	ENDIF ; IF CFG_ENEMY_HEIGHT = CFG_BULLET_HEIGHT
 	ld	[ix + bullet.pattern], CFG_BULLET_DYING_PATTERN
 
-ELSE
+	ELSE
 ; yes: Removes the bullet (for the next frame)
 	xor	a ; (marker value: y = 0)
 	ld	[ix + bullet.y], a
 	jp	.SKIP
-ENDIF ; IFDEF CFG_BULLET_DYING_PATTERN
+	ENDIF ; IFDEF CFG_BULLET_DYING_PATTERN
 
 ; Puts the bullet sprite
 .PUT_SPRITE:
