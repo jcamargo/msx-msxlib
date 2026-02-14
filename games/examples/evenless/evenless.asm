@@ -1,4 +1,3 @@
-
 ;
 ; =============================================================================
 ;	MSXlib minimal example
@@ -84,10 +83,12 @@ INIT:
 ; 	db	0x50
 ; frames_per_tenth:
 ; 	db	0x05
-
-ROMVAR_END:
+frame_rate equ 0x50
+frames_per_tenth equ 0x05
+RAM_END equ	RAMBASE + 8 ; (8KB RAM) or RAMBASE + 0x4000 (16KB RAM)
+; ROMVAR_END:
 
 ; -----------------------------------------------------------------------------
-	; include	"../../../lib/ram_end.asm"
+	include	"../../../lib/ram_end.asm"
 
 EOF
