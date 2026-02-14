@@ -9,7 +9,7 @@ RAMBASE:	equ $c000
 RAMBASE:	equ $e000
 	ENDIF
 
-ROMVAR:
+	STRUCT ramvars
 ; -----------------------------------------------------------------------------
 	include "msx/ram.asm"
 	include "msx/etc/ram.asm"
@@ -17,7 +17,7 @@ ROMVAR:
 	include "game/etc/ram.asm"
 	include "etc/ram.asm"
 ; -----------------------------------------------------------------------------
-
+	ENDS
 
 ; -----------------------------------------------------------------------------
 ; (for debugging purposes only)

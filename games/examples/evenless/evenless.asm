@@ -58,12 +58,10 @@ INIT:
 
 ; The message to print
 .MY_MESSAGE:
-	db	"Hello, Julek, it seems it works 2!"
+	db	"Hello, Julek, it seems it works 3!"
 
 .MY_MESSAGE_SIZE:	equ $ - .MY_MESSAGE
 ; -----------------------------------------------------------------------------
-
-
 	include	"../../../lib/rom_end.asm"
 
 ; -----------------------------------------------------------------------------
@@ -82,14 +80,12 @@ INIT:
 ; think how to solve this
 
 ; this usually comes from memory
-frame_rate:
-	db	0x50
-frames_per_tenth:
-	db	0x05
+; frame_rate:
+; 	db	0x50
+; frames_per_tenth:
+; 	db	0x05
 
 ROMVAR_END:
-
-RAM_END equ RAMBASE + (ROMVAR_END - ROMVAR)
 
 ; -----------------------------------------------------------------------------
 	; include	"../../../lib/ram_end.asm"

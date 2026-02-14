@@ -2,7 +2,7 @@
 	"[z80-asm-meter][z80-macroasm]": {
 		"editor.insertSpaces": false,
 		"editor.minimap.maxColumn": 80,
-		"editor.tabSize": 8,
+		"editor.tabSize": 4,
 		"editor.rulers": [ 80 ]
 	},
 	"files.associations": {
